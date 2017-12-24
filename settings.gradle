@@ -1,0 +1,6 @@
+rootProject.name = 'ldap'
+include(':ldap-global', ':ldap-core', ':ldap-gui', ':ldap-web')
+project(':ldap-global').projectDir = new File(settingsDir, 'modules/global')
+project(':ldap-core').projectDir = new File(settingsDir, 'modules/core')
+project(':ldap-gui').projectDir = new File(settingsDir, 'modules/gui')
+project(':ldap-web').projectDir = new File(settingsDir, 'modules/web')
