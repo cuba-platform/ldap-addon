@@ -80,6 +80,10 @@ configure(globalModule) {
         }
     }
 
+    dependencies {
+        compile group: 'org.springframework.ldap', name: 'spring-ldap-core', version: '2.3.2.RELEASE'
+    }
+
     
 }
 
@@ -95,7 +99,6 @@ configure(coreModule) {
         provided(servletApi)
         jdbc(postgres)
         testRuntime(postgres)
-        compile group: 'org.springframework.ldap', name: 'spring-ldap-core', version: '2.3.2.RELEASE'
     }
 
     task cleanConf(description: 'Cleans up conf directory') {

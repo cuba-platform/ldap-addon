@@ -1,13 +1,11 @@
 package com.company.ldap.core.utils;
 
-import com.company.ldap.core.api.LdapConfig;
+import com.company.ldap.config.LdapConfig;
 import com.company.ldap.core.dto.LdapUser;
-import org.springframework.ldap.core.AttributesMapper;
 import org.springframework.ldap.core.ContextMapper;
 import org.springframework.ldap.core.DirContextAdapter;
 
 import javax.naming.NamingException;
-import javax.naming.directory.Attributes;
 import java.util.Arrays;
 
 public class BaseLdapUserContextMapper implements ContextMapper<LdapUser> {
@@ -23,11 +21,11 @@ public class BaseLdapUserContextMapper implements ContextMapper<LdapUser> {
         LdapUser ldapUser = new LdapUser();
         DirContextAdapter context = (DirContextAdapter)ctx;
 
-        ldapUser.setEmail(context.getStringAttribute(ldapConfig.getEmail()));
-        ldapUser.setLogin(context.getStringAttribute(ldapConfig.getLogin()));
-        ldapUser.setName(context.getStringAttribute(ldapConfig.getCn()));
-        ldapUser.setLastName(context.getStringAttribute(ldapConfig.getSn()));
-        ldapUser.setMemberOf(Arrays.asList(context.getStringAttributes(ldapConfig.getMemberOf())));
+        ldapUser.setEmail(context.getStringAttribute(ldapConfig.getEmailAttribute()));
+        ldapUser.setLogin(context.getStringAttribute(ldapConfig.getLoginAttribute()));
+        ldapUser.setName(context.getStringAttribute(ldapConfig.getCnAttribute()));
+        ldapUser.setLastName(context.getStringAttribute(ldapConfig.getSnAttribute()));
+        ldapUser.setMemberOf(Arrays.asList(context.getStringAttributes(ldapConfig.getMemberOfAttribute())));
         return ldapUser;
     }
 

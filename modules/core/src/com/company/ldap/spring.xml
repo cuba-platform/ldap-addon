@@ -10,13 +10,15 @@
     <!-- Annotation-based beans -->
     <context:component-scan base-package="com.company.ldap"/>
 
+    <!--Actual values will be set from app properties/database in LdapContextSourceChangeSettingsListener. Below values need for first time initialization-->
     <ldap:context-source
-            url="ldap://localhost:10389"
-            base="dc=springframework,dc=org"
-            username="uid=admin,ou=system"
-            password="secret"/>
+            id="ldap_ldapContextSource"
+            url="ldap://test:1234"
+            base="dc=test,dc=org"
+            username="test"
+            password="test"/>
 
-    <ldap:ldap-template id="ldapTemplate"/>
+    <ldap:ldap-template id="ldap_ldapTemplate" context-source-ref="ldap_ldapContextSource"/>
 
 
 </beans>

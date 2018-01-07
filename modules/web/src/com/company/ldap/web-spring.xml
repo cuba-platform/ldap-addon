@@ -8,4 +8,15 @@
     <!-- Annotation-based beans -->
     <context:component-scan base-package="com.company.ldap"/>
 
+    <bean class="com.haulmont.cuba.web.sys.remoting.WebRemoteProxyBeanCreator">
+        <property name="serverSelector"
+                  ref="cuba_ServerSelector"/>
+        <property name="remoteServices">
+            <map>
+                <entry key="ldap_LdapUserService"
+                       value="com.company.ldap.service.LdapUserService"/>
+            </map>
+        </property>
+    </bean>
+
 </beans>

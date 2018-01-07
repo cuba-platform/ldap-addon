@@ -1,6 +1,6 @@
 package com.company.ldap.core.dao;
 
-import com.company.ldap.core.api.LdapConfig;
+import com.company.ldap.config.LdapConfig;
 import com.company.ldap.core.dto.LdapUser;
 import com.company.ldap.core.utils.BaseLdapUserContextMapper;
 import com.company.ldap.core.utils.LdapAuthentificationMapper;
@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service
+@Service("ldap_LdapUserDao")
 public class LdapUserDao {
 
     @Autowired
@@ -24,7 +24,7 @@ public class LdapUserDao {
     private LdapConfig ldapConfig;
 
     public LdapUser getLdapUserByLogin(String login) {
-        EqualsFilter ef = new EqualsFilter(ldapConfig.getLogin(), login);
+        EqualsFilter ef = new EqualsFilter(ldapConfig.getLoginAttribute(), login);
         List<LdapUser> ldapUsers = ldapTemplate.search(ldapConfig.getUserBase(), ef.encode(), new BaseLdapUserContextMapper(ldapConfig));
         return ldapUsers.get(0);
     }
@@ -36,8 +36,8 @@ public class LdapUserDao {
                     .searchScope(SearchScope.SUBTREE)
                     .countLimit(1)
                     .base(ldapConfig.getUserBase())
-                    .where("objectClass").is(ldapConfig.getUserObjectClass())
-                    .and(ldapConfig.getLogin()).is(login);
+                    .where("objectClass").is(ldapConfig.getUserBase())
+                    .and(ldapConfig.getLoginAttribute()).is(login);
 
 
             return ldapTemplate.authenticate(query, password, new LdapAuthentificationMapper(ldapConfig));
