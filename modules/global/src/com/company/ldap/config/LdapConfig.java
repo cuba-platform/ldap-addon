@@ -33,6 +33,14 @@ public interface LdapConfig extends Config {
     @DefaultString("memberOf")
     String getMemberOfAttribute();
 
+    @Property("ldap.accessGroupAttribute")
+    @DefaultString("")
+    String getAccessGroupAttribute();
+
+    @Property("ldap.inactiveUserAttribute")
+    @DefaultString("")
+    String getInactiveUserAttribute();
+
     @Property("ldap.userBase")
     @DefaultString("ou=people")
     String getUserBase();
@@ -67,6 +75,8 @@ public interface LdapConfig extends Config {
     void setCnAttribute(String cn);
     void setSnAttribute(String sn);
     void setMemberOfAttribute(String memberOf);
+    void setAccessGroupAttribute(String accessGroupAttribute);
+    void setInactiveUserAttribute(String inactiveUserAttribute);
     void setUserBase(String userBase);
 
     void setUseContextSourcePooling(boolean useContextSourcePooling);

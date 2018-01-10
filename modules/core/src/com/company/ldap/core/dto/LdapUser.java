@@ -4,20 +4,13 @@ import java.util.List;
 
 public class LdapUser {
 
-    private String name;
-    private String firstName;
-    private String lastName;
+    private String login;
+    private String cn;
+    private String sn;
     private String email;
     private List<String> memberOf;
-    private String login;
+    private List<String> accessGroups;
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
 
     public String getEmail() {
         return email;
@@ -43,19 +36,27 @@ public class LdapUser {
         this.login = login;
     }
 
-    public String getFirstName() {
-        return firstName;
+    public String getCn() {
+        return cn;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
+    public void setCn(String cn) {
+        this.cn = cn;
     }
 
-    public String getLastName() {
-        return lastName;
+    public String getSn() {
+        return sn;
     }
 
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
+    public void setSn(String sn) {
+        this.sn = sn;
+    }
+
+    public List<String> getAccessGroups() {
+        return accessGroups;
+    }
+
+    public void setAccessGroups(List<String> accessGroups) {
+        this.accessGroups = accessGroups;
     }
 }

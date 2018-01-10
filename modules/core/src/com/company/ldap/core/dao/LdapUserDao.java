@@ -2,9 +2,10 @@ package com.company.ldap.core.dao;
 
 import com.company.ldap.config.LdapConfig;
 import com.company.ldap.core.dto.LdapUser;
-import com.company.ldap.core.utils.BaseLdapUserContextMapper;
-import com.company.ldap.core.utils.LdapAuthentificationMapper;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.company.ldap.core.dto.LdapUserWrapper;
+import com.company.ldap.core.utils.LdapUserWrapperMapper;
+import com.company.ldap.core.utils.LdapUserMapper;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.ldap.core.LdapTemplate;
 import org.springframework.ldap.filter.EqualsFilter;
 import org.springframework.ldap.query.LdapQuery;
@@ -12,21 +13,22 @@ import org.springframework.ldap.query.LdapQueryBuilder;
 import org.springframework.ldap.query.SearchScope;
 import org.springframework.stereotype.Service;
 
+import javax.inject.Inject;
 import java.util.List;
 
 @Service("ldap_LdapUserDao")
 public class LdapUserDao {
 
-    @Autowired
+    @Inject
+    @Qualifier("ldap_ldapTemplate")
     private LdapTemplate ldapTemplate;
 
-    @Autowired
+    @Inject
     private LdapConfig ldapConfig;
 
-    public LdapUser getLdapUserByLogin(String login) {
+    public List<LdapUserWrapper> getLdapUserWrappers(String login) {
         EqualsFilter ef = new EqualsFilter(ldapConfig.getLoginAttribute(), login);
-        List<LdapUser> ldapUsers = ldapTemplate.search(ldapConfig.getUserBase(), ef.encode(), new BaseLdapUserContextMapper(ldapConfig));
-        return ldapUsers.get(0);
+        return ldapTemplate.search(ldapConfig.getUserBase(), ef.encode(), new LdapUserWrapperMapper(ldapConfig));
     }
 
     public LdapUser authenticate(String login, String password) {
@@ -40,7 +42,7 @@ public class LdapUserDao {
                     .and(ldapConfig.getLoginAttribute()).is(login);
 
 
-            return ldapTemplate.authenticate(query, password, new LdapAuthentificationMapper(ldapConfig));
+            return ldapTemplate.authenticate(query, password, new LdapUserMapper(ldapConfig));
         } catch (Exception e) {
             return null;
         }

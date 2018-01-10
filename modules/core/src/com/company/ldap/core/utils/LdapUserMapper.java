@@ -9,24 +9,25 @@ import org.springframework.ldap.core.LdapEntryIdentification;
 import javax.naming.directory.DirContext;
 import java.util.Arrays;
 
-public class LdapAuthentificationMapper implements AuthenticatedLdapEntryContextMapper<LdapUser> {
+public class LdapUserMapper implements AuthenticatedLdapEntryContextMapper<LdapUser> {
 
     private final LdapConfig ldapConfig;
 
-    public LdapAuthentificationMapper(LdapConfig ldapConfig) {
+    public LdapUserMapper(LdapConfig ldapConfig) {
         this.ldapConfig = ldapConfig;
     }
 
     @Override
     public LdapUser mapWithContext(DirContext ctx, LdapEntryIdentification ldapEntryIdentification) {
         LdapUser ldapUser = new LdapUser();
-        DirContextAdapter context = (DirContextAdapter)ctx;
+        DirContextAdapter context = (DirContextAdapter) ctx;
 
-        ldapUser.setEmail(context.getStringAttribute(ldapConfig.getEmailAttribute()));
         ldapUser.setLogin(context.getStringAttribute(ldapConfig.getLoginAttribute()));
-        ldapUser.setName(context.getStringAttribute(ldapConfig.getCnAttribute()));
-        ldapUser.setLastName(context.getStringAttribute(ldapConfig.getSnAttribute()));
+        ldapUser.setCn(context.getStringAttribute(ldapConfig.getCnAttribute()));
+        ldapUser.setSn(context.getStringAttribute(ldapConfig.getSnAttribute()));
+        ldapUser.setEmail(context.getStringAttribute(ldapConfig.getEmailAttribute()));
         ldapUser.setMemberOf(Arrays.asList(context.getStringAttributes(ldapConfig.getMemberOfAttribute())));
+        ldapUser.setAccessGroups(Arrays.asList(context.getStringAttributes(ldapConfig.getAccessGroupAttribute())));
         return ldapUser;
     }
 }

@@ -1,4 +1,3 @@
--- begin LDAP_MATCHING_RULE
 create table LDAP_MATCHING_RULE (
     ID uuid,
     VERSION integer not null,
@@ -20,12 +19,4 @@ create table LDAP_MATCHING_RULE (
     --
 
     primary key (ID)
-)^
--- end LDAP_MATCHING_RULE
--- begin LDAP_MATCHING_RULE_ROLE_LINK
-create table LDAP_MATCHING_RULE_ROLE_LINK (
-    MATCHING_RULE_ID uuid,
-    ROLE_ID uuid,
-    primary key (MATCHING_RULE_ID, ROLE_ID)
-)^
--- end LDAP_MATCHING_RULE_ROLE_LINK
+);
