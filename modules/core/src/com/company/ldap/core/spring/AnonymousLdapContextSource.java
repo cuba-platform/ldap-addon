@@ -1,4 +1,4 @@
-package com.company.ldap.util;
+package com.company.ldap.core.spring;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.ldap.core.support.LdapContextSource;

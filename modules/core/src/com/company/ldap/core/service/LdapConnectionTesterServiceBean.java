@@ -1,26 +1,40 @@
-package com.company.ldap.util;
+package com.company.ldap.core.service;
 
+import com.company.ldap.core.spring.AnonymousLdapContextSource;
+import com.company.ldap.service.LdapConnectionTesterService;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.springframework.ldap.core.support.LdapContextSource;
 import org.springframework.ldap.support.LdapUtils;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import javax.naming.directory.DirContext;
 import javax.naming.directory.SearchControls;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import static javax.naming.directory.SearchControls.SUBTREE_SCOPE;
 
-@Component("ldap_SimpleConnectionTester")
-public class SimpleConnectionTester {
+@Service(LdapConnectionTesterService.NAME)
+public class LdapConnectionTesterServiceBean implements LdapConnectionTesterService {
 
     private final String DUMMY_FILTER = "ou=system";
+
+    private Map<String, Object> getAdditionalEnvProperties(String url) {
+        Map<String, Object> map = new HashMap<>();
+        if (StringUtils.isNotEmpty(url) && url.toUpperCase().startsWith("LDAPS")) {
+            map.put("java.naming.ldap.factory.socket", "com.company.ldap.core.spring.ssl.CertCheckIgnoreSSLSocketFactory");
+        }
+        return map;
+    }
 
 
     private LdapContextSource createAuthenticatedContext(String url, String base) {
         LdapContextSource ldapContextSource = new LdapContextSource();
         ldapContextSource.setUrl(url);
         ldapContextSource.setBase(base);
+        ldapContextSource.setBaseEnvironmentProperties(getAdditionalEnvProperties(url));
         ldapContextSource.afterPropertiesSet();
         return ldapContextSource;
     }
@@ -30,10 +44,12 @@ public class SimpleConnectionTester {
         ldapContextSource.setUrl(url);
         ldapContextSource.setBase(base);
         ldapContextSource.setAnonymousReadOnly(true);
+        ldapContextSource.setBaseEnvironmentProperties(getAdditionalEnvProperties(url));
         ldapContextSource.afterPropertiesSet();
         return ldapContextSource;
     }
 
+    @Override
     public String testConnection(String url, String base, String userDn, String password) {
         LdapContextSource ldapContextSource = null;
         DirContext dirContext = null;

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <window xmlns="http://schemas.haulmont.com/cuba/window.xsd"
         caption="msg://caption"
-        class="com.company.ldap.web.screens.Screen"
+        class="com.company.ldap.web.screens.LdapSettingsEditor"
         messagesPack="com.company.ldap.web.screens">
     <dialogMode height="600"
                 width="800"/>

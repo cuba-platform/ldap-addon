@@ -3,6 +3,7 @@ package com.company.ldap.core.dao;
 import com.company.ldap.config.LdapConfig;
 import com.company.ldap.core.dto.LdapUser;
 import com.company.ldap.core.dto.LdapUserWrapper;
+import com.company.ldap.core.utils.LdapConstants;
 import com.company.ldap.core.utils.LdapUserWrapperMapper;
 import com.company.ldap.core.utils.LdapUserMapper;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -16,11 +17,15 @@ import org.springframework.stereotype.Service;
 import javax.inject.Inject;
 import java.util.List;
 
-@Service("ldap_LdapUserDao")
+import static com.company.ldap.core.dao.LdapUserDao.NAME;
+
+@Service(NAME)
 public class LdapUserDao {
 
+    public final static String NAME = "ldap_LdapUserDao";
+
     @Inject
-    @Qualifier("ldap_ldapTemplate")
+    @Qualifier(LdapConstants.LDAP_TEMPLATE_BEAN_NAME)
     private LdapTemplate ldapTemplate;
 
     @Inject

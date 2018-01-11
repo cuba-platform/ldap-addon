@@ -1,8 +1,8 @@
 package com.company.ldap.web.screens;
 
 import com.company.ldap.config.LdapConfig;
+import com.company.ldap.service.LdapConnectionTesterService;
 import com.company.ldap.service.LdapUserService;
-import com.company.ldap.util.SimpleConnectionTester;
 import com.haulmont.cuba.gui.components.AbstractWindow;
 import com.haulmont.cuba.gui.components.TextArea;
 import com.haulmont.cuba.gui.components.TextField;
@@ -12,7 +12,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import java.util.Map;
 
-public class Screen extends AbstractWindow {
+public class LdapSettingsEditor extends AbstractWindow {
 
     @Inject
     private LdapConfig ldapConfig;
@@ -54,7 +54,7 @@ public class Screen extends AbstractWindow {
     private LdapUserService ldapUserService;
 
     @Inject
-    private SimpleConnectionTester simpleConnectionTester;
+    private LdapConnectionTesterService ldapConnectionTester;
 
     @Override
     public void init(Map<String, Object> params) {
@@ -82,7 +82,7 @@ public class Screen extends AbstractWindow {
         ldapConfig.setContextSourceUserName(contextSourceUserName == null ? StringUtils.EMPTY : contextSourceUserName);
         ldapConfig.setContextSourcePassword(contextSourcePassword == null ? StringUtils.EMPTY : contextSourcePassword);
 
-        //ldapUserService.find("");
+        ldapUserService.find("");
     }
 
     public void onTestConnectionClick() {
@@ -91,7 +91,7 @@ public class Screen extends AbstractWindow {
         String contextSourceUserName = userField.getValue() == null ? StringUtils.EMPTY : userField.getValue();
         String contextSourcePassword = passwordField.getValue() == null ? StringUtils.EMPTY : passwordField.getValue();
 
-        String result = simpleConnectionTester.testConnection(contextSourceUrl, contextSourceBase, contextSourceUserName, contextSourcePassword);
+        String result = ldapConnectionTester.testConnection(contextSourceUrl, contextSourceBase, contextSourceUserName, contextSourcePassword);
         connectionStatusTextArea.setValue(result);
     }
 

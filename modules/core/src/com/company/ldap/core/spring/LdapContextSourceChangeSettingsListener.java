@@ -12,8 +12,12 @@ import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
 
-@Component("ldap_LdapContextSourceSettingsListener")
+import static com.company.ldap.core.spring.LdapContextSourceChangeSettingsListener.NAME;
+
+@Component(NAME)
 public class LdapContextSourceChangeSettingsListener implements AppContext.Listener {
+
+    public static final String NAME = "ldap_LdapContextSourceSettingsListener";
 
     private Logger log = LoggerFactory.getLogger(LdapContextSourceChangeSettingsListener.class);
 
@@ -40,6 +44,7 @@ public class LdapContextSourceChangeSettingsListener implements AppContext.Liste
                 ldapContextSource.setAnonymousReadOnly(true);
             }
 
+            //TODO: ssl self signed cert
             if (ldapConfig.getUseContextSourcePooling()){
                 //TODO: switch to PoolingContextSource. Change ref in ldap template
             }

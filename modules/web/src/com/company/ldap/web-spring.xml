@@ -13,8 +13,8 @@
                   ref="cuba_ServerSelector"/>
         <property name="remoteServices">
             <map>
-                <entry key="ldap_LdapUserService"
-                       value="com.company.ldap.service.LdapUserService"/>
+                <entry key="ldap_LdapUserService" value="com.company.ldap.service.LdapUserService"/>
+                <entry key="ldap_LdapConnectionTesterService" value="com.company.ldap.service.LdapConnectionTesterService"/>
             </map>
         </property>
     </bean>

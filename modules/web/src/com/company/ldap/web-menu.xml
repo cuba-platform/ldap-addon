@@ -2,6 +2,6 @@
 <menu-config xmlns="http://schemas.haulmont.com/cuba/menu.xsd">
     <menu id="application-ldap"
           insertBefore="administration">
-        <item screen="screen"/>
+        <item screen="ldap$settings"/>
     </menu>
 </menu-config>

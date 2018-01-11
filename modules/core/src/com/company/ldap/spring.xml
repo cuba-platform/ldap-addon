@@ -13,10 +13,10 @@
     <!--Actual values will be set from app properties/database in LdapContextSourceChangeSettingsListener. Below values need for first time initialization-->
     <ldap:context-source
             id="ldap_ldapContextSource"
-            url="ldap://test:1234"
-            base="dc=test,dc=org"
-            username="test"
-            password="test"/>
+            url="${ldap.contextSourceUrl}"
+            base="${ldap.contextSourceBase}"
+            username="${ldap.contextSourceUserName}"
+            password="${ldap.contextSourcePassword}"/>
 
     <ldap:ldap-template id="ldap_ldapTemplate" context-source-ref="ldap_ldapContextSource"/>
 

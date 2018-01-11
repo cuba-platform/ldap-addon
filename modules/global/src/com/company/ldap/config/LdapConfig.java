@@ -10,7 +10,7 @@ import com.haulmont.cuba.core.config.defaults.DefaultString;
 /**
  * Created by amarin on 12/4/2017.
  */
-@Source(type = SourceType.DATABASE)
+@Source(type = SourceType.APP)
 public interface LdapConfig extends Config {
 
     @Property("ldap.loginAttribute")
@@ -50,7 +50,7 @@ public interface LdapConfig extends Config {
     boolean getUseContextSourcePooling();
 
     @Property("ldap.contextSourceUrl")
-    @DefaultString("ldap://localhost:103891")
+    @DefaultString("ldap://localhost:10389")
     String getContextSourceUrl();
 
     @Property("ldap.contextSourceBase")

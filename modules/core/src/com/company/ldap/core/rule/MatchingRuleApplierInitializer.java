@@ -7,17 +7,23 @@ import com.company.ldap.core.rule.appliers.ScriptingMatchingRuleChain;
 import com.company.ldap.core.rule.appliers.SimpleMatchingRuleChain;
 import com.company.ldap.entity.MatchingRuleType;
 import com.haulmont.cuba.core.global.Metadata;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
-@Component
+import static com.company.ldap.core.rule.MatchingRuleApplierInitializer.NAME;
+
+@Component(NAME)
 public class MatchingRuleApplierInitializer {
+
+    public static final String NAME = "ldap_MatchingRuleApplierInitializer";
 
     private MatchingRuleChain matchingRuleChain;
 
     @Inject
+    @Qualifier(LdapUserDao.NAME)
     private LdapUserDao ldapUserDao;
 
     @Inject
