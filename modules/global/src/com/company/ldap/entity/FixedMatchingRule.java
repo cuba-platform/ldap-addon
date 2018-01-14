@@ -5,7 +5,7 @@ import javax.persistence.DiscriminatorValue;
 
 @DiscriminatorValue("FIXED")
 @Entity(name = "ldap$FixedMatchingRule")
-public class FixedMatchingRule extends MatchingRule {
+public class FixedMatchingRule extends AbstractMatchingRule {
     private static final long serialVersionUID = 3273589414637071323L;
 
 }

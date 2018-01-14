@@ -1,6 +1,6 @@
 package com.company.ldap.service;
 
-public interface LdapUserService {
+public interface UserService {
     String NAME = "ldap_LdapUserService";
 
     void find(String filter);

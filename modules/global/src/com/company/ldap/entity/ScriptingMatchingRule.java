@@ -5,7 +5,7 @@ import javax.persistence.Column;
 import javax.persistence.Lob;
 
 @Entity(name = "ldap$ScriptingMatchingRule")
-public class ScriptingMatchingRule extends MatchingRule {
+public class ScriptingMatchingRule extends AbstractMatchingRule {
     private static final long serialVersionUID = -5385890969244419336L;
 
     @Lob

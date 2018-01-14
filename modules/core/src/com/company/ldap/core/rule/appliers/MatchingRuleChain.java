@@ -1,6 +1,7 @@
 package com.company.ldap.core.rule.appliers;
 
 import com.company.ldap.core.rule.ApplyMatchingRuleContext;
+import com.company.ldap.entity.AbstractMatchingRule;
 import com.company.ldap.entity.MatchingRule;
 import com.company.ldap.entity.MatchingRuleType;
 import com.haulmont.cuba.core.global.Metadata;
@@ -33,10 +34,11 @@ public abstract class MatchingRuleChain {
     abstract boolean checkRule(MatchingRule matchingRule, ApplyMatchingRuleContext applyMatchingRuleContext);
 
     public void applyMatchingRules(List<MatchingRule> matchingRules, ApplyMatchingRuleContext applyMatchingRuleContext, User cubaUser) {
+        //TODO:add sort by terminal and etc
         for (MatchingRule matchingRule : matchingRules) {
             if (isMatchingRuleTypeSupported(matchingRule) && checkRule(matchingRule, applyMatchingRuleContext)) {
                 applyRuleToUser(matchingRule, cubaUser);
-                if (matchingRule.getIsTerminalRule()) {//if terminal rule was satisfied stop execution chain
+                if (matchingRule.isTerminalRule()) {//if terminal rule was satisfied stop execution chain
                     return;
                 }
             }
@@ -47,10 +49,10 @@ public abstract class MatchingRuleChain {
     }
 
     private void applyRuleToUser(MatchingRule matchingRule, User cubaUser) {
-        if (matchingRule.getIsOverrideExistingAccessGroup()) {
+        if (matchingRule.isOverrideExistingAccessGroup()) {
             cubaUser.setGroup(matchingRule.getAccessGroup());
         }
-        if (matchingRule.getIsOverrideExistingRoles()) {
+        if (matchingRule.isOverrideExistingRoles()) {
             cubaUser.getUserRoles().clear();
             cubaUser.setUserRoles(createUserRoles(matchingRule.getRoles(), cubaUser));
         } else {

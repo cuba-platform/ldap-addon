@@ -10,6 +10,7 @@ public class LdapUser {
     private String email;
     private List<String> memberOf;
     private List<String> accessGroups;
+    private Boolean isDisabled;
 
 
     public String getEmail() {
@@ -58,5 +59,13 @@ public class LdapUser {
 
     public void setAccessGroups(List<String> accessGroups) {
         this.accessGroups = accessGroups;
+    }
+
+    public Boolean getDisabled() {
+        return isDisabled;
+    }
+
+    public void setDisabled(Boolean disabled) {
+        isDisabled = disabled;
     }
 }

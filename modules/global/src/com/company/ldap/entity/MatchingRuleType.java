@@ -2,9 +2,10 @@ package com.company.ldap.entity;
 
 public enum MatchingRuleType {
 
-    FIXED("FIXED", Integer.MAX_VALUE),
     SIMPLE("SIMPLE", 1),
-    SCRIPTING("SCRIPTING", 2);
+    SCRIPTING("SCRIPTING", 2),
+    PROGRAMMATIC("PROGRAMMATIC", 3),
+    FIXED("FIXED", Integer.MAX_VALUE);
 
     private String code;
     private Integer processOrder;
