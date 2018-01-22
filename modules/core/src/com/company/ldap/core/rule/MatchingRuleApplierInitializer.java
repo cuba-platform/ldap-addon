@@ -25,7 +25,7 @@ public class MatchingRuleApplierInitializer {
     private MatchingRuleChain matchingRuleChain;
 
     @Inject
-    Metadata metadata;
+    private Metadata metadata;
 
     @Inject
     @Qualifier(LdapUserDao.NAME)

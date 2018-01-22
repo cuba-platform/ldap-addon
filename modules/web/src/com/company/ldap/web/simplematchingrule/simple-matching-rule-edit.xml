@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://schemas.haulmont.com/cuba/window.xsd"
+        caption="msg://editorCaption"
+        class="com.company.ldap.web.simplematchingrule.SimpleMatchingRuleEdit"
+        datasource="simpleMatchingRuleDs"
+        focusComponent="fieldGroup"
+        messagesPack="com.company.ldap.web.simplematchingrule">
+    <dsContext>
+        <datasource id="simpleMatchingRuleDs"
+                    class="com.company.ldap.entity.SimpleMatchingRule"
+                    view="simpleMatchingRule-view-with-group-roles">
+            <collectionDatasource id="rolesDs"
+                                  property="roles"/>
+        </datasource>
+    </dsContext>
+    <dialogMode height="600"
+                width="800"/>
+    <layout expand="windowActions"
+            spacing="true">
+        <fieldGroup id="fieldGroup"
+                    datasource="simpleMatchingRuleDs">
+            <column width="250px">
+                <field property="accessGroup"/>
+                <field property="isTerminalRule"/>
+                <field property="isOverrideExistingRoles"/>
+                <field property="isOverrideExistingAccessGroup"/>
+                <field property="isDisabled"/>
+                <field property="ldapCondition"
+                       rows="5"/>
+            </column>
+        </fieldGroup>
+        <groupBox id="rolesBox"
+                  caption="msg://com.company.ldap.entity/SimpleMatchingRule.roles">
+            <table id="rolesTable"
+                   height="200px"
+                   width="100%">
+                <actions>
+                    <action id="add"/>
+                    <action id="remove"/>
+                </actions>
+                <columns>
+                    <column id="locName"/>
+                    <column id="name"/>
+                </columns>
+                <rows datasource="rolesDs"/>
+                <buttonsPanel>
+                    <button action="rolesTable.add"/>
+                    <button action="rolesTable.remove"/>
+                </buttonsPanel>
+            </table>
+        </groupBox>
+        <frame id="windowActions"
+               screen="editWindowActions"/>
+    </layout>
+</window>

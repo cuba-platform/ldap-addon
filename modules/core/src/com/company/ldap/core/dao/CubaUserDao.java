@@ -5,6 +5,7 @@ import com.haulmont.cuba.core.Persistence;
 import com.haulmont.cuba.core.TypedQuery;
 import com.haulmont.cuba.security.entity.User;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
@@ -23,8 +24,8 @@ public class CubaUserDao {
     @Transactional(readOnly = true)
     public User getCubaUserByLogin(String login) {
         TypedQuery<User> query = persistence.getEntityManager().createQuery("select cu from sec$User cu " +
-                "join fetch cu.userRoles roles " +
-                "join fetch cu.group group " +
+                "left join fetch cu.userRoles roles " +
+                "left join fetch cu.group group " +
                 "where cu.login = :login", User.class);
         query.setParameter("login", login);
         return query.getFirstResult();
@@ -33,15 +34,17 @@ public class CubaUserDao {
     @Transactional(readOnly = true)
     public List<User> getCubaUsers() {
         TypedQuery<User> query = persistence.getEntityManager().createQuery("select cu from sec$User cu " +
-                "join fetch cu.userRoles roles " +
-                "join fetch cu.group group", User.class);
+                "left join fetch cu.userRoles roles " +
+                "left join fetch cu.group group", User.class);
         return query.getResultList();
     }
 
     @Transactional
-    public void saveCubaUser(User cubaUser) {
-        //TODO:may be explicit save user roles
+    public void saveCubaUser(User cubaUser, boolean isNew) {
         EntityManager entityManager = persistence.getEntityManager();
-        entityManager.persist(cubaUser);
+        User mergedUser = isNew ? cubaUser : entityManager.merge(cubaUser);
+        mergedUser.getUserRoles().forEach(entityManager::persist);
+        entityManager.persist(mergedUser);
+
     }
 }

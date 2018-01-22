@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://schemas.haulmont.com/cuba/window.xsd"
+        caption="msg://browseCaption"
+        class="com.company.ldap.web.simplematchingrule.SimpleMatchingRuleBrowse"
+        focusComponent="simpleMatchingRulesTable"
+        lookupComponent="simpleMatchingRulesTable"
+        messagesPack="com.company.ldap.web.simplematchingrule">
+    <dsContext>
+        <groupDatasource id="simpleMatchingRulesDs"
+                         class="com.company.ldap.entity.SimpleMatchingRule"
+                         view="_local">
+            <query>
+                <![CDATA[select e from ldap$SimpleMatchingRule e]]>
+            </query>
+        </groupDatasource>
+    </dsContext>
+    <dialogMode height="600"
+                width="800"/>
+    <layout expand="simpleMatchingRulesTable"
+            spacing="true">
+        <filter id="filter"
+                applyTo="simpleMatchingRulesTable"
+                datasource="simpleMatchingRulesDs">
+            <properties include=".*"/>
+        </filter>
+        <groupTable id="simpleMatchingRulesTable"
+                    width="100%">
+            <actions>
+                <action id="create"/>
+                <action id="edit"/>
+                <action id="remove"/>
+            </actions>
+            <columns>
+                <column id="isTerminalRule"/>
+                <column id="isOverrideExistingRoles"/>
+                <column id="isOverrideExistingAccessGroup"/>
+                <column id="isDisabled"/>
+                <column id="ldapCondition"/>
+            </columns>
+            <rows datasource="simpleMatchingRulesDs"/>
+            <rowsCount/>
+            <buttonsPanel id="buttonsPanel"
+                          alwaysVisible="true">
+                <button id="createBtn"
+                        action="simpleMatchingRulesTable.create"/>
+                <button id="editBtn"
+                        action="simpleMatchingRulesTable.edit"/>
+                <button id="removeBtn"
+                        action="simpleMatchingRulesTable.remove"/>
+            </buttonsPanel>
+        </groupTable>
+    </layout>
+</window>

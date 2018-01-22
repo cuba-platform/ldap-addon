@@ -15,6 +15,6 @@ public class FixedMatchingRuleChain extends MatchingRuleChain {
 
     @Override
     public boolean checkRule(MatchingRule matchingRule, ApplyMatchingRuleContext applyMatchingRuleContext) {
-        return false;
+        return true;//FIXED matching rule is always latest rule in chain and it always return true
     }
 }

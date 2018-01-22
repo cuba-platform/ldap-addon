@@ -39,7 +39,7 @@ public class LdapTestContainer extends TestContainer {
             contextXmlFile = new File("web/META-INF/context.xml");
         }
         if (!contextXmlFile.exists()) {
-            throw new RuntimeException("Cannot find 'context.xml' file to read database connection properties. " +
+            throw new RuntimeException("Cannot synchronizeUser 'context.xml' file to read database connection properties. " +
                     "You can set them explicitly in this method.");
         }
         Document contextXmlDoc = Dom4j.readDocument(contextXmlFile);

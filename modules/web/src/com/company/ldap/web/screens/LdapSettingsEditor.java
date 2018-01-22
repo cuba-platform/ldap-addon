@@ -2,7 +2,7 @@ package com.company.ldap.web.screens;
 
 import com.company.ldap.config.LdapConfig;
 import com.company.ldap.service.LdapConnectionTesterService;
-import com.company.ldap.service.UserService;
+import com.company.ldap.service.UserSynchronizationService;
 import com.haulmont.cuba.gui.components.AbstractWindow;
 import com.haulmont.cuba.gui.components.TextArea;
 import com.haulmont.cuba.gui.components.TextField;
@@ -51,9 +51,6 @@ public class LdapSettingsEditor extends AbstractWindow {
     private TextField userBaseField;
 
     @Inject
-    private UserService userService;
-
-    @Inject
     private LdapConnectionTesterService ldapConnectionTester;
 
     @Override
@@ -82,7 +79,6 @@ public class LdapSettingsEditor extends AbstractWindow {
         ldapConfig.setContextSourceUserName(contextSourceUserName == null ? StringUtils.EMPTY : contextSourceUserName);
         ldapConfig.setContextSourcePassword(contextSourcePassword == null ? StringUtils.EMPTY : contextSourcePassword);
 
-        userService.find("");
     }
 
     public void onTestConnectionClick() {

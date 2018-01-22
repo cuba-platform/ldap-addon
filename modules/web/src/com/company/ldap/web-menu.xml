@@ -3,5 +3,7 @@
     <menu id="application-ldap"
           insertBefore="administration">
         <item screen="ldap$settings"/>
+        <item screen="ldap$FixedMatchingRule.browse"/>
+        <item screen="ldap$SimpleMatchingRule.browse"/>
     </menu>
 </menu-config>

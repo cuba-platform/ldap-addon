@@ -10,7 +10,7 @@ import com.haulmont.cuba.core.config.defaults.DefaultString;
 /**
  * Created by amarin on 12/4/2017.
  */
-@Source(type = SourceType.APP)
+@Source(type = SourceType.DATABASE)
 public interface LdapConfig extends Config {
 
     @Property("ldap.loginAttribute")
@@ -34,12 +34,16 @@ public interface LdapConfig extends Config {
     String getMemberOfAttribute();
 
     @Property("ldap.accessGroupAttribute")
-    @DefaultString("")
+    @DefaultString("uid")
     String getAccessGroupAttribute();
 
     @Property("ldap.inactiveUserAttribute")
-    @DefaultString("")
+    @DefaultString("accountExpires")
     String getInactiveUserAttribute();
+
+    @Property("ldap.userPasswordAttribute")
+    @DefaultString("userPassword")
+    String getUserPasswordAttribute();
 
     @Property("ldap.userBase")
     @DefaultString("ou=people")
@@ -77,6 +81,7 @@ public interface LdapConfig extends Config {
     void setMemberOfAttribute(String memberOf);
     void setAccessGroupAttribute(String accessGroupAttribute);
     void setInactiveUserAttribute(String inactiveUserAttribute);
+    void setUserPasswordAttribute(String userPasswordAttribute);
     void setUserBase(String userBase);
 
     void setUseContextSourcePooling(boolean useContextSourcePooling);

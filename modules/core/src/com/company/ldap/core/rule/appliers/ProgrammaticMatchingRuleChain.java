@@ -1,6 +1,7 @@
 package com.company.ldap.core.rule.appliers;
 
 import com.company.ldap.core.rule.ApplyMatchingRuleContext;
+import com.company.ldap.core.rule.programmatic.ProgrammaticMatchingRule;
 import com.company.ldap.entity.MatchingRule;
 import com.company.ldap.entity.MatchingRuleType;
 import com.haulmont.cuba.core.global.AppBeans;
@@ -14,6 +15,7 @@ public class ProgrammaticMatchingRuleChain extends MatchingRuleChain {
 
     @Override
     boolean checkRule(MatchingRule matchingRule, ApplyMatchingRuleContext applyMatchingRuleContext) {
-        return false;
+        ProgrammaticMatchingRule programmaticMatchingRule = (ProgrammaticMatchingRule) matchingRule;
+        return programmaticMatchingRule.checkProgrammaticMatchingRule(applyMatchingRuleContext);
     }
 }

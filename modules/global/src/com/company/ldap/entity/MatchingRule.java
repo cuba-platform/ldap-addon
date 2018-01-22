@@ -13,11 +13,11 @@ public interface MatchingRule {
 
     List<Role> getRoles();
 
-    Boolean isTerminalRule();
+    Boolean getIsTerminalRule();
 
-    Boolean isOverrideExistingRoles();
+    Boolean getIsOverrideExistingRoles();
 
-    Boolean isOverrideExistingAccessGroup();
+    Boolean getIsOverrideExistingAccessGroup();
 
-    Boolean isDisabled();
+    Boolean getIsDisabled();
 }

@@ -6,6 +6,7 @@ import com.haulmont.cuba.security.entity.Group;
 import com.haulmont.cuba.security.entity.Role;
 import com.haulmont.cuba.core.entity.StandardEntity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
@@ -27,7 +28,7 @@ public abstract class AbstractMatchingRule extends StandardEntity implements Mat
             joinColumns = @JoinColumn(name = "MATCHING_RULE_ID"),
             inverseJoinColumns = @JoinColumn(name = "ROLE_ID"))
     @ManyToMany
-    private List<Role> roles;
+    private List<Role> roles = new ArrayList<>();
 
     @Column(name = "IS_TERMINAL_RULE")
     private Boolean isTerminalRule = false;
@@ -72,35 +73,39 @@ public abstract class AbstractMatchingRule extends StandardEntity implements Mat
         this.roles = roles;
     }
 
-    public Boolean isTerminalRule() {
+    @Override
+    public Boolean getIsTerminalRule() {
         return isTerminalRule;
     }
 
-    public void setTerminalRule(Boolean terminalRule) {
+    public void setIsTerminalRule(Boolean terminalRule) {
         isTerminalRule = terminalRule;
     }
 
-    public Boolean isOverrideExistingRoles() {
+    @Override
+    public Boolean getIsOverrideExistingRoles() {
         return isOverrideExistingRoles;
     }
 
-    public void setOverrideExistingRoles(Boolean overrideExistingRoles) {
+    public void setIsOverrideExistingRoles(Boolean overrideExistingRoles) {
         isOverrideExistingRoles = overrideExistingRoles;
     }
 
-    public Boolean isOverrideExistingAccessGroup() {
+    @Override
+    public Boolean getIsOverrideExistingAccessGroup() {
         return isOverrideExistingAccessGroup;
     }
 
-    public void setOverrideExistingAccessGroup(Boolean overrideExistingAccessGroup) {
+    public void setIsOverrideExistingAccessGroup(Boolean overrideExistingAccessGroup) {
         isOverrideExistingAccessGroup = overrideExistingAccessGroup;
     }
 
-    public Boolean isDisabled() {
+    @Override
+    public Boolean getIsDisabled() {
         return isDisabled;
     }
 
-    public void setDisabled(Boolean disabled) {
+    public void setIsDisabled(Boolean disabled) {
         isDisabled = disabled;
     }
 }

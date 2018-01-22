@@ -2,7 +2,6 @@ package com.company.ldap.core.utils;
 
 import com.company.ldap.config.LdapConfig;
 import com.company.ldap.core.dto.LdapUser;
-import com.haulmont.cuba.core.global.AppBeans;
 import org.springframework.ldap.core.DirContextAdapter;
 
 import java.util.Arrays;
@@ -10,17 +9,36 @@ import java.util.Arrays;
 
 public class LdapUserMapperUtils {
 
-    public static LdapUser mapLdapUser(DirContextAdapter context) {
+    public static LdapUser mapLdapUser(DirContextAdapter context, LdapConfig ldapConfig) {
         LdapUser ldapUser = new LdapUser();
-        LdapConfig ldapConfig = AppBeans.get(LdapConfig.class);
         ldapUser.setLogin(context.getStringAttribute(ldapConfig.getLoginAttribute()));
         ldapUser.setCn(context.getStringAttribute(ldapConfig.getCnAttribute()));
         ldapUser.setSn(context.getStringAttribute(ldapConfig.getSnAttribute()));
         ldapUser.setEmail(context.getStringAttribute(ldapConfig.getEmailAttribute()));
         ldapUser.setMemberOf(Arrays.asList(context.getStringAttributes(ldapConfig.getMemberOfAttribute())));
         ldapUser.setAccessGroups(Arrays.asList(context.getStringAttributes(ldapConfig.getAccessGroupAttribute())));
-        ldapUser.setDisabled(((Boolean) context.getObjectAttribute(ldapConfig.getInactiveUserAttribute())));
+        ldapUser.setDisabled(mapDisabledProperty(context.getObjectAttribute(ldapConfig.getInactiveUserAttribute())));
         return ldapUser;
+    }
+
+    private static Boolean mapDisabledProperty(Object disabled) {
+        if (disabled == null) {
+            return Boolean.FALSE;
+        }
+        if (disabled instanceof Boolean) {
+            return (Boolean) disabled;
+        }
+        if (disabled instanceof String) {
+            String stringDisabled = (String) disabled;
+            if ("0".equalsIgnoreCase(stringDisabled) || "false".equalsIgnoreCase(stringDisabled)) {
+                return Boolean.FALSE;
+            }
+            if ("1".equalsIgnoreCase(stringDisabled) || "true".equalsIgnoreCase(stringDisabled)) {
+                return Boolean.TRUE;
+            }
+        }
+        throw new RuntimeException("Can't map idDisabled attribute from ldap. isDisabled class: " + disabled.getClass().getName());
+
     }
 
 

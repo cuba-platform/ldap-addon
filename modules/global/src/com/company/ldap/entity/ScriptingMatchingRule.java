@@ -1,9 +1,11 @@
 package com.company.ldap.entity;
 
+import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.Column;
 import javax.persistence.Lob;
 
+@DiscriminatorValue("SCRIPTING")
 @Entity(name = "ldap$ScriptingMatchingRule")
 public class ScriptingMatchingRule extends AbstractMatchingRule {
     private static final long serialVersionUID = -5385890969244419336L;

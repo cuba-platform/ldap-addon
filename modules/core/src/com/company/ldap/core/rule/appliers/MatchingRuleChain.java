@@ -38,7 +38,7 @@ public abstract class MatchingRuleChain {
         for (MatchingRule matchingRule : matchingRules) {
             if (isMatchingRuleTypeSupported(matchingRule) && checkRule(matchingRule, applyMatchingRuleContext)) {
                 applyRuleToUser(matchingRule, cubaUser);
-                if (matchingRule.isTerminalRule()) {//if terminal rule was satisfied stop execution chain
+                if (matchingRule.getIsTerminalRule()) {//if terminal rule was satisfied stop execution chain
                     return;
                 }
             }
@@ -49,10 +49,10 @@ public abstract class MatchingRuleChain {
     }
 
     private void applyRuleToUser(MatchingRule matchingRule, User cubaUser) {
-        if (matchingRule.isOverrideExistingAccessGroup()) {
+        if (matchingRule.getIsOverrideExistingAccessGroup()) {
             cubaUser.setGroup(matchingRule.getAccessGroup());
         }
-        if (matchingRule.isOverrideExistingRoles()) {
+        if (matchingRule.getIsOverrideExistingRoles()) {
             cubaUser.getUserRoles().clear();
             cubaUser.setUserRoles(createUserRoles(matchingRule.getRoles(), cubaUser));
         } else {
@@ -69,8 +69,16 @@ public abstract class MatchingRuleChain {
             UserRole userRole = metadata.create(UserRole.class);
             userRole.setUser(user);
             userRole.setRole(role);
+            result.add(userRole);
         }
         return result;
     }
 
+    public MatchingRuleType getMatchingRuleType() {
+        return matchingRuleType;
+    }
+
+    public MatchingRuleChain getNext() {
+        return next;
+    }
 }

@@ -8,6 +8,7 @@ import com.company.ldap.core.utils.LdapConstants;
 import com.company.ldap.core.utils.LdapUserMapper;
 import com.company.ldap.core.utils.LdapUserValidator;
 import com.company.ldap.core.utils.LdapUserWrapperMapper;
+import com.haulmont.cuba.security.global.LoginException;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.ldap.core.LdapTemplate;
@@ -48,7 +49,7 @@ public class LdapUserDao {
                 .searchScope(SearchScope.SUBTREE)
                 .countLimit(2)
                 .filter(createUserBaseAndLoginFilter(login));
-        List<LdapUserWrapper> list = ldapTemplate.search(query, new LdapUserWrapperMapper());
+        List<LdapUserWrapper> list = ldapTemplate.search(query, new LdapUserWrapperMapper(ldapConfig));
         LdapUserWrapper ldapUserWrapper = ldapUserValidator.validateLdapUserResult(login, list);
         return new ApplyMatchingRuleContext(ldapUserWrapper.getLdapUser(), ldapUserWrapper.getLdapUserAttributes());
     }
@@ -58,9 +59,21 @@ public class LdapUserDao {
         LdapQuery query = LdapQueryBuilder.query()
                 .searchScope(SearchScope.SUBTREE)
                 .countLimit(2)
-                .filter(addUserBaseAndLoginFilter(login, new HardcodedFilter(LdapEncoder.nameEncode(filter))));
-        List<LdapUser> list = ldapTemplate.search(query, new LdapUserMapper());
+                .filter(addUserBaseAndLoginFilter(login, new HardcodedFilter(filter)));
+        List<LdapUser> list = ldapTemplate.search(query, new LdapUserMapper(ldapConfig));
         return ldapUserValidator.validateLdapUserResult(login, list);
+    }
+
+    public void authenticateLdapUser(String login, String password) throws LoginException {
+        LdapQuery query = LdapQueryBuilder.query()
+                .searchScope(SearchScope.SUBTREE)
+                .countLimit(2)
+                .filter(createUserBaseAndLoginFilter(login));
+        try {
+            ldapTemplate.authenticate(query, password);
+        } catch (Exception e) {
+            throw new LoginException("User " + login + " with provided password absent in LDAP");
+        }
     }
 
 
@@ -72,7 +85,7 @@ public class LdapUserDao {
         }
         AndFilter andFilter = new AndFilter();
         andFilter.and(ef);
-        andFilter.and(new HardcodedFilter(LdapEncoder.nameEncode(ldapConfig.getUserBase())));
+        andFilter.and(new HardcodedFilter("(" + ldapConfig.getUserBase() + ")"));
 
         return andFilter;
     }
@@ -81,10 +94,10 @@ public class LdapUserDao {
         Filter resultFilter = null;
         Filter ef = new EqualsFilter(ldapConfig.getLoginAttribute(), login);
         resultFilter = ef;
-        if (StringUtils.isEmpty(ldapConfig.getUserBase())) {
+        if (StringUtils.isNotEmpty(ldapConfig.getUserBase())) {
             AndFilter andFilter = new AndFilter();
             andFilter.and(ef);
-            andFilter.and(new HardcodedFilter(LdapEncoder.nameEncode(ldapConfig.getUserBase())));
+            andFilter.and(new HardcodedFilter("(" + ldapConfig.getUserBase() + ")"));
             resultFilter = andFilter;
         }
         AndFilter andFilter = new AndFilter();

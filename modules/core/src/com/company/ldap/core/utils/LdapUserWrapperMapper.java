@@ -1,5 +1,6 @@
 package com.company.ldap.core.utils;
 
+import com.company.ldap.config.LdapConfig;
 import com.company.ldap.core.dto.LdapUser;
 import com.company.ldap.core.dto.LdapUserWrapper;
 import org.springframework.ldap.core.ContextMapper;
@@ -9,10 +10,16 @@ import javax.naming.directory.Attributes;
 
 public class LdapUserWrapperMapper implements ContextMapper<LdapUserWrapper> {
 
+    private final LdapConfig ldapConfig;
+
+    public LdapUserWrapperMapper(LdapConfig ldapConfig) {
+        this.ldapConfig = ldapConfig;
+    }
+
     @Override
     public LdapUserWrapper mapFromContext(Object ctx) {
         DirContextAdapter context = (DirContextAdapter) ctx;
-        LdapUser ldapUser = LdapUserMapperUtils.mapLdapUser(context);
+        LdapUser ldapUser = LdapUserMapperUtils.mapLdapUser(context, ldapConfig);
         Attributes attributes = context.getAttributes();
         return new LdapUserWrapper(ldapUser, attributes);
     }

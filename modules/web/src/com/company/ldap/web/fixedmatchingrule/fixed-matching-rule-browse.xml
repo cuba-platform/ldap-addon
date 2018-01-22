@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://schemas.haulmont.com/cuba/window.xsd"
+        caption="msg://browseCaption"
+        class="com.company.ldap.web.fixedmatchingrule.FixedMatchingRuleBrowse"
+        focusComponent="fixedMatchingRulesTable"
+        lookupComponent="fixedMatchingRulesTable"
+        messagesPack="com.company.ldap.web.fixedmatchingrule">
+    <dsContext>
+        <groupDatasource id="fixedMatchingRulesDs"
+                         class="com.company.ldap.entity.FixedMatchingRule"
+                         view="_local">
+            <query>
+                <![CDATA[select e from ldap$FixedMatchingRule e]]>
+            </query>
+        </groupDatasource>
+    </dsContext>
+    <dialogMode height="600"
+                width="800"/>
+    <layout expand="fixedMatchingRulesTable"
+            spacing="true">
+        <filter id="filter"
+                applyTo="fixedMatchingRulesTable"
+                datasource="fixedMatchingRulesDs">
+            <properties include=".*"/>
+        </filter>
+        <groupTable id="fixedMatchingRulesTable"
+                    width="100%">
+            <actions>
+                <action id="create"/>
+                <action id="edit"/>
+                <action id="remove"/>
+            </actions>
+            <columns>
+                <column id="isTerminalRule"/>
+                <column id="isOverrideExistingRoles"/>
+                <column id="isOverrideExistingAccessGroup"/>
+                <column id="isDisabled"/>
+            </columns>
+            <rows datasource="fixedMatchingRulesDs"/>
+            <rowsCount/>
+            <buttonsPanel id="buttonsPanel"
+                          alwaysVisible="true">
+                <button id="createBtn"
+                        action="fixedMatchingRulesTable.create"/>
+                <button id="editBtn"
+                        action="fixedMatchingRulesTable.edit"/>
+                <button id="removeBtn"
+                        action="fixedMatchingRulesTable.remove"/>
+            </buttonsPanel>
+        </groupTable>
+    </layout>
+</window>
