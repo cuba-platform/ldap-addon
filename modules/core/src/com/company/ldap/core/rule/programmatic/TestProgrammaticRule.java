@@ -53,4 +53,9 @@ public class TestProgrammaticRule implements ProgrammaticMatchingRule {
     public Boolean getIsDisabled() {
         return null;
     }
+
+    @Override
+    public String getProgrammaticRuleName() {
+        return "TEST";
+    }
 }

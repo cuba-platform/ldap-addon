@@ -5,5 +5,7 @@
         <item screen="ldap$settings"/>
         <item screen="ldap$FixedMatchingRule.browse"/>
         <item screen="ldap$SimpleMatchingRule.browse"/>
+        <item screen="matchingRuleScreen"/>
+        <item screen="ldap$AbstractMatchingRule.browse"/>
     </menu>
 </menu-config>

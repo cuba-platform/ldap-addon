@@ -11,4 +11,8 @@
             template="com/company/ldap/web/simplematchingrule/simple-matching-rule-browse.xml"/>
     <screen id="ldap$SimpleMatchingRule.edit"
             template="com/company/ldap/web/simplematchingrule/simple-matching-rule-edit.xml"/>
+    <screen id="matchingRuleScreen"
+            template="com/company/ldap/web/screens/matchingRuleScreen.xml"/>
+    <screen id="ldap$AbstractMatchingRule.browse"
+            template="com/company/ldap/web/abstractmatchingrule/abstract-matching-rule-browse.xml"/>
 </screen-config>

@@ -9,6 +9,11 @@ import javax.persistence.Lob;
 public class SimpleMatchingRule extends AbstractMatchingRule {
     private static final long serialVersionUID = -2383286286785487816L;
 
+    public SimpleMatchingRule() {
+        super();
+        setRuleType(MatchingRuleType.SIMPLE);
+    }
+
     @Lob
     @Column(name = "STRING_CONDITION")
     private String ldapCondition;

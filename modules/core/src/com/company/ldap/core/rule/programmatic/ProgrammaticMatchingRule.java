@@ -11,4 +11,6 @@ public interface ProgrammaticMatchingRule extends MatchingRule {
     default MatchingRuleType getRuleType() {
         return MatchingRuleType.PROGRAMMATIC;
     }
+
+    String getProgrammaticRuleName();
 }

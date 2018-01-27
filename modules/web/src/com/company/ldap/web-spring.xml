@@ -15,6 +15,7 @@
             <map>
                 <entry key="ldap_UserSynchronizationService" value="com.company.ldap.service.UserSynchronizationService"/>
                 <entry key="ldap_LdapConnectionTesterService" value="com.company.ldap.service.LdapConnectionTesterService"/>
+                <entry key="ldap_MatchingRuleService" value="com.company.ldap.service.MatchingRuleService"/>
             </map>
         </property>
     </bean>

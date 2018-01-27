@@ -8,4 +8,8 @@ import javax.persistence.DiscriminatorValue;
 public class FixedMatchingRule extends AbstractMatchingRule {
     private static final long serialVersionUID = 3273589414637071323L;
 
+    public FixedMatchingRule() {
+        super();
+        setRuleType(MatchingRuleType.FIXED);
+    }
 }

@@ -10,6 +10,11 @@ import javax.persistence.Lob;
 public class ScriptingMatchingRule extends AbstractMatchingRule {
     private static final long serialVersionUID = -5385890969244419336L;
 
+    public ScriptingMatchingRule() {
+        super();
+        setRuleType(MatchingRuleType.SCRIPTING);
+    }
+
     @Lob
     @Column(name = "STRING_CONDITION")
     private String scriptingCondition;
