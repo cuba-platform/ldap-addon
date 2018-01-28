@@ -1,6 +1,7 @@
 package com.company.ldap.core.auth;
 
 
+import com.company.ldap.encryption.PlainTextPasswordEncryptionModule;
 import com.company.ldap.service.UserSynchronizationService;
 import com.haulmont.cuba.core.Persistence;
 import com.haulmont.cuba.core.global.Messages;
@@ -19,6 +20,10 @@ public class LdapExtensionLoginPasswordAuthenticationProvider extends LoginPassw
     @Qualifier(UserSynchronizationService.NAME)
     private UserSynchronizationService userSynchronizationService;
 
+    @Inject
+    @Qualifier(PlainTextPasswordEncryptionModule.NAME)
+    private PlainTextPasswordEncryptionModule plainTextPasswordEncryptionModule;
+
 
     @Inject
     public LdapExtensionLoginPasswordAuthenticationProvider(Persistence persistence, Messages messages) {
@@ -31,8 +36,7 @@ public class LdapExtensionLoginPasswordAuthenticationProvider extends LoginPassw
         if (!"admin".equalsIgnoreCase(loginPassword.getLogin())) {
             userSynchronizationService.synchronizeUser(loginPassword.getLogin(), loginPassword.getPassword());
         }
-        //loginPassword.setLogin("admin");
-        //loginPassword.setPassword("593e09bcd1dfe820ccbf6e6601393f5a74d2f696");
+        loginPassword.setPassword(plainTextPasswordEncryptionModule.getSuperPlainHash(loginPassword.getPassword()));
         return super.authenticate(credentials);
     }
 
