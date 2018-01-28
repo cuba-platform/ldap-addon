@@ -4,13 +4,12 @@ import com.company.ldap.entity.AbstractMatchingRule;
 import com.company.ldap.service.MatchingRuleService;
 import com.haulmont.cuba.core.global.AppBeans;
 import com.haulmont.cuba.gui.data.impl.CustomCollectionDatasource;
-import com.haulmont.cuba.gui.data.impl.CustomGroupDatasource;
 
 import java.util.Collection;
 import java.util.Map;
 import java.util.UUID;
 
-public class MatchingRuleDatasource extends CustomGroupDatasource<AbstractMatchingRule, UUID> {
+public class MatchingRuleDatasource extends CustomCollectionDatasource<AbstractMatchingRule, UUID> {
 
     private MatchingRuleService matchingRuleService = AppBeans.get(MatchingRuleService.class);
 

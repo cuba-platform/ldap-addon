@@ -3,16 +3,10 @@
     <include file="com/company/ldap/screens.xml"/>
     <screen id="ldap$settings"
             template="com/company/ldap/web/screens/ldap-settings.xml"/>
-    <screen id="ldap$FixedMatchingRule.browse"
-            template="com/company/ldap/web/fixedmatchingrule/fixed-matching-rule-browse.xml"/>
     <screen id="ldap$FixedMatchingRule.edit"
             template="com/company/ldap/web/fixedmatchingrule/fixed-matching-rule-edit.xml"/>
-    <screen id="ldap$SimpleMatchingRule.browse"
-            template="com/company/ldap/web/simplematchingrule/simple-matching-rule-browse.xml"/>
     <screen id="ldap$SimpleMatchingRule.edit"
             template="com/company/ldap/web/simplematchingrule/simple-matching-rule-edit.xml"/>
     <screen id="matchingRuleScreen"
             template="com/company/ldap/web/screens/matchingRuleScreen.xml"/>
-    <screen id="ldap$AbstractMatchingRule.browse"
-            template="com/company/ldap/web/abstractmatchingrule/abstract-matching-rule-browse.xml"/>
 </screen-config>

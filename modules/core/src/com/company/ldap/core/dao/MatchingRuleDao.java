@@ -3,7 +3,9 @@ package com.company.ldap.core.dao;
 import com.company.ldap.core.rule.programmatic.ProgrammaticMatchingRule;
 import com.company.ldap.dto.ProgrammaticMatchingRuleDto;
 import com.company.ldap.entity.AbstractMatchingRule;
+import com.company.ldap.entity.FixedMatchingRule;
 import com.company.ldap.entity.MatchingRule;
+import com.company.ldap.entity.MatchingRuleType;
 import com.haulmont.chile.core.annotations.MetaClass;
 import com.haulmont.cuba.core.Persistence;
 import com.haulmont.cuba.core.Query;
@@ -19,6 +21,7 @@ import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import static com.company.ldap.core.dao.MatchingRuleDao.NAME;
 
@@ -31,7 +34,7 @@ public class MatchingRuleDao {
     private Persistence persistence;
 
     @Inject
-    Metadata metadata;
+    private Metadata metadata;
 
     @Transactional(readOnly = true)
     public List<AbstractMatchingRule> getDbStoredMatchingRules() {
@@ -89,17 +92,38 @@ public class MatchingRuleDao {
             programmaticMatchingRuleDto.setProgrammaticRuleName(pmr.getProgrammaticRuleName());
             programmaticMatchingRuleDto.setRuleType(pmr.getRuleType());
             programmaticMatchingRuleDto.setAccessGroup(programmaticMatchingRule.getAccessGroup());
-            programmaticMatchingRuleDto.setRoles(programmaticMatchingRule.getRoles());
-            programmaticMatchingRuleDto.setIsDisabled(programmaticMatchingRule.getIsDisabled());
-            programmaticMatchingRuleDto.setIsOverrideExistingAccessGroup(programmaticMatchingRule.getIsOverrideExistingAccessGroup());
-            programmaticMatchingRuleDto.setIsOverrideExistingRoles(programmaticMatchingRule.getIsOverrideExistingRoles());
-            programmaticMatchingRuleDto.setIsTerminalRule(programmaticMatchingRule.getIsTerminalRule());
+            programmaticMatchingRuleDto.setRoles(programmaticMatchingRule.getRoles() == null ? new ArrayList<>() : programmaticMatchingRule.getRoles());
+            programmaticMatchingRuleDto.setIsDisabled(programmaticMatchingRule.getIsDisabled() == null ? false : programmaticMatchingRule.getIsDisabled());
+            programmaticMatchingRuleDto.setIsOverrideExistingAccessGroup(programmaticMatchingRule.getIsOverrideExistingAccessGroup() == null ? false : programmaticMatchingRule.getIsOverrideExistingAccessGroup());
+            programmaticMatchingRuleDto.setIsOverrideExistingRoles(programmaticMatchingRule.getIsOverrideExistingRoles() == null ? false : programmaticMatchingRule.getIsOverrideExistingRoles());
+            programmaticMatchingRuleDto.setIsTerminalRule(programmaticMatchingRule.getIsTerminalRule() == null ? false : programmaticMatchingRule.getIsTerminalRule());
             programmaticDto.add(programmaticMatchingRuleDto);
         }
 
         result.addAll(dbMatchingRules);
         result.addAll(programmaticDto);
         return result;
+    }
+
+    @Transactional(readOnly = true)
+    public FixedMatchingRule getFixedMatchingRule() {
+        TypedQuery<FixedMatchingRule> query = persistence.getEntityManager().createQuery("select mr from ldap$FixedMatchingRule mr " +
+                "left join fetch mr.roles roles " +
+                "left join fetch mr.accessGroup group", FixedMatchingRule.class);
+        List<FixedMatchingRule> list = query.getResultList();
+        if (list.size() > 1) {
+            throw new RuntimeException("Only one fixed rule can present");//TODO: switch to localized message
+        }
+        FixedMatchingRule result = list.size() == 0 ? null : list.get(0);
+        return result;
+    }
+
+    @Transactional
+    public void updateDisabledStateForMatchingRule(UUID id, Boolean value) {
+        Query query = persistence.getEntityManager().createQuery("update ldap$AbstractMatchingRule mr set mr.isDisabled = :disabled where mr.id = :id");
+        query.setParameter("id", id);
+        query.setParameter("disabled", value);
+        query.executeUpdate();
     }
 
 

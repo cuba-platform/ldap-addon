@@ -20,15 +20,20 @@
         <fieldGroup id="fieldGroup"
                     datasource="fixedMatchingRuleDs">
             <column width="250px">
-                <field property="accessGroup"/>
-                <field property="isTerminalRule"/>
-                <field property="isOverrideExistingRoles"/>
-                <field property="isOverrideExistingAccessGroup"/>
-                <field property="isDisabled"/>
+                <field caption="msg://accessGroupFieldCaption"
+                       property="accessGroup"/>
+                <field caption="msg://isTerminalRuleFieldCaption"
+                       property="isTerminalRule"/>
+                <field caption="msg://isOverrideExistingRolesFieldCaption"
+                       property="isOverrideExistingRoles"/>
+                <field caption="msg://isOverrideExistingAccessGroupFieldCaption"
+                       property="isOverrideExistingAccessGroup"/>
+                <field caption="msg://isDisabledFieldCaption"
+                       property="isDisabled"/>
             </column>
         </fieldGroup>
         <groupBox id="rolesBox"
-                  caption="msg://com.company.ldap.entity/FixedMatchingRule.roles">
+                  caption="msg://rolesTableCaption">
             <table id="rolesTable"
                    height="200px"
                    width="100%">
