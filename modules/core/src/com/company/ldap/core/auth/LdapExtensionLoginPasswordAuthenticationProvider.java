@@ -14,6 +14,9 @@ import org.springframework.beans.factory.annotation.Qualifier;
 
 import javax.inject.Inject;
 
+//TODO: подумать как можно лучше сделать
+//1)переопределять LoginWindow->новый тип Credential->новый провайдер
+//2)использовать CubaAuthProvider, это на мой взгляд проще, но какие могут быть минусы???
 public class LdapExtensionLoginPasswordAuthenticationProvider extends LoginPasswordAuthenticationProvider {
 
     @Inject
