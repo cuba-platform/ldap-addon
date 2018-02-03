@@ -20,8 +20,4 @@
 
     <ldap:ldap-template id="ldap_ldapTemplate" context-source-ref="ldap_ldapContextSource"/>
 
-    <bean id="cuba_LoginPasswordAuthenticationProvider"
-          class="com.company.ldap.core.auth.LdapExtensionLoginPasswordAuthenticationProvider"/>
-
-
 </beans>

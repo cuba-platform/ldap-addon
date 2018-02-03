@@ -4,6 +4,7 @@ import com.haulmont.cuba.core.EntityManager;
 import com.haulmont.cuba.core.Persistence;
 import com.haulmont.cuba.core.TypedQuery;
 import com.haulmont.cuba.security.entity.User;
+import com.haulmont.cuba.security.entity.UserRole;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,11 +41,11 @@ public class CubaUserDao {
     }
 
     @Transactional
-    public void saveCubaUser(User cubaUser, boolean isNew) {
+    public void saveCubaUser(User cubaUser, boolean isNew, List<UserRole> originalUserRoles) {
         EntityManager entityManager = persistence.getEntityManager();
         User mergedUser = isNew ? cubaUser : entityManager.merge(cubaUser);
         mergedUser.getUserRoles().forEach(entityManager::persist);
+        originalUserRoles.stream().filter(ur -> !mergedUser.getUserRoles().contains(ur)).forEach(entityManager::remove);
         entityManager.persist(mergedUser);
-
     }
 }

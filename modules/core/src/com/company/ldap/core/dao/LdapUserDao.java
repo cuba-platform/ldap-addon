@@ -6,8 +6,8 @@ import com.company.ldap.core.dto.LdapUserWrapper;
 import com.company.ldap.core.rule.ApplyMatchingRuleContext;
 import com.company.ldap.core.utils.LdapConstants;
 import com.company.ldap.core.utils.LdapUserMapper;
-import com.company.ldap.core.utils.LdapUserValidator;
 import com.company.ldap.core.utils.LdapUserWrapperMapper;
+import com.haulmont.cuba.core.global.Messages;
 import com.haulmont.cuba.security.global.LoginException;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -19,11 +19,12 @@ import org.springframework.ldap.filter.HardcodedFilter;
 import org.springframework.ldap.query.LdapQuery;
 import org.springframework.ldap.query.LdapQueryBuilder;
 import org.springframework.ldap.query.SearchScope;
-import org.springframework.ldap.support.LdapEncoder;
+import org.springframework.ldap.support.LdapUtils;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 import java.util.List;
+import java.util.Locale;
 
 import static com.company.ldap.core.dao.LdapUserDao.NAME;
 
@@ -40,39 +41,34 @@ public class LdapUserDao {
     private LdapConfig ldapConfig;
 
     @Inject
-    @Qualifier(LdapUserValidator.NAME)
-    private LdapUserValidator ldapUserValidator;
+    private Messages messages;
 
+    //TODO: для POC метод вызывается только после успешнйо лдап аутентификации, поэтому пользователь будет всегда
     public ApplyMatchingRuleContext getLdapUserWrapper(String login) {
-        //TODO:timelimit
         LdapQuery query = LdapQueryBuilder.query()
                 .searchScope(SearchScope.SUBTREE)
-                .countLimit(2)
+                .timeLimit(10_000)
+                .countLimit(1)
                 .filter(createUserBaseAndLoginFilter(login));
-        List<LdapUserWrapper> list = ldapTemplate.search(query, new LdapUserWrapperMapper(ldapConfig));
-        LdapUserWrapper ldapUserWrapper = ldapUserValidator.validateLdapUserResult(login, list);
+        LdapUserWrapper ldapUserWrapper = ldapTemplate.search(query, new LdapUserWrapperMapper(ldapConfig)).get(0);
         return new ApplyMatchingRuleContext(ldapUserWrapper.getLdapUser(), ldapUserWrapper.getLdapUserAttributes());
     }
 
     public LdapUser findLdapUserByFilter(String filter, String login) {
-        //TODO:timelimit
         LdapQuery query = LdapQueryBuilder.query()
                 .searchScope(SearchScope.SUBTREE)
-                .countLimit(2)
+                .timeLimit(10_000)
+                .countLimit(1)
                 .filter(addUserBaseAndLoginFilter(login, new HardcodedFilter(filter)));
         List<LdapUser> list = ldapTemplate.search(query, new LdapUserMapper(ldapConfig));
-        return ldapUserValidator.validateLdapUserResult(login, list);
+        return (list == null || list.isEmpty()) ? null : list.get(0);
     }
 
-    public void authenticateLdapUser(String login, String password) throws LoginException {
-        LdapQuery query = LdapQueryBuilder.query()
-                .searchScope(SearchScope.SUBTREE)
-                .countLimit(2)
-                .filter(createUserBaseAndLoginFilter(login));
-        try {
-            ldapTemplate.authenticate(query, password);
-        } catch (Exception e) {
-            throw new LoginException("User " + login + " with provided password absent in LDAP");
+    public void authenticateLdapUser(String login, String password, Locale messagesLocale) throws LoginException {
+        if (!ldapTemplate.authenticate(LdapUtils.emptyLdapName(), createUserBaseAndLoginFilter(login).encode(), password)) {
+            throw new LoginException(
+                    messages.formatMessage(LdapUserDao.class, "LoginException.InvalidLoginOrPassword", messagesLocale, login)
+            );
         }
     }
 
