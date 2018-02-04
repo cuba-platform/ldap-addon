@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<views xmlns="http://schemas.haulmont.com/cuba/view.xsd">
+    <view class="com.haulmont.addon.ldap.entity.FixedMatchingRule"
+          extends="_local"
+          name="fixedMatchingRule-with-group-roles">
+        <property name="accessGroup"
+                  view="_minimal"/>
+        <property name="roles"
+                  view="_minimal"/>
+    </view>
+    <view class="com.haulmont.addon.ldap.entity.SimpleMatchingRule"
+          extends="_local"
+          name="simpleMatchingRule-view-with-group-roles">
+        <property name="accessGroup"
+                  view="_minimal"/>
+        <property name="roles"
+                  view="_minimal"/>
+    </view>
+</views>

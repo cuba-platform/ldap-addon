@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://schemas.haulmont.com/cuba/window.xsd"
+        caption="msg://matchingRuleScreenCaption"
+        class="com.haulmont.addon.ldap.web.screens.MatchingRuleScreen"
+        messagesPack="com.haulmont.addon.ldap.web.screens">
+    <dsContext>
+        <collectionDatasource id="abstractMatchingRulesDs"
+                              class="com.haulmont.addon.ldap.entity.AbstractMatchingRule"
+                              datasourceClass="com.haulmont.addon.ldap.web.screens.datasources.MatchingRuleDatasource"/>
+    </dsContext>
+    <dialogMode height="600"
+                width="800"/>
+    <layout>
+        <table id="matchingRuleTable"
+               editable="true"
+               height="750px"
+               width="100%">
+            <actions>
+                <action id="edit"/>
+                <action id="remove"/>
+            </actions>
+            <columns>
+                <column id="matchingRuleTableConditionColumn"
+                        caption="msg://matchingRuleTableConditionColumn"
+                        generator="generateMatchingRuleTableConditionColumnCell"/>
+                <column id="matchingRuleTableCubaColumn"
+                        caption="msg://matchingRuleTableCubaColumn"
+                        generator="generateMatchingRuleTableCubaColumnCell"/>
+                <column id="matchingRuleTableTypeColumn"
+                        caption="msg://matchingRuleTableTypeColumn"
+                        generator="generateMatchingRuleTableTypeColumnCell"/>
+                <column id="matchingRuleTableOptionsColumn"
+                        caption="msg://matchingRuleTableOptionsColumn"
+                        generator="generateMatchingRuleTableOptionsColumnCell"/>
+                <column id="matchingRuleTableStateColumn"
+                        caption="msg://matchingRuleTableStateColumn"
+                        generator="generateMatchingRuleTableStateColumnCell"/>
+            </columns>
+            <rows datasource="abstractMatchingRulesDs"/>
+            <buttonsPanel height="29px">
+                <button id="fixedRuleCreateButton"
+                        caption="msg://fixedRuleCreateButton"
+                        invoke="onFixedRuleCreateButtonClick"/>
+                <button id="simpleRuleCreateButton"
+                        caption="msg://simpleRuleCreateButton"
+                        invoke="onSimpleRuleCreateButtonClick"/>
+                <button id="ruleEditButton"
+                        action="matchingRuleTable.edit"
+                        caption="msg://ruleEditButton"/>
+                <button id="ruleRemoveButton"
+                        action="matchingRuleTable.remove"
+                        caption="msg://ruleRemoveButton"/>
+            </buttonsPanel>
+        </table>
+    </layout>
+</window>

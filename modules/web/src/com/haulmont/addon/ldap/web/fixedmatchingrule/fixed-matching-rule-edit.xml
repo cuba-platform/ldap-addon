@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://schemas.haulmont.com/cuba/window.xsd"
+        caption="msg://editorCaption"
+        class="com.haulmont.addon.ldap.web.fixedmatchingrule.FixedMatchingRuleEdit"
+        datasource="fixedMatchingRuleDs"
+        focusComponent="fieldGroup"
+        messagesPack="com.haulmont.addon.ldap.web.fixedmatchingrule">
+    <dsContext>
+        <datasource id="fixedMatchingRuleDs"
+                    class="com.haulmont.addon.ldap.entity.FixedMatchingRule"
+                    view="fixedMatchingRule-with-group-roles">
+            <collectionDatasource id="rolesDs"
+                                  property="roles"/>
+        </datasource>
+    </dsContext>
+    <dialogMode height="600"
+                width="800"/>
+    <layout expand="windowActions"
+            spacing="true">
+        <fieldGroup id="fieldGroup"
+                    datasource="fixedMatchingRuleDs">
+            <column width="250px">
+                <field caption="msg://accessGroupFieldCaption"
+                       property="accessGroup"/>
+                <field caption="msg://isTerminalRuleFieldCaption"
+                       property="isTerminalRule"/>
+                <field caption="msg://isOverrideExistingRolesFieldCaption"
+                       property="isOverrideExistingRoles"/>
+                <field caption="msg://isOverrideExistingAccessGroupFieldCaption"
+                       property="isOverrideExistingAccessGroup"/>
+                <field caption="msg://isDisabledFieldCaption"
+                       property="isDisabled"/>
+            </column>
+        </fieldGroup>
+        <groupBox id="rolesBox"
+                  caption="msg://rolesTableCaption">
+            <table id="rolesTable"
+                   height="200px"
+                   width="100%">
+                <actions>
+                    <action id="add"/>
+                    <action id="remove"/>
+                </actions>
+                <columns>
+                    <column id="locName"/>
+                    <column id="name"/>
+                </columns>
+                <rows datasource="rolesDs"/>
+                <buttonsPanel>
+                    <button action="rolesTable.add"/>
+                    <button action="rolesTable.remove"/>
+                </buttonsPanel>
+            </table>
+        </groupBox>
+        <frame id="windowActions"
+               screen="editWindowActions"/>
+    </layout>
+</window>

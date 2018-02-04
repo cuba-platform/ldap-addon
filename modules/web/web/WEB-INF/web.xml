@@ -11,7 +11,7 @@
     <!-- Application properties config files -->
     <context-param>
         <param-name>appPropertiesConfig</param-name>
-        <param-value>classpath:com/company/ldap/web-app.properties
+        <param-value>classpath:com/haulmont/addon/ldap/web-app.properties
             /WEB-INF/local.app.properties
             "file:${catalina.base}/conf/ldap/local.app.properties"</param-value>
     </context-param>

@@ -30,7 +30,7 @@ apply(plugin: 'cuba')
 
 cuba {
     artifact {
-        group = 'com.company.ldap'
+        group = 'com.haulmont.addon.ldap'
         version = '0.1'
         isSnapshot = true
     }
@@ -142,7 +142,7 @@ configure(guiModule) {
 
     task deployConf(type: Copy) {
         from file('src')
-        include "com/company/ldap/**"
+        include "com/haulmont/addon/ldap/**"
         into "$cuba.tomcat.dir/conf/ldap"
     }
 }
@@ -170,7 +170,7 @@ configure(webModule) {
 
     task deployConf(type: Copy) {
         from file('src')
-        include "com/company/ldap/**"
+        include "com/haulmont/addon/ldap/**"
         into "$cuba.tomcat.dir/conf/ldap"
     }
 
