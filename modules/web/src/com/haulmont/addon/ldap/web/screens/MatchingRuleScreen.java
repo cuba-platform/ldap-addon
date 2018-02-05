@@ -3,6 +3,7 @@ package com.haulmont.addon.ldap.web.screens;
 import com.haulmont.addon.ldap.dto.ProgrammaticMatchingRuleDto;
 import com.haulmont.addon.ldap.entity.*;
 import com.haulmont.addon.ldap.service.MatchingRuleService;
+import com.haulmont.addon.ldap.utils.MatchingRuleUtils;
 import com.haulmont.cuba.core.global.Metadata;
 import com.haulmont.cuba.gui.WindowManager;
 import com.haulmont.cuba.gui.components.*;
@@ -34,6 +35,9 @@ public class MatchingRuleScreen extends AbstractWindow {
 
     @Inject
     private MatchingRuleService matchingRuleService;
+
+    @Inject
+    private MatchingRuleUtils matchingRuleUtils;
 
 
     @Override
@@ -85,7 +89,7 @@ public class MatchingRuleScreen extends AbstractWindow {
 
         if (entity instanceof SimpleMatchingRule) {
             SimpleMatchingRule simpleMatchingRule = (SimpleMatchingRule) entity;
-            return new Table.PlainTextCell(simpleMatchingRule.getLdapCondition());
+            return new Table.PlainTextCell(matchingRuleUtils.getStringCondition(simpleMatchingRule.getConditions()));
         } else if ((entity instanceof ScriptingMatchingRule)) {
             ScriptingMatchingRule scriptingMatchingRule = (ScriptingMatchingRule) entity;
             return new Table.PlainTextCell(scriptingMatchingRule.getScriptingCondition());

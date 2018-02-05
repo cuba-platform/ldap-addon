@@ -7,5 +7,6 @@
         <class>com.haulmont.addon.ldap.entity.FixedMatchingRule</class>
         <class>com.haulmont.addon.ldap.entity.SimpleMatchingRule</class>
         <class>com.haulmont.addon.ldap.entity.ScriptingMatchingRule</class>
+        <class>com.haulmont.addon.ldap.entity.SimpleRuleCondition</class>
     </persistence-unit>
 </persistence>

@@ -9,4 +9,6 @@
             template="com/haulmont/addon/ldap/web/simplematchingrule/simple-matching-rule-edit.xml"/>
     <screen id="matchingRuleScreen"
             template="com/haulmont/addon/ldap/web/screens/matchingRuleScreen.xml"/>
+    <screen id="ldap$SimpleRuleCondition.edit"
+            template="com/haulmont/addon/ldap/web/simplerulecondition/simple-rule-condition-edit.xml"/>
 </screen-config>

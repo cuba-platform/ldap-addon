@@ -6,7 +6,8 @@
     <dsContext>
         <collectionDatasource id="abstractMatchingRulesDs"
                               class="com.haulmont.addon.ldap.entity.AbstractMatchingRule"
-                              datasourceClass="com.haulmont.addon.ldap.web.screens.datasources.MatchingRuleDatasource"/>
+                              datasourceClass="com.haulmont.addon.ldap.web.screens.datasources.MatchingRuleDatasource"
+                              view="_local"/>
     </dsContext>
     <dialogMode height="600"
                 width="800"/>

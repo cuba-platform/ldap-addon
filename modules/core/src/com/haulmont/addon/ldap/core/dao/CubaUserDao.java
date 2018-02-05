@@ -3,6 +3,7 @@ package com.haulmont.addon.ldap.core.dao;
 import com.haulmont.cuba.core.EntityManager;
 import com.haulmont.cuba.core.Persistence;
 import com.haulmont.cuba.core.TypedQuery;
+import com.haulmont.cuba.core.global.PersistenceHelper;
 import com.haulmont.cuba.security.entity.User;
 import com.haulmont.cuba.security.entity.UserRole;
 import org.springframework.stereotype.Service;
@@ -24,26 +25,23 @@ public class CubaUserDao {
 
     @Transactional(readOnly = true)
     public User getCubaUserByLogin(String login) {
-        TypedQuery<User> query = persistence.getEntityManager().createQuery("select cu from sec$User cu " +
-                "left join fetch cu.userRoles roles " +
-                "left join fetch cu.group group " +
-                "where cu.login = :login", User.class);
+        TypedQuery<User> query = persistence.getEntityManager().createQuery("select distinct cu from sec$User cu where cu.login = :login", User.class);
         query.setParameter("login", login);
+        query.setViewName("sec-user-view-with-group-roles");
         return query.getFirstResult();
     }
 
     @Transactional(readOnly = true)
     public List<User> getCubaUsers() {
-        TypedQuery<User> query = persistence.getEntityManager().createQuery("select cu from sec$User cu " +
-                "left join fetch cu.userRoles roles " +
-                "left join fetch cu.group group", User.class);
+        TypedQuery<User> query = persistence.getEntityManager().createQuery("select distinct cu from sec$User cu where cu.login = :login", User.class);
+        query.setViewName("sec-user-view-with-group-roles");
         return query.getResultList();
     }
 
     @Transactional
-    public void saveCubaUser(User cubaUser, boolean isNew, List<UserRole> originalUserRoles) {
+    public void saveCubaUser(User cubaUser, List<UserRole> originalUserRoles) {
         EntityManager entityManager = persistence.getEntityManager();
-        User mergedUser = isNew ? cubaUser : entityManager.merge(cubaUser);
+        User mergedUser = PersistenceHelper.isNew(cubaUser) ? cubaUser : entityManager.merge(cubaUser);
         mergedUser.getUserRoles().forEach(entityManager::persist);
         originalUserRoles.stream().filter(ur -> !mergedUser.getUserRoles().contains(ur)).forEach(entityManager::remove);
         entityManager.persist(mergedUser);

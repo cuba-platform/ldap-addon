@@ -11,6 +11,8 @@ public class LdapUser {
     private List<String> memberOf;
     private List<String> accessGroups;
     private Boolean isDisabled;
+    private String position;
+    private String language;
 
 
     public String getEmail() {
@@ -67,5 +69,21 @@ public class LdapUser {
 
     public void setDisabled(Boolean disabled) {
         isDisabled = disabled;
+    }
+
+    public String getPosition() {
+        return position;
+    }
+
+    public void setPosition(String position) {
+        this.position = position;
+    }
+
+    public String getLanguage() {
+        return language;
+    }
+
+    public void setLanguage(String language) {
+        this.language = language;
     }
 }

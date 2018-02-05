@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://schemas.haulmont.com/cuba/window.xsd"
+        caption="msg://editorCaption"
+        class="com.haulmont.addon.ldap.web.simplerulecondition.SimpleRuleConditionEdit"
+        datasource="simpleRuleConditionDs"
+        focusComponent="fieldGroup"
+        messagesPack="com.haulmont.addon.ldap.web.simplerulecondition">
+    <dsContext>
+        <datasource id="simpleRuleConditionDs"
+                    class="com.haulmont.addon.ldap.entity.SimpleRuleCondition"
+                    view="_local"/>
+    </dsContext>
+    <dialogMode height="600"
+                width="800"/>
+    <layout expand="windowActions"
+            spacing="true">
+        <fieldGroup id="fieldGroup"
+                    datasource="simpleRuleConditionDs">
+            <column width="250px">
+                <field property="attribute"/>
+                <field property="attributeValue"
+                       rows="5"/>
+            </column>
+        </fieldGroup>
+        <frame id="windowActions"
+               screen="editWindowActions"/>
+    </layout>
+</window>

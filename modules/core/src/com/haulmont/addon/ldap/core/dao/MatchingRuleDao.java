@@ -5,10 +5,12 @@ import com.haulmont.addon.ldap.dto.ProgrammaticMatchingRuleDto;
 import com.haulmont.addon.ldap.entity.AbstractMatchingRule;
 import com.haulmont.addon.ldap.entity.FixedMatchingRule;
 import com.haulmont.addon.ldap.entity.MatchingRule;
+import com.haulmont.addon.ldap.entity.SimpleMatchingRule;
 import com.haulmont.cuba.core.Persistence;
 import com.haulmont.cuba.core.Query;
 import com.haulmont.cuba.core.TypedQuery;
 import com.haulmont.cuba.core.global.AppBeans;
+import com.haulmont.cuba.core.global.Messages;
 import com.haulmont.cuba.core.global.Metadata;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,6 +34,9 @@ public class MatchingRuleDao {
 
     @Inject
     private Metadata metadata;
+
+    @Inject
+    private Messages messages;
 
     @Transactional(readOnly = true)
     public List<AbstractMatchingRule> getDbStoredMatchingRules() {
@@ -59,6 +64,7 @@ public class MatchingRuleDao {
                 "left join fetch mr.roles roles " +
                 "left join fetch mr.accessGroup group", AbstractMatchingRule.class);
         List<? extends MatchingRule> dbMatchingRules = query.getResultList();
+        initializeDbMatchingRules(dbMatchingRules);
         List<? extends MatchingRule> programmaticMatchingRules = getProgrammaticMatchingRules();
         result.addAll(dbMatchingRules);
         result.addAll(programmaticMatchingRules);
@@ -80,6 +86,7 @@ public class MatchingRuleDao {
                 "left join fetch mr.roles roles " +
                 "left join fetch mr.accessGroup group", AbstractMatchingRule.class);
         List<AbstractMatchingRule> dbMatchingRules = query.getResultList();
+        initializeDbMatchingRules(dbMatchingRules);
         List<? extends MatchingRule> programmaticMatchingRules = getProgrammaticMatchingRules();
         List<ProgrammaticMatchingRuleDto> programmaticDto = new ArrayList<>(programmaticMatchingRules.size());
 
@@ -109,7 +116,7 @@ public class MatchingRuleDao {
                 "left join fetch mr.accessGroup group", FixedMatchingRule.class);
         List<FixedMatchingRule> list = query.getResultList();
         if (list.size() > 1) {
-            throw new RuntimeException("Only one fixed rule can present");//TODO: switch to localized message
+            throw new RuntimeException(messages.formatMessage(MatchingRuleDao.class, "onlySingleDefaultRule"));
         }
         FixedMatchingRule result = list.size() == 0 ? null : list.get(0);
         return result;
@@ -121,6 +128,15 @@ public class MatchingRuleDao {
         query.setParameter("id", id);
         query.setParameter("disabled", value);
         query.executeUpdate();
+    }
+
+    private void initializeDbMatchingRules(List<? extends MatchingRule> rules) {
+        for (MatchingRule rule : rules) {
+            if (rule instanceof SimpleMatchingRule) {
+                SimpleMatchingRule simpleMatchingRule = (SimpleMatchingRule) rule;
+                simpleMatchingRule.getConditions().stream();//initialize conditions in session
+            }
+        }
     }
 
 

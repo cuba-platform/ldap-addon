@@ -48,7 +48,7 @@ public abstract class MatchingRuleChain {
     }
 
     private void applyRuleToUser(MatchingRule matchingRule, User cubaUser) {
-        if (matchingRule.getIsOverrideExistingAccessGroup()) {
+        if (matchingRule.getIsOverrideExistingAccessGroup() || cubaUser.getGroup() == null) {
             cubaUser.setGroup(matchingRule.getAccessGroup());
         }
         if (matchingRule.getIsOverrideExistingRoles()) {

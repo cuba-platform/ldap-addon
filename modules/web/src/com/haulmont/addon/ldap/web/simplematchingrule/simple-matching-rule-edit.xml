@@ -8,9 +8,11 @@
     <dsContext>
         <datasource id="simpleMatchingRuleDs"
                     class="com.haulmont.addon.ldap.entity.SimpleMatchingRule"
-                    view="simpleMatchingRule-view-with-group-roles">
+                    view="simpleMatchingRule-view-with-group-roles-conditions">
             <collectionDatasource id="rolesDs"
                                   property="roles"/>
+            <collectionDatasource id="conditionsDs"
+                                  property="conditions"/>
         </datasource>
     </dsContext>
     <dialogMode height="600"
@@ -30,10 +32,30 @@
                        property="isOverrideExistingAccessGroup"/>
                 <field caption="msg://isDisabledFieldCaption"
                        property="isDisabled"/>
-                <field property="ldapCondition"
-                       rows="5"/>
             </column>
         </fieldGroup>
+        <groupBox id="conditionsBox"
+                  caption="msg://conditionsTableCaption"
+                  spacing="true">
+            <table id="conditionsTable"
+                   height="250px"
+                   width="100%">
+                <actions>
+                    <action id="create"/>
+                    <action id="remove"/>
+                    <action id="edit"/>
+                </actions>
+                <columns>
+                    <column id="attribute"/>
+                    <column id="attributeValue"/>
+                </columns>
+                <rows datasource="conditionsDs"/>
+                <buttonsPanel>
+                    <button action="conditionsTable.create"/>
+                    <button action="conditionsTable.remove"/>
+                </buttonsPanel>
+            </table>
+        </groupBox>
         <groupBox id="rolesBox"
                   caption="msg://rolesTableCaption">
             <table id="rolesTable"

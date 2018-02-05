@@ -20,7 +20,7 @@ public class SimpleMatchingRuleChain extends MatchingRuleChain {
     @Override
     public boolean checkRule(MatchingRule matchingRule, ApplyMatchingRuleContext applyMatchingRuleContext) {
         SimpleMatchingRule simpleMatchingRule = (SimpleMatchingRule) matchingRule;
-        LdapUser ldapUser = ldapUserDao.findLdapUserByFilter(simpleMatchingRule.getLdapCondition(), applyMatchingRuleContext.getLdapUser().getLogin());
+        LdapUser ldapUser = ldapUserDao.findLdapUserByFilter(simpleMatchingRule.getConditions(), applyMatchingRuleContext.getLdapUser().getLogin());
         return ldapUser != null;
     }
 }

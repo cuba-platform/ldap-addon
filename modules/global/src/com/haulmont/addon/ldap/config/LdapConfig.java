@@ -37,6 +37,18 @@ public interface LdapConfig extends Config {
     @DefaultString("uid")
     String getAccessGroupAttribute();
 
+    @Property("ldap.positionAttribute")
+    @DefaultString("")
+    String getPositionAttribute();
+
+    @Property("ldap.ouAttribute")
+    @DefaultString("ou")
+    String getOuAttribute();
+
+    @Property("ldap.languageAttribute")
+    @DefaultString("")
+    String getLanguageAttribute();
+
     @Property("ldap.inactiveUserAttribute")
     @DefaultString("accountExpires")
     String getInactiveUserAttribute();
@@ -80,6 +92,9 @@ public interface LdapConfig extends Config {
     void setSnAttribute(String sn);
     void setMemberOfAttribute(String memberOf);
     void setAccessGroupAttribute(String accessGroupAttribute);
+    void setPositionAttribute();
+    void setOuAttribute();
+    void setLanguageAttribute();
     void setInactiveUserAttribute(String inactiveUserAttribute);
     void setUserPasswordAttribute(String userPasswordAttribute);
     void setUserBase(String userBase);

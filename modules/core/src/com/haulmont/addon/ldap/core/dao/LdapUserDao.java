@@ -7,6 +7,9 @@ import com.haulmont.addon.ldap.core.rule.ApplyMatchingRuleContext;
 import com.haulmont.addon.ldap.core.utils.LdapConstants;
 import com.haulmont.addon.ldap.core.utils.LdapUserMapper;
 import com.haulmont.addon.ldap.core.utils.LdapUserWrapperMapper;
+import com.haulmont.addon.ldap.entity.SimpleRuleCondition;
+import com.haulmont.addon.ldap.entity.SimpleRuleConditionAttribute;
+import com.haulmont.addon.ldap.utils.MatchingRuleUtils;
 import com.haulmont.cuba.core.global.Messages;
 import com.haulmont.cuba.security.global.LoginException;
 import org.apache.commons.lang.StringUtils;
@@ -19,6 +22,7 @@ import org.springframework.ldap.filter.HardcodedFilter;
 import org.springframework.ldap.query.LdapQuery;
 import org.springframework.ldap.query.LdapQueryBuilder;
 import org.springframework.ldap.query.SearchScope;
+import org.springframework.ldap.support.LdapEncoder;
 import org.springframework.ldap.support.LdapUtils;
 import org.springframework.stereotype.Service;
 
@@ -43,6 +47,9 @@ public class LdapUserDao {
     @Inject
     private Messages messages;
 
+    @Inject
+    private MatchingRuleUtils matchingRuleUtils;
+
     //TODO: для POC метод вызывается только после успешнйо лдап аутентификации, поэтому пользователь будет всегда
     public ApplyMatchingRuleContext getLdapUserWrapper(String login) {
         LdapQuery query = LdapQueryBuilder.query()
@@ -54,12 +61,16 @@ public class LdapUserDao {
         return new ApplyMatchingRuleContext(ldapUserWrapper.getLdapUser(), ldapUserWrapper.getLdapUserAttributes());
     }
 
-    public LdapUser findLdapUserByFilter(String filter, String login) {
+    public LdapUser findLdapUserByFilter(List<SimpleRuleCondition> conditions, String login) {
+        Filter filter = parseSimpleRuleConditions(conditions);
+        if (filter == null) {
+            return null;
+        }
         LdapQuery query = LdapQueryBuilder.query()
                 .searchScope(SearchScope.SUBTREE)
                 .timeLimit(10_000)
                 .countLimit(1)
-                .filter(addUserBaseAndLoginFilter(login, new HardcodedFilter(filter)));
+                .filter(addUserBaseAndLoginFilter(login, filter));
         List<LdapUser> list = ldapTemplate.search(query, new LdapUserMapper(ldapConfig));
         return (list == null || list.isEmpty()) ? null : list.get(0);
     }
@@ -100,6 +111,25 @@ public class LdapUserDao {
         andFilter.and(resultFilter);
         andFilter.and(filter);
         return andFilter;
+    }
+
+    private Filter parseSimpleRuleConditions(List<SimpleRuleCondition> conditions) {
+        Filter prevFilter = null;
+        for (SimpleRuleCondition simpleRuleCondition : conditions) {
+            String attributeName = matchingRuleUtils.getLdapAttributeName(simpleRuleCondition.getAttribute());
+            if (StringUtils.isNotEmpty(attributeName)) {
+                Filter ef = new EqualsFilter(attributeName, simpleRuleCondition.getAttributeValue());
+                if (prevFilter != null) {
+                    AndFilter andFilter = new AndFilter();
+                    andFilter.and(ef);
+                    andFilter.and(prevFilter);
+                    prevFilter = andFilter;
+                } else {
+                    prevFilter = ef;
+                }
+            }
+        }
+        return prevFilter;
     }
 }
 

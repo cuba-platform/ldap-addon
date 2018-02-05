@@ -54,7 +54,7 @@ public class UserSynchronizationServiceBean implements UserSynchronizationServic
         applicationEventPublisher.publishEvent(new BeforeUserUpdatedFromLdapEvent(this, ldapUser, cubaUser));
         matchingRuleApplierInitializer.getMatchingRuleChain().applyMatchingRules(matchingRules, ldapUser, cubaUser);
         applicationEventPublisher.publishEvent(new AfterUserUpdatedFromLdapEvent(this, ldapUser, cubaUser));
-        cubaUserDao.saveCubaUser(cubaUser, tmp == null, originalUserRoles);
+        cubaUserDao.saveCubaUser(cubaUser, originalUserRoles);
     }
 
     private User setCommonAttributesFromLdapUser(ApplyMatchingRuleContext applyMatchingRuleContext, User cubaUser, String login) {
