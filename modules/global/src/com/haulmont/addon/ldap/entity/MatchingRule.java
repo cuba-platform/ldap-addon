@@ -20,4 +20,8 @@ public interface MatchingRule {
     Boolean getIsOverrideExistingAccessGroup();
 
     Boolean getIsDisabled();
+
+    String getDescription();
+
+    Integer getOrder();
 }

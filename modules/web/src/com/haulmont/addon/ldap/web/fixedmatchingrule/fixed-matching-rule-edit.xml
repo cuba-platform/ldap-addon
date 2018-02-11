@@ -30,6 +30,7 @@
                        property="isOverrideExistingAccessGroup"/>
                 <field caption="msg://isDisabledFieldCaption"
                        property="isDisabled"/>
+                <field property="description"/>
             </column>
         </fieldGroup>
         <groupBox id="rolesBox"

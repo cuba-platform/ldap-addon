@@ -15,6 +15,8 @@ create table LDAP_MATCHING_RULE (
     IS_OVERRIDE_EXISTING_ROLES boolean,
     IS_OVERRIDE_EXIST_ACCESS_GRP boolean,
     IS_DISABLED boolean,
+    DESCRIPTION varchar(1500),
+    ORDER_ integer,
     --
     -- from ldap$ScriptingMatchingRule
     STRING_CONDITION text,

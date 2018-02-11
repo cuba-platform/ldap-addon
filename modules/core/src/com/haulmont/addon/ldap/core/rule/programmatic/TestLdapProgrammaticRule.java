@@ -62,7 +62,7 @@ public class TestLdapProgrammaticRule implements LdapProgrammaticMatchingRule {
     }
 
     @Override
-    public String getProgrammaticRuleName() {
+    public String getDescription() {
         return "RULE THAT SET ADMIN ROLE";
     }
 }

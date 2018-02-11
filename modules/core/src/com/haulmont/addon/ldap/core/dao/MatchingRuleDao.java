@@ -17,10 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 import static com.haulmont.addon.ldap.core.dao.MatchingRuleDao.NAME;
 
@@ -41,7 +38,8 @@ public class MatchingRuleDao {
     public ProgrammaticMatchingRuleDto mapProgrammaticRule(LdapProgrammaticMatchingRule pmr){
         ProgrammaticMatchingRuleDto programmaticMatchingRuleDto = metadata.create(ProgrammaticMatchingRuleDto.class);
         programmaticMatchingRuleDto.setId(pmr.getId());
-        programmaticMatchingRuleDto.setProgrammaticRuleName(pmr.getProgrammaticRuleName());
+        programmaticMatchingRuleDto.setDescription(pmr.getDescription());
+        programmaticMatchingRuleDto.setOrder(pmr.getOrder());
         programmaticMatchingRuleDto.setRuleType(pmr.getRuleType());
         programmaticMatchingRuleDto.setAccessGroup(pmr.getAccessGroup());
         programmaticMatchingRuleDto.setRoles(pmr.getRoles() == null ? new ArrayList<>() : pmr.getRoles());
@@ -56,7 +54,7 @@ public class MatchingRuleDao {
     public List<AbstractMatchingRule> getDbStoredMatchingRules() {
         TypedQuery<AbstractMatchingRule> query = persistence.getEntityManager().createQuery("select distinct mr from ldap$AbstractMatchingRule mr " +
                 "left join fetch mr.roles roles " +
-                "left join fetch mr.accessGroup group", AbstractMatchingRule.class);
+                "left join fetch mr.accessGroup group order by mr.order", AbstractMatchingRule.class);
         return query.getResultList();
     }
 
@@ -68,6 +66,7 @@ public class MatchingRuleDao {
                 result.add(me.getValue());
             }
         }
+        result.sort(Comparator.comparing(LdapProgrammaticMatchingRule::getOrder));
         return result;
     }
 
@@ -76,7 +75,7 @@ public class MatchingRuleDao {
         List<MatchingRule> result = new ArrayList<>();
         TypedQuery<AbstractMatchingRule> query = persistence.getEntityManager().createQuery("select distinct mr from ldap$AbstractMatchingRule mr " +
                 "left join fetch mr.roles roles " +
-                "left join fetch mr.accessGroup group", AbstractMatchingRule.class);
+                "left join fetch mr.accessGroup group order by mr.order", AbstractMatchingRule.class);
         List<? extends MatchingRule> dbMatchingRules = query.getResultList();
         initializeDbMatchingRules(dbMatchingRules);
         List<? extends MatchingRule> programmaticMatchingRules = getProgrammaticMatchingRules();
@@ -98,7 +97,7 @@ public class MatchingRuleDao {
         List<AbstractMatchingRule> result = new ArrayList<>();
         TypedQuery<AbstractMatchingRule> query = persistence.getEntityManager().createQuery("select distinct mr from ldap$AbstractMatchingRule mr " +
                 "left join fetch mr.roles roles " +
-                "left join fetch mr.accessGroup group", AbstractMatchingRule.class);
+                "left join fetch mr.accessGroup group order by mr.order", AbstractMatchingRule.class);
         List<AbstractMatchingRule> dbMatchingRules = query.getResultList();
         initializeDbMatchingRules(dbMatchingRules);
         List<? extends MatchingRule> programmaticMatchingRules = getProgrammaticMatchingRules();

@@ -18,5 +18,8 @@ public interface LdapProgrammaticMatchingRule extends MatchingRule {
         return MatchingRuleType.PROGRAMMATIC;
     }
 
-    String getProgrammaticRuleName();
+    @Override
+    default Integer getOrder(){
+        return 0;
+    }
 }

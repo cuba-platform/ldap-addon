@@ -36,6 +36,7 @@
                 <column id="matchingRuleTableStateColumn"
                         caption="msg://matchingRuleTableStateColumn"
                         generator="generateMatchingRuleTableStateColumnCell"/>
+                <column id="description"/>
             </columns>
             <rows datasource="abstractMatchingRulesDs"/>
             <buttonsPanel height="29px">

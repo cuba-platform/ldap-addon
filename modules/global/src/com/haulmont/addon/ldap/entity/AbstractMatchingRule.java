@@ -42,6 +42,29 @@ public abstract class AbstractMatchingRule extends StandardEntity implements Mat
     @Column(name = "IS_DISABLED")
     private Boolean isDisabled = false;
 
+    @Column(name = "DESCRIPTION", length = 1500)
+    protected String description;
+
+    @Column(name = "ORDER_")
+    protected Integer order = 0;
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setOrder(Integer order) {
+        this.order = order;
+    }
+
+    public Integer getOrder() {
+        return order;
+    }
+
+
     public static long getSerialVersionUID() {
         return serialVersionUID;
     }

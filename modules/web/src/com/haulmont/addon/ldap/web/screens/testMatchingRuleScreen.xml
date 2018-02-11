@@ -44,6 +44,7 @@
                     <column id="testMatchingRuleTableConditionColumn"
                             caption="msg://testMatchingRuleTableConditionColumn"
                             generator="generateTestMatchingRuleTableConditionColumnCell"/>
+                    <column id="description"/>
                 </columns>
                 <rows datasource="abstractMatchingRulesDs"/>
             </table>

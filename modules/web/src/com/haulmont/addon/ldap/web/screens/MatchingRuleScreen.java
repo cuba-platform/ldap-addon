@@ -91,13 +91,7 @@ public class MatchingRuleScreen extends AbstractWindow {
     }
 
     public Component generateMatchingRuleTableTypeColumnCell(AbstractMatchingRule entity) {
-        if ((entity instanceof ProgrammaticMatchingRuleDto)) {
-            ProgrammaticMatchingRuleDto programmaticMatchingRuleDto = (ProgrammaticMatchingRuleDto) entity;
-            String programmaticType = programmaticMatchingRuleDto.getRuleType().getCode();
-            return new Table.PlainTextCell(programmaticType + " - " + programmaticMatchingRuleDto.getProgrammaticRuleName());
-        } else {
-            return new Table.PlainTextCell(entity.getRuleType().getCode());
-        }
+        return new Table.PlainTextCell(entity.getRuleType().getCode());
     }
 
     public Component generateMatchingRuleTableOptionsColumnCell(AbstractMatchingRule entity) {
