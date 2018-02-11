@@ -29,22 +29,22 @@
         <groupBox spacing="true">
             <table id="testRuleScreenRuleTable"
                    caption="msg://testRuleScreenRuleTable"
-                   height="100px"
+                   height="200px"
                    width="100%">
                 <columns>
+                    <column id="description"/>
                     <column id="testMatchingRuleTableTypeColumn"
                             caption="msg://testMatchingRuleTableTypeColumn"
                             generator="generateTestMatchingRuleTableTypeColumnCell"/>
-                    <column id="testMatchingRuleTableOptionsColumn"
-                            caption="msg://testMatchingRuleTableOptionsColumn"
-                            generator="generateTestMatchingRuleTableOptionsColumnCell"/>
                     <column id="testMatchingRuleTableResultColumn"
                             caption="msg://testMatchingRuleTableResultColumn"
                             generator="generateTestMatchingRuleTableResultColumnCell"/>
+                    <column id="testMatchingRuleTableOptionsColumn"
+                            caption="msg://testMatchingRuleTableOptionsColumn"
+                            generator="generateTestMatchingRuleTableOptionsColumnCell"/>
                     <column id="testMatchingRuleTableConditionColumn"
                             caption="msg://testMatchingRuleTableConditionColumn"
                             generator="generateTestMatchingRuleTableConditionColumnCell"/>
-                    <column id="description"/>
                 </columns>
                 <rows datasource="abstractMatchingRulesDs"/>
             </table>
@@ -52,7 +52,7 @@
         <groupBox spacing="true">
             <table id="testRuleScreenRoleTable"
                    caption="msg://testRuleScreenRoleTable"
-                   height="100px"
+                   height="200px"
                    width="100%">
                 <columns>
                     <column id="name"/>

@@ -21,22 +21,22 @@
                 <action id="remove"/>
             </actions>
             <columns>
-                <column id="matchingRuleTableConditionColumn"
-                        caption="msg://matchingRuleTableConditionColumn"
-                        generator="generateMatchingRuleTableConditionColumnCell"/>
-                <column id="matchingRuleTableCubaColumn"
-                        caption="msg://matchingRuleTableCubaColumn"
-                        generator="generateMatchingRuleTableCubaColumnCell"/>
-                <column id="matchingRuleTableTypeColumn"
-                        caption="msg://matchingRuleTableTypeColumn"
-                        generator="generateMatchingRuleTableTypeColumnCell"/>
-                <column id="matchingRuleTableOptionsColumn"
-                        caption="msg://matchingRuleTableOptionsColumn"
-                        generator="generateMatchingRuleTableOptionsColumnCell"/>
                 <column id="matchingRuleTableStateColumn"
                         caption="msg://matchingRuleTableStateColumn"
                         generator="generateMatchingRuleTableStateColumnCell"/>
                 <column id="description"/>
+                <column id="matchingRuleTableTypeColumn"
+                        caption="msg://matchingRuleTableTypeColumn"
+                        generator="generateMatchingRuleTableTypeColumnCell"/>
+                <column id="matchingRuleTableCubaColumn"
+                        caption="msg://matchingRuleTableCubaColumn"
+                        generator="generateMatchingRuleTableCubaColumnCell"/>
+                <column id="matchingRuleTableOptionsColumn"
+                        caption="msg://matchingRuleTableOptionsColumn"
+                        generator="generateMatchingRuleTableOptionsColumnCell"/>
+                <column id="matchingRuleTableConditionColumn"
+                        caption="msg://matchingRuleTableConditionColumn"
+                        generator="generateMatchingRuleTableConditionColumnCell"/>
             </columns>
             <rows datasource="abstractMatchingRulesDs"/>
             <buttonsPanel height="29px">
