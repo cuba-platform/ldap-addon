@@ -40,7 +40,7 @@ public class MatchingRuleDao {
 
     @Transactional(readOnly = true)
     public List<AbstractMatchingRule> getDbStoredMatchingRules() {
-        TypedQuery<AbstractMatchingRule> query = persistence.getEntityManager().createQuery("select mr from ldap$AbstractMatchingRule mr " +
+        TypedQuery<AbstractMatchingRule> query = persistence.getEntityManager().createQuery("select distinct mr from ldap$AbstractMatchingRule mr " +
                 "left join fetch mr.roles roles " +
                 "left join fetch mr.accessGroup group", AbstractMatchingRule.class);
         return query.getResultList();
@@ -60,7 +60,7 @@ public class MatchingRuleDao {
     @Transactional
     public List<MatchingRule> getMatchingRules() {
         List<MatchingRule> result = new ArrayList<>();
-        TypedQuery<AbstractMatchingRule> query = persistence.getEntityManager().createQuery("select mr from ldap$AbstractMatchingRule mr " +
+        TypedQuery<AbstractMatchingRule> query = persistence.getEntityManager().createQuery("select distinct mr from ldap$AbstractMatchingRule mr " +
                 "left join fetch mr.roles roles " +
                 "left join fetch mr.accessGroup group", AbstractMatchingRule.class);
         List<? extends MatchingRule> dbMatchingRules = query.getResultList();
@@ -82,7 +82,7 @@ public class MatchingRuleDao {
     @Transactional
     public List<AbstractMatchingRule> getMatchingRulesGui() {
         List<AbstractMatchingRule> result = new ArrayList<>();
-        TypedQuery<AbstractMatchingRule> query = persistence.getEntityManager().createQuery("select mr from ldap$AbstractMatchingRule mr " +
+        TypedQuery<AbstractMatchingRule> query = persistence.getEntityManager().createQuery("select distinct mr from ldap$AbstractMatchingRule mr " +
                 "left join fetch mr.roles roles " +
                 "left join fetch mr.accessGroup group", AbstractMatchingRule.class);
         List<AbstractMatchingRule> dbMatchingRules = query.getResultList();
@@ -111,7 +111,7 @@ public class MatchingRuleDao {
 
     @Transactional(readOnly = true)
     public FixedMatchingRule getFixedMatchingRule() {
-        TypedQuery<FixedMatchingRule> query = persistence.getEntityManager().createQuery("select mr from ldap$FixedMatchingRule mr " +
+        TypedQuery<FixedMatchingRule> query = persistence.getEntityManager().createQuery("select distinct mr from ldap$FixedMatchingRule mr " +
                 "left join fetch mr.roles roles " +
                 "left join fetch mr.accessGroup group", FixedMatchingRule.class);
         List<FixedMatchingRule> list = query.getResultList();
