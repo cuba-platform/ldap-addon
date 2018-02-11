@@ -50,6 +50,9 @@ public class TestMatchingRuleScreen extends AbstractWindow {
     public void onTestRuleScreenTestButtonClick() {
         User cubaUser = userPickerField.getValue();
         if (cubaUser != null) {
+            abstractMatchingRulesDs.clear();
+            rolesDs.clear();
+
             TestUserSynchronizationDto dto = userSynchronizationService.testUserSynchronization(cubaUser.getLogin());
             dto.getAppliedMatchingRules().forEach(matchingRule -> abstractMatchingRulesDs.addItem(matchingRule));
             dto.getAppliedCubaRoles().forEach(role -> rolesDs.addItem(role));

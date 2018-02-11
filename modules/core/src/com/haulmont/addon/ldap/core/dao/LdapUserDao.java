@@ -50,15 +50,20 @@ public class LdapUserDao {
     @Inject
     private MatchingRuleUtils matchingRuleUtils;
 
-    //TODO: для POC метод вызывается только после успешнйо лдап аутентификации, поэтому пользователь будет всегда
     public ApplyMatchingRuleContext getLdapUserWrapper(String login) {
         LdapQuery query = LdapQueryBuilder.query()
                 .searchScope(SearchScope.SUBTREE)
                 .timeLimit(10_000)
                 .countLimit(1)
                 .filter(createUserBaseAndLoginFilter(login));
-        LdapUserWrapper ldapUserWrapper = ldapTemplate.search(query, new LdapUserWrapperMapper(ldapConfig)).get(0);
-        return new ApplyMatchingRuleContext(ldapUserWrapper.getLdapUser(), ldapUserWrapper.getLdapUserAttributes());
+        List<LdapUserWrapper> list = ldapTemplate.search(query, new LdapUserWrapperMapper(ldapConfig));
+        if (list.size() == 1) {
+            LdapUserWrapper ldapUserWrapper = list.get(0);
+            return new ApplyMatchingRuleContext(ldapUserWrapper.getLdapUser(), ldapUserWrapper.getLdapUserAttributes());
+        } else {
+            return null;
+        }
+
     }
 
     public LdapUser findLdapUserByFilter(List<SimpleRuleCondition> conditions, String login) {

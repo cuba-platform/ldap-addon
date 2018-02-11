@@ -115,6 +115,7 @@ public class MatchingRuleScreen extends AbstractWindow {
                     AbstractMatchingRule mr = matchingRuleTable.getSingleSelected();
                     Boolean value = (Boolean) e.getValue();
                     matchingRuleService.updateDisabledStateForMatchingRule(mr.getId(), !value);
+                    matchingRuleTable.getDatasource().refresh();
                 }
             });
         }

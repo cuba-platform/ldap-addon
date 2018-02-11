@@ -33,9 +33,8 @@ public abstract class MatchingRuleChain {
     abstract boolean checkRule(MatchingRule matchingRule, ApplyMatchingRuleContext applyMatchingRuleContext);
 
     public void applyMatchingRules(List<MatchingRule> matchingRules, ApplyMatchingRuleContext applyMatchingRuleContext, User cubaUser) {
-        //TODO:add sort by terminal and etc
         for (MatchingRule matchingRule : matchingRules) {
-            if (isMatchingRuleTypeSupported(matchingRule) && checkRule(matchingRule, applyMatchingRuleContext)) {
+            if (!matchingRule.getIsDisabled() && isMatchingRuleTypeSupported(matchingRule) && checkRule(matchingRule, applyMatchingRuleContext)) {
                 applyMatchingRuleContext.setAnyRuleApply(true);
                 applyMatchingRuleContext.getAppliedRules().add(matchingRule);
                 applyRuleToUser(matchingRule, cubaUser);
