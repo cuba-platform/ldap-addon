@@ -68,8 +68,9 @@
                     <action id="remove"/>
                 </actions>
                 <columns>
-                    <column id="locName"/>
                     <column id="name"/>
+                    <column id="locName"/>
+                    <column id="description"/>
                 </columns>
                 <rows datasource="rolesDs"/>
                 <buttonsPanel>
