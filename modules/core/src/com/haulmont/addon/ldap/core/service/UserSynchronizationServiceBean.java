@@ -74,6 +74,8 @@ public class UserSynchronizationServiceBean implements UserSynchronizationServic
         cu.setEmail(applyMatchingRuleContext.getLdapUser().getEmail());
         cu.setName(applyMatchingRuleContext.getLdapUser().getCn());
         cu.setLastName(applyMatchingRuleContext.getLdapUser().getSn());
+        cu.setPosition(applyMatchingRuleContext.getLdapUser().getPosition());
+        cu.setLanguage(applyMatchingRuleContext.getLdapUser().getLanguage());
 
         Boolean userDisabled = applyMatchingRuleContext.getLdapUser().getDisabled();
         if (userDisabled) {
