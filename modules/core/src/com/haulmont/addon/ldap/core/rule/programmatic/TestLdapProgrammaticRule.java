@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @LdapMatchingRule
-public class TestProgrammaticRule implements ProgrammaticMatchingRule {
+public class TestLdapProgrammaticRule implements LdapProgrammaticMatchingRule {
 
     @Inject
     private LdapUserDao ldapUserDao;

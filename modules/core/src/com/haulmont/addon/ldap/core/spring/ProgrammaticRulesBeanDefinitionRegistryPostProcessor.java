@@ -1,7 +1,7 @@
 package com.haulmont.addon.ldap.core.spring;
 
 import com.haulmont.addon.ldap.core.rule.programmatic.LdapMatchingRule;
-import com.haulmont.addon.ldap.core.rule.programmatic.ProgrammaticMatchingRule;
+import com.haulmont.addon.ldap.core.rule.programmatic.LdapProgrammaticMatchingRule;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
@@ -29,8 +29,8 @@ public class ProgrammaticRulesBeanDefinitionRegistryPostProcessor implements Bea
             provider.addIncludeFilter(new AnnotationTypeFilter(LdapMatchingRule.class));
             Set<BeanDefinition> beans = provider.findCandidateComponents("com.haulmont.addon.ldap.core.rule.programmatic");
             for (BeanDefinition bd : beans) {
-                if (!ProgrammaticMatchingRule.class.isAssignableFrom(Class.forName(bd.getBeanClassName()))) {
-                    throw new RuntimeException("Programmatic rule must implement " + ProgrammaticMatchingRule.class.getName());
+                if (!LdapProgrammaticMatchingRule.class.isAssignableFrom(Class.forName(bd.getBeanClassName()))) {
+                    throw new RuntimeException("Programmatic rule must implement " + LdapProgrammaticMatchingRule.class.getName());
                 }
                 bd.setScope(ConfigurableBeanFactory.SCOPE_SINGLETON);
                 registry.registerBeanDefinition(LDAP_COMPONENT_PREFIX + bd.getBeanClassName(), bd);

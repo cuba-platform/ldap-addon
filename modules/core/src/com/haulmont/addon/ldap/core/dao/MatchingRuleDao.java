@@ -1,6 +1,6 @@
 package com.haulmont.addon.ldap.core.dao;
 
-import com.haulmont.addon.ldap.core.rule.programmatic.ProgrammaticMatchingRule;
+import com.haulmont.addon.ldap.core.rule.programmatic.LdapProgrammaticMatchingRule;
 import com.haulmont.addon.ldap.dto.ProgrammaticMatchingRuleDto;
 import com.haulmont.addon.ldap.entity.AbstractMatchingRule;
 import com.haulmont.addon.ldap.entity.FixedMatchingRule;
@@ -38,7 +38,7 @@ public class MatchingRuleDao {
     @Inject
     private Messages messages;
 
-    public ProgrammaticMatchingRuleDto mapProgrammaticRule(ProgrammaticMatchingRule pmr){
+    public ProgrammaticMatchingRuleDto mapProgrammaticRule(LdapProgrammaticMatchingRule pmr){
         ProgrammaticMatchingRuleDto programmaticMatchingRuleDto = metadata.create(ProgrammaticMatchingRuleDto.class);
         programmaticMatchingRuleDto.setId(pmr.getId());
         programmaticMatchingRuleDto.setProgrammaticRuleName(pmr.getProgrammaticRuleName());
@@ -60,11 +60,11 @@ public class MatchingRuleDao {
         return query.getResultList();
     }
 
-    public List<ProgrammaticMatchingRule> getProgrammaticMatchingRules() {
-        List<ProgrammaticMatchingRule> result = new ArrayList<>();
-        Map<String, ProgrammaticMatchingRule> map = AppBeans.getAll(ProgrammaticMatchingRule.class);
+    public List<LdapProgrammaticMatchingRule> getProgrammaticMatchingRules() {
+        List<LdapProgrammaticMatchingRule> result = new ArrayList<>();
+        Map<String, LdapProgrammaticMatchingRule> map = AppBeans.getAll(LdapProgrammaticMatchingRule.class);
         if (map != null) {
-            for (Map.Entry<String, ProgrammaticMatchingRule> me : map.entrySet()) {
+            for (Map.Entry<String, LdapProgrammaticMatchingRule> me : map.entrySet()) {
                 result.add(me.getValue());
             }
         }
@@ -105,7 +105,7 @@ public class MatchingRuleDao {
         List<ProgrammaticMatchingRuleDto> programmaticDto = new ArrayList<>(programmaticMatchingRules.size());
 
         for (MatchingRule programmaticMatchingRule : programmaticMatchingRules) {
-            ProgrammaticMatchingRule pmr = (ProgrammaticMatchingRule) programmaticMatchingRule;
+            LdapProgrammaticMatchingRule pmr = (LdapProgrammaticMatchingRule) programmaticMatchingRule;
             programmaticDto.add(mapProgrammaticRule(pmr));
         }
 
