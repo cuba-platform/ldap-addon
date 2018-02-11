@@ -36,8 +36,11 @@ public class LdapUserMapperUtils {
         if (StringUtils.isNotEmpty(ldapConfig.getPositionAttribute())) {
             ldapUser.setPosition(context.getStringAttribute(ldapConfig.getPositionAttribute()));
         }
-        if (StringUtils.isNotEmpty(ldapConfig.getPositionAttribute())) {
+        if (StringUtils.isNotEmpty(ldapConfig.getLanguageAttribute())) {
             ldapUser.setLanguage(context.getStringAttribute(ldapConfig.getLanguageAttribute()));
+        }
+        if (StringUtils.isNotEmpty(ldapConfig.getOuAttribute())) {
+            ldapUser.setOu(context.getStringAttribute(ldapConfig.getOuAttribute()));
         }
         return ldapUser;
     }

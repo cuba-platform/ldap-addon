@@ -13,6 +13,7 @@
                  spacing="true">
                 <flowBox spacing="true">
                     <label id="url_label"
+                           description="msg://settingsScreenUrl"
                            value="url"
                            width="70px"/>
                     <textField id="url"
@@ -20,24 +21,24 @@
                 </flowBox>
                 <flowBox spacing="true">
                     <label id="base_label"
-                           value="base"
+                           value="msg://settingsScreenBase"
                            width="70px"/>
                     <textField id="base"
                                width="370px"/>
                 </flowBox>
                 <flowBox spacing="true">
                     <label id="user_label"
-                           value="user"
+                           value="msg://settingsScreenUser"
                            width="70px"/>
                     <textField id="user"
                                width="370px"/>
                 </flowBox>
                 <flowBox spacing="true">
                     <label id="password_label"
-                           value="password"
+                           value="msg://settingsScreenPassword"
                            width="70px"/>
-                    <textField id="password"
-                               width="370px"/>
+                    <passwordField id="password"
+                                   width="370px"/>
                 </flowBox>
                 <textArea id="connectionStatus"
                           width="798px"/>
@@ -55,37 +56,67 @@
                  margin="true,false,false,false"
                  spacing="true">
                 <flowBox spacing="true">
-                    <label value="login attribute name"
+                    <label value="msg://settingsScreenLoginAttr"
                            width="180px"/>
                     <textField id="loginAttribute"
                                width="260px"/>
                 </flowBox>
                 <flowBox spacing="true">
-                    <label value="email attribute name"
+                    <label value="msg://settingsScreenEmailAttr"
                            width="180px"/>
                     <textField id="emailAttribute"
                                width="260px"/>
                 </flowBox>
                 <flowBox spacing="true">
-                    <label value="cn attribute name"
+                    <label value="msg://settingsScreenCnAttr"
                            width="180px"/>
                     <textField id="cnAttribute"
                                width="260px"/>
                 </flowBox>
                 <flowBox spacing="true">
-                    <label value="sn attribute name"
+                    <label value="msg://settingsScreenSnAttr"
                            width="180px"/>
                     <textField id="snAttribute"
                                width="260px"/>
                 </flowBox>
                 <flowBox spacing="true">
-                    <label value="memberOf attribute name"
+                    <label value="msg://settingsScreenPositionAttr"
+                           width="180px"/>
+                    <textField id="positionAttribute"
+                               width="260px"/>
+                </flowBox>
+                <flowBox spacing="true">
+                    <label value="msg://settingsScreenLanguageAttr"
+                           width="180px"/>
+                    <textField id="languageAttribute"
+                               width="260px"/>
+                </flowBox>
+                <flowBox spacing="true">
+                    <label value="msg://settingsScreenMemberOfAttr"
                            width="180px"/>
                     <textField id="memberOfAttribute"
                                width="260px"/>
                 </flowBox>
                 <flowBox spacing="true">
-                    <label value="user base "
+                    <label value="msg://settingsScreenOuAttr"
+                           width="180px"/>
+                    <textField id="ouAttribute"
+                               width="260px"/>
+                </flowBox>
+                <flowBox spacing="true">
+                    <label value="msg://settingsScreenAccessGroupAttr"
+                           width="180px"/>
+                    <textField id="accessGroupAttribute"
+                               width="260px"/>
+                </flowBox>
+                <flowBox spacing="true">
+                    <label value="msg://settingsScreenAccountExpAttr"
+                           width="180px"/>
+                    <textField id="accountExpiresAttribute"
+                               width="260px"/>
+                </flowBox>
+                <flowBox spacing="true">
+                    <label value="msg://settingsScreenUserBase"
                            width="180px"/>
                     <textField id="userBase"
                                width="260px"/>
@@ -94,10 +125,6 @@
                         caption="Save"
                         invoke="onSaveSchemaSettingsClick"/>
             </tab>
-            <tab id="PoolingTab"
-                 caption="Pooling"
-                 margin="true,false,false,false"
-                 spacing="true"/>
         </tabSheet>
     </layout>
 </window>

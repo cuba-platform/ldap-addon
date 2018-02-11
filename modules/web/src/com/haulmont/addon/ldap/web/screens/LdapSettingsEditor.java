@@ -3,6 +3,7 @@ package com.haulmont.addon.ldap.web.screens;
 import com.haulmont.addon.ldap.config.LdapConfig;
 import com.haulmont.addon.ldap.service.LdapConnectionTesterService;
 import com.haulmont.cuba.gui.components.AbstractWindow;
+import com.haulmont.cuba.gui.components.PasswordField;
 import com.haulmont.cuba.gui.components.TextArea;
 import com.haulmont.cuba.gui.components.TextField;
 import org.apache.commons.lang.StringUtils;
@@ -26,7 +27,7 @@ public class LdapSettingsEditor extends AbstractWindow {
     private TextField userField;
 
     @Named("password")
-    private TextField passwordField;
+    private PasswordField passwordField;
 
     @Named("connectionStatus")
     private TextArea connectionStatusTextArea;
@@ -43,8 +44,23 @@ public class LdapSettingsEditor extends AbstractWindow {
     @Named("cnAttribute")
     private TextField cnAttributeField;
 
+    @Named("languageAttribute")
+    private TextField languageAttributeField;
+
+    @Named("positionAttribute")
+    private TextField positionAttributeField;
+
     @Named("memberOfAttribute")
     private TextField memberOfAttributeField;
+
+    @Named("ouAttribute")
+    private TextField ouAttributeAttributeField;
+
+    @Named("accessGroupAttribute")
+    private TextField accessGroupAttributeField;
+
+    @Named("accountExpiresAttribute")
+    private TextField accountExpiresAttributeField;
 
     @Named("userBase")
     private TextField userBaseField;
@@ -65,6 +81,11 @@ public class LdapSettingsEditor extends AbstractWindow {
         cnAttributeField.setValue(ldapConfig.getCnAttribute());
         memberOfAttributeField.setValue(ldapConfig.getMemberOfAttribute());
         userBaseField.setValue(ldapConfig.getUserBase());
+        languageAttributeField.setValue(ldapConfig.getLanguageAttribute());
+        positionAttributeField.setValue(ldapConfig.getPositionAttribute());
+        ouAttributeAttributeField.setValue(ldapConfig.getOuAttribute());
+        accessGroupAttributeField.setValue(ldapConfig.getAccessGroupAttribute());
+        accountExpiresAttributeField.setValue(ldapConfig.getInactiveUserAttribute());
     }
 
     public void onSaveConnectionSettingsClick() {
@@ -97,6 +118,11 @@ public class LdapSettingsEditor extends AbstractWindow {
         String cnAttribute = cnAttributeField.getValue();
         String memberOfAttribute = memberOfAttributeField.getValue();
         String userBase = userBaseField.getValue();
+        String language = languageAttributeField.getValue();
+        String position = positionAttributeField.getValue();
+        String ou = ouAttributeAttributeField.getValue();
+        String accessGroup = accessGroupAttributeField.getValue();
+        String accountExpires = accountExpiresAttributeField.getValue();
 
         ldapConfig.setLoginAttribute(loginAttribute);
         ldapConfig.setEmailAttribute(emailAttribute);
@@ -104,5 +130,10 @@ public class LdapSettingsEditor extends AbstractWindow {
         ldapConfig.setCnAttribute(cnAttribute);
         ldapConfig.setMemberOfAttribute(memberOfAttribute);
         ldapConfig.setUserBase(userBase);
+        ldapConfig.setLanguageAttribute(language);
+        ldapConfig.setPositionAttribute(position);
+        ldapConfig.setOuAttribute(ou);
+        ldapConfig.setAccessGroupAttribute(accessGroup);
+        ldapConfig.setInactiveUserAttribute(accountExpires);
     }
 }

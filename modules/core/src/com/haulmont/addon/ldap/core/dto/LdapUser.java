@@ -13,6 +13,7 @@ public class LdapUser {
     private Boolean isDisabled;
     private String position;
     private String language;
+    private String ou;
 
 
     public String getEmail() {
@@ -85,5 +86,13 @@ public class LdapUser {
 
     public void setLanguage(String language) {
         this.language = language;
+    }
+
+    public String getOu() {
+        return ou;
+    }
+
+    public void setOu(String ou) {
+        this.ou = ou;
     }
 }
