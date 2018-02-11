@@ -101,9 +101,9 @@ public class MatchingRuleScreen extends AbstractWindow {
     public Component generateMatchingRuleTableStateColumnCell(AbstractMatchingRule entity) {
         CheckBox checkBox = componentsFactory.createComponent(CheckBox.class);
         if (entity.getIsDisabled()) {
-            checkBox.setValue(true);
-        } else {
             checkBox.setValue(false);
+        } else {
+            checkBox.setValue(true);
         }
         if ((entity instanceof ProgrammaticMatchingRuleDto)) {
             checkBox.setEditable(false);
@@ -113,7 +113,8 @@ public class MatchingRuleScreen extends AbstractWindow {
                 @Override
                 public void valueChanged(ValueChangeEvent e) {
                     AbstractMatchingRule mr = matchingRuleTable.getSingleSelected();
-                    matchingRuleService.updateDisabledStateForMatchingRule(mr.getId(), (Boolean) e.getValue());
+                    Boolean value = (Boolean) e.getValue();
+                    matchingRuleService.updateDisabledStateForMatchingRule(mr.getId(), !value);
                 }
             });
         }
