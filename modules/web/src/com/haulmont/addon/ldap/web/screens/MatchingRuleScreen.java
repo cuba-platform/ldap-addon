@@ -91,7 +91,7 @@ public class MatchingRuleScreen extends AbstractWindow {
     }
 
     public Component generateMatchingRuleTableTypeColumnCell(AbstractMatchingRule entity) {
-        return new Table.PlainTextCell(entity.getRuleType().getCode());
+        return new Table.PlainTextCell(entity.getRuleType().getName());
     }
 
     public Component generateMatchingRuleTableOptionsColumnCell(AbstractMatchingRule entity) {
