@@ -8,6 +8,7 @@ public class ApplyMatchingRuleContext {
 
     private final LdapUser ldapUser;
     private final Attributes ldapUserAttributes;
+    private boolean isAnyRuleApply = false;
 
     public ApplyMatchingRuleContext(LdapUser ldapUser, Attributes ldapUserAttributes) {
         this.ldapUser = ldapUser;
@@ -22,4 +23,11 @@ public class ApplyMatchingRuleContext {
         return ldapUserAttributes;
     }
 
+    public boolean isAnyRuleApply() {
+        return isAnyRuleApply;
+    }
+
+    public void setAnyRuleApply(boolean anyRuleApply) {
+        isAnyRuleApply = anyRuleApply;
+    }
 }

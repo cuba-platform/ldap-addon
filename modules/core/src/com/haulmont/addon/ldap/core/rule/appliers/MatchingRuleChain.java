@@ -36,6 +36,7 @@ public abstract class MatchingRuleChain {
         //TODO:add sort by terminal and etc
         for (MatchingRule matchingRule : matchingRules) {
             if (isMatchingRuleTypeSupported(matchingRule) && checkRule(matchingRule, applyMatchingRuleContext)) {
+                applyMatchingRuleContext.setAnyRuleApply(true);
                 applyRuleToUser(matchingRule, cubaUser);
                 if (matchingRule.getIsTerminalRule()) {//if terminal rule was satisfied stop execution chain
                     return;
