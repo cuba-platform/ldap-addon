@@ -4,7 +4,13 @@ import com.haulmont.addon.ldap.core.rule.ApplyMatchingRuleContext;
 import com.haulmont.addon.ldap.entity.MatchingRule;
 import com.haulmont.addon.ldap.entity.MatchingRuleType;
 
+import java.util.UUID;
+
 public interface ProgrammaticMatchingRule extends MatchingRule {
+
+    default UUID getId(){
+        return UUID.randomUUID();
+    }
 
     boolean checkProgrammaticMatchingRule(ApplyMatchingRuleContext applyMatchingRuleContext);
 

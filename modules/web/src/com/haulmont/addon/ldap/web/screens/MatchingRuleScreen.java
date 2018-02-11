@@ -28,9 +28,6 @@ public class MatchingRuleScreen extends AbstractWindow {
     private ComponentsFactory componentsFactory;
 
     @Inject
-    private DataSource matchingRuleDataSource;
-
-    @Inject
     private Metadata metadata;
 
     @Inject
@@ -86,28 +83,11 @@ public class MatchingRuleScreen extends AbstractWindow {
 
 
     public Component generateMatchingRuleTableConditionColumnCell(AbstractMatchingRule entity) {
-
-        if (entity instanceof SimpleMatchingRule) {
-            SimpleMatchingRule simpleMatchingRule = (SimpleMatchingRule) entity;
-            return new Table.PlainTextCell(matchingRuleUtils.getStringCondition(simpleMatchingRule.getConditions()));
-        } else if ((entity instanceof ScriptingMatchingRule)) {
-            ScriptingMatchingRule scriptingMatchingRule = (ScriptingMatchingRule) entity;
-            return new Table.PlainTextCell(scriptingMatchingRule.getScriptingCondition());
-        } else {
-            return new Table.PlainTextCell(StringUtils.EMPTY);
-        }
+        return new Table.PlainTextCell(matchingRuleUtils.generateMatchingRuleTableConditionColumn(entity));
     }
 
     public Component generateMatchingRuleTableCubaColumnCell(AbstractMatchingRule entity) {
-        StringBuilder sb = new StringBuilder("Roles: ");
-        for (Role role : entity.getRoles()) {
-            sb.append(role.getName());
-            sb.append(";");
-        }
-        sb.append("\n");
-        sb.append("Access group: ");
-        sb.append(entity.getAccessGroup() == null ? StringUtils.EMPTY : entity.getAccessGroup().getName());
-        return new Table.PlainTextCell(sb.toString());
+        return new Table.PlainTextCell(matchingRuleUtils.generateMatchingRuleRolesAccessGroupColumn(entity));
     }
 
     public Component generateMatchingRuleTableTypeColumnCell(AbstractMatchingRule entity) {
@@ -121,26 +101,7 @@ public class MatchingRuleScreen extends AbstractWindow {
     }
 
     public Component generateMatchingRuleTableOptionsColumnCell(AbstractMatchingRule entity) {
-        StringBuilder sb = new StringBuilder();
-        if (entity.getIsTerminalRule()) {
-            sb.append("Terminal; ");
-        } else {
-            sb.append("Pass-through; ");
-        }
-
-        if (entity.getIsOverrideExistingAccessGroup()) {
-            sb.append("Override access group; ");
-        } else {
-            sb.append("Don't override access group; ");
-        }
-
-        if (entity.getIsOverrideExistingRoles()) {
-            sb.append("Override existing roles; ");
-        } else {
-            sb.append("Don't Override existing roles; ");
-        }
-
-        return new Table.PlainTextCell(sb.toString());
+        return new Table.PlainTextCell(matchingRuleUtils.generateMatchingRuleOptionsColumn(entity));
     }
 
     public Component generateMatchingRuleTableStateColumnCell(AbstractMatchingRule entity) {

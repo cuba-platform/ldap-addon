@@ -38,6 +38,20 @@ public class MatchingRuleDao {
     @Inject
     private Messages messages;
 
+    public ProgrammaticMatchingRuleDto mapProgrammaticRule(ProgrammaticMatchingRule pmr){
+        ProgrammaticMatchingRuleDto programmaticMatchingRuleDto = metadata.create(ProgrammaticMatchingRuleDto.class);
+        programmaticMatchingRuleDto.setId(pmr.getId());
+        programmaticMatchingRuleDto.setProgrammaticRuleName(pmr.getProgrammaticRuleName());
+        programmaticMatchingRuleDto.setRuleType(pmr.getRuleType());
+        programmaticMatchingRuleDto.setAccessGroup(pmr.getAccessGroup());
+        programmaticMatchingRuleDto.setRoles(pmr.getRoles() == null ? new ArrayList<>() : pmr.getRoles());
+        programmaticMatchingRuleDto.setIsDisabled(pmr.getIsDisabled() == null ? false : pmr.getIsDisabled());
+        programmaticMatchingRuleDto.setIsOverrideExistingAccessGroup(pmr.getIsOverrideExistingAccessGroup() == null ? false : pmr.getIsOverrideExistingAccessGroup());
+        programmaticMatchingRuleDto.setIsOverrideExistingRoles(pmr.getIsOverrideExistingRoles() == null ? false : pmr.getIsOverrideExistingRoles());
+        programmaticMatchingRuleDto.setIsTerminalRule(pmr.getIsTerminalRule() == null ? false : pmr.getIsTerminalRule());
+        return programmaticMatchingRuleDto;
+    }
+
     @Transactional(readOnly = true)
     public List<AbstractMatchingRule> getDbStoredMatchingRules() {
         TypedQuery<AbstractMatchingRule> query = persistence.getEntityManager().createQuery("select distinct mr from ldap$AbstractMatchingRule mr " +
@@ -92,16 +106,7 @@ public class MatchingRuleDao {
 
         for (MatchingRule programmaticMatchingRule : programmaticMatchingRules) {
             ProgrammaticMatchingRule pmr = (ProgrammaticMatchingRule) programmaticMatchingRule;
-            ProgrammaticMatchingRuleDto programmaticMatchingRuleDto = metadata.create(ProgrammaticMatchingRuleDto.class);
-            programmaticMatchingRuleDto.setProgrammaticRuleName(pmr.getProgrammaticRuleName());
-            programmaticMatchingRuleDto.setRuleType(pmr.getRuleType());
-            programmaticMatchingRuleDto.setAccessGroup(programmaticMatchingRule.getAccessGroup());
-            programmaticMatchingRuleDto.setRoles(programmaticMatchingRule.getRoles() == null ? new ArrayList<>() : programmaticMatchingRule.getRoles());
-            programmaticMatchingRuleDto.setIsDisabled(programmaticMatchingRule.getIsDisabled() == null ? false : programmaticMatchingRule.getIsDisabled());
-            programmaticMatchingRuleDto.setIsOverrideExistingAccessGroup(programmaticMatchingRule.getIsOverrideExistingAccessGroup() == null ? false : programmaticMatchingRule.getIsOverrideExistingAccessGroup());
-            programmaticMatchingRuleDto.setIsOverrideExistingRoles(programmaticMatchingRule.getIsOverrideExistingRoles() == null ? false : programmaticMatchingRule.getIsOverrideExistingRoles());
-            programmaticMatchingRuleDto.setIsTerminalRule(programmaticMatchingRule.getIsTerminalRule() == null ? false : programmaticMatchingRule.getIsTerminalRule());
-            programmaticDto.add(programmaticMatchingRuleDto);
+            programmaticDto.add(mapProgrammaticRule(pmr));
         }
 
         result.addAll(dbMatchingRules);

@@ -37,6 +37,7 @@ public abstract class MatchingRuleChain {
         for (MatchingRule matchingRule : matchingRules) {
             if (isMatchingRuleTypeSupported(matchingRule) && checkRule(matchingRule, applyMatchingRuleContext)) {
                 applyMatchingRuleContext.setAnyRuleApply(true);
+                applyMatchingRuleContext.getAppliedRules().add(matchingRule);
                 applyRuleToUser(matchingRule, cubaUser);
                 if (matchingRule.getIsTerminalRule()) {//if terminal rule was satisfied stop execution chain
                     return;

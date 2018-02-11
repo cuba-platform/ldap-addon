@@ -7,8 +7,10 @@
             template="com/haulmont/addon/ldap/web/fixedmatchingrule/fixed-matching-rule-edit.xml"/>
     <screen id="ldap$SimpleMatchingRule.edit"
             template="com/haulmont/addon/ldap/web/simplematchingrule/simple-matching-rule-edit.xml"/>
-    <screen id="matchingRuleScreen"
-            template="com/haulmont/addon/ldap/web/screens/matchingRuleScreen.xml"/>
     <screen id="ldap$SimpleRuleCondition.edit"
             template="com/haulmont/addon/ldap/web/simplerulecondition/simple-rule-condition-edit.xml"/>
+    <screen id="ldap$matchingRuleScreen"
+            template="com/haulmont/addon/ldap/web/screens/matchingRuleScreen.xml"/>
+    <screen id="ldap$testMatchingRuleScreen"
+            template="com/haulmont/addon/ldap/web/screens/testMatchingRuleScreen.xml"/>
 </screen-config>

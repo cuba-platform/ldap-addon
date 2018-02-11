@@ -3,6 +3,7 @@
     <menu id="application-ldap"
           insertBefore="administration">
         <item screen="ldap$settings"/>
-        <item screen="matchingRuleScreen"/>
+        <item screen="ldap$matchingRuleScreen"/>
+        <item screen="ldap$testMatchingRuleScreen"/>
     </menu>
 </menu-config>

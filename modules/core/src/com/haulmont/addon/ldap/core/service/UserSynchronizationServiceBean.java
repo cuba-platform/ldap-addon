@@ -5,7 +5,10 @@ import com.haulmont.addon.ldap.core.dao.LdapUserDao;
 import com.haulmont.addon.ldap.core.dao.MatchingRuleDao;
 import com.haulmont.addon.ldap.core.rule.ApplyMatchingRuleContext;
 import com.haulmont.addon.ldap.core.rule.MatchingRuleApplierInitializer;
+import com.haulmont.addon.ldap.core.rule.programmatic.ProgrammaticMatchingRule;
 import com.haulmont.addon.ldap.core.spring.events.*;
+import com.haulmont.addon.ldap.dto.TestUserSynchronizationDto;
+import com.haulmont.addon.ldap.entity.AbstractMatchingRule;
 import com.haulmont.addon.ldap.entity.MatchingRule;
 import com.haulmont.addon.ldap.service.UserSynchronizationService;
 import com.haulmont.cuba.core.global.Metadata;
@@ -18,6 +21,7 @@ import org.springframework.stereotype.Service;
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service(UserSynchronizationService.NAME)
 public class UserSynchronizationServiceBean implements UserSynchronizationService {
@@ -82,5 +86,27 @@ public class UserSynchronizationServiceBean implements UserSynchronizationServic
             applicationEventPublisher.publishEvent(new AfterNewUserCreatedFromLdapEvent(this, applyMatchingRuleContext, cu));
         }
         return cu;
+    }
+
+    @Override
+    public TestUserSynchronizationDto testUserSynchronization(String login) {
+        ApplyMatchingRuleContext ldapUser = ldapUserDao.getLdapUserWrapper(login);
+        User cubaUser = cubaUserDao.getCubaUserByLogin(login);
+        cubaUser.getUserRoles().clear();
+        List<MatchingRule> matchingRules = matchingRuleDao.getMatchingRules();
+        matchingRuleApplierInitializer.getMatchingRuleChain().applyMatchingRules(matchingRules, ldapUser, cubaUser);
+        TestUserSynchronizationDto testUserSynchronizationDto = new TestUserSynchronizationDto();
+        ldapUser.getAppliedRules().forEach(matchingRule -> {
+            if (matchingRule instanceof ProgrammaticMatchingRule) {
+                ProgrammaticMatchingRule pmr = (ProgrammaticMatchingRule) matchingRule;
+                testUserSynchronizationDto.getAppliedMatchingRules().add(matchingRuleDao.mapProgrammaticRule(pmr));
+            } else {
+                testUserSynchronizationDto.getAppliedMatchingRules().add((AbstractMatchingRule) matchingRule);
+            }
+        });
+
+        testUserSynchronizationDto.getAppliedCubaRoles().addAll(cubaUser.getUserRoles().stream().map(UserRole::getRole).collect(Collectors.toList()));
+
+        return testUserSynchronizationDto;
     }
 }
