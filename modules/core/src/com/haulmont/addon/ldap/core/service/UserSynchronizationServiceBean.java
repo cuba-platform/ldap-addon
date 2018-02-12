@@ -98,7 +98,12 @@ public class UserSynchronizationServiceBean implements UserSynchronizationServic
         ApplyMatchingRuleContext ldapUser = ldapUserDao.getLdapUserWrapper(login);
         if (ldapUser != null) {
             User cubaUser = cubaUserDao.getCubaUserByLogin(login);
-            cubaUser.getUserRoles().clear();
+            cubaUser = cubaUser == null ? metadata.create(User.class) : cubaUser;
+            if (cubaUser.getUserRoles() != null) {
+                cubaUser.getUserRoles().clear();
+            } else {
+                cubaUser.setUserRoles(new ArrayList<>());
+            }
             List<MatchingRule> matchingRules = matchingRuleDao.getMatchingRules();
             matchingRuleApplierInitializer.getMatchingRuleChain().applyMatchingRules(matchingRules, ldapUser, cubaUser);
             ldapUser.getAppliedRules().forEach(matchingRule -> {

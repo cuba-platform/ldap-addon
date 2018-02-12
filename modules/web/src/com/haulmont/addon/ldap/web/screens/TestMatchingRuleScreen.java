@@ -23,8 +23,8 @@ import java.util.UUID;
 
 public class TestMatchingRuleScreen extends AbstractWindow {
 
-    @Named("testRuleScreenUser")
-    private PickerField userPickerField;
+    @Named("testRuleScreenLogin")
+    private TextField userLoginTextField;
 
     @Inject
     private CollectionDatasource<AbstractMatchingRule, UUID> abstractMatchingRulesDs;
@@ -48,12 +48,12 @@ public class TestMatchingRuleScreen extends AbstractWindow {
 
 
     public void onTestRuleScreenTestButtonClick() {
-        User cubaUser = userPickerField.getValue();
-        if (cubaUser != null) {
+        String login = userLoginTextField.getValue();
+        if (StringUtils.isNotEmpty(login)) {
             abstractMatchingRulesDs.clear();
             rolesDs.clear();
 
-            TestUserSynchronizationDto dto = userSynchronizationService.testUserSynchronization(cubaUser.getLogin());
+            TestUserSynchronizationDto dto = userSynchronizationService.testUserSynchronization(login);
             dto.getAppliedMatchingRules().forEach(matchingRule -> abstractMatchingRulesDs.addItem(matchingRule));
             dto.getAppliedCubaRoles().forEach(role -> rolesDs.addItem(role));
         }
