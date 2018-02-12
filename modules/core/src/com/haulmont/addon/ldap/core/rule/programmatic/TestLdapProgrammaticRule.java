@@ -27,12 +27,13 @@ public class TestLdapProgrammaticRule implements LdapProgrammaticMatchingRule {
 
     @Override
     public boolean checkProgrammaticMatchingRule(ApplyMatchingRuleContext applyMatchingRuleContext) {
-        return true;
+        return applyMatchingRuleContext.getLdapUser().getLogin().equalsIgnoreCase("barts");
     }
 
     @Override
     public Group getAccessGroup() {
-        return null;
+        User admin =  cubaUserDao.getCubaUserByLogin("admin");
+        return admin.getGroup();
     }
 
     @Override

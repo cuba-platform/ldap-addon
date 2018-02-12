@@ -13,14 +13,15 @@
                  spacing="true">
                 <flowBox spacing="true">
                     <label id="url_label"
-                           description="msg://settingsScreenUrl"
-                           value="url"
+                           description="msg://settingsScreenUrlDescr"
+                           value="msg://settingsScreenUrl"
                            width="70px"/>
                     <textField id="url"
                                width="370px"/>
                 </flowBox>
                 <flowBox spacing="true">
                     <label id="base_label"
+                           description="msg://settingsScreenBaseDescr"
                            value="msg://settingsScreenBase"
                            width="70px"/>
                     <textField id="base"
@@ -28,6 +29,7 @@
                 </flowBox>
                 <flowBox spacing="true">
                     <label id="user_label"
+                           description="msg://settingsScreenUserDescr"
                            value="msg://settingsScreenUser"
                            width="70px"/>
                     <textField id="user"
@@ -35,6 +37,7 @@
                 </flowBox>
                 <flowBox spacing="true">
                     <label id="password_label"
+                           description="msg://settingsScreenPasswordDescr"
                            value="msg://settingsScreenPassword"
                            width="70px"/>
                     <passwordField id="password"
