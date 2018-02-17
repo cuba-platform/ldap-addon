@@ -4,11 +4,15 @@ import com.haulmont.addon.ldap.dto.ProgrammaticMatchingRuleDto;
 import com.haulmont.addon.ldap.entity.*;
 import com.haulmont.addon.ldap.service.MatchingRuleService;
 import com.haulmont.addon.ldap.utils.MatchingRuleUtils;
+import com.haulmont.cuba.core.entity.Entity;
+import com.haulmont.cuba.core.global.AppBeans;
 import com.haulmont.cuba.core.global.Metadata;
 import com.haulmont.cuba.gui.WindowManager;
 import com.haulmont.cuba.gui.components.*;
 import com.haulmont.cuba.gui.components.actions.EditAction;
 import com.haulmont.cuba.gui.components.actions.RemoveAction;
+import com.haulmont.cuba.gui.data.CollectionDatasource;
+import com.haulmont.cuba.gui.data.Datasource;
 import com.haulmont.cuba.gui.xml.layout.ComponentsFactory;
 import com.haulmont.cuba.security.entity.Role;
 import org.apache.commons.lang.StringUtils;
@@ -49,7 +53,13 @@ public class MatchingRuleScreen extends AbstractWindow {
             }
         };
 
+        //TODO: пеореопределить EditAction в нем метод internalOpenEditor,
         EditAction customEdit = new EditAction(matchingRuleTable) {
+            @Override
+            protected void internalOpenEditor(CollectionDatasource datasource, Entity existingItem, Datasource parentDs, Map<String, Object> params) {
+                super.internalOpenEditor(datasource, existingItem, myDS, params);
+            }
+
             @Override
             public String getWindowId() {
                 AbstractMatchingRule rule = matchingRuleTable.getSingleSelected();
@@ -61,10 +71,17 @@ public class MatchingRuleScreen extends AbstractWindow {
                 } else {
                     return "";
                 }
+
+
             }
         };
 
         customEdit.setBeforeActionPerformedHandler(customEditBeforeActionPerformedHandler);
+
+
+    //public static RemoveAction create(ListComponent target, boolean autocommit) {
+    //    return AppBeans.getPrototype("cuba_RemoveAction", target, autocommit);
+   // }
 
         RemoveAction.BeforeActionPerformedHandler customRemoveBeforeActionPerformedHandler = new RemoveAction.BeforeActionPerformedHandler() {
             @Override
@@ -136,7 +153,7 @@ public class MatchingRuleScreen extends AbstractWindow {
 
     private void openCreateRuleWindow(AbstractMatchingRule abstractMatchingRule, String screenName) {
         Map<String, Object> params = new HashMap<>();
-        Window window = openEditor(screenName, abstractMatchingRule, WindowManager.OpenType.NEW_TAB, params);
+        Window window = openEditor(screenName, abstractMatchingRule, WindowManager.OpenType.NEW_TAB, params);//вызывать с парент ДС
         window.addListener(new CloseListener() {
             public void windowClosed(String actionId) {
                 matchingRuleTable.getDatasource().refresh();

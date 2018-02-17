@@ -6,6 +6,7 @@ import com.haulmont.addon.ldap.entity.MatchingRuleType;
 
 import java.util.UUID;
 
+//в аанотацию выносим дескриптион
 public interface LdapProgrammaticMatchingRule extends MatchingRule {
 
     default UUID getId(){

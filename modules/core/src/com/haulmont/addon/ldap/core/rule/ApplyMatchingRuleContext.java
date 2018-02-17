@@ -13,6 +13,7 @@ public class ApplyMatchingRuleContext {
     private final Attributes ldapUserAttributes;
     private boolean isAnyRuleApply = false;
     private final Set<MatchingRule> appliedRules = new HashSet<>();
+    //TODO: добавить в контекст какие группы роли применились давать юзера
 
     public ApplyMatchingRuleContext(LdapUser ldapUser, Attributes ldapUserAttributes) {
         this.ldapUser = ldapUser;
