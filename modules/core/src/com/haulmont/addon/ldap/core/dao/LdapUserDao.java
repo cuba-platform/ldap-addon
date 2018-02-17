@@ -50,7 +50,7 @@ public class LdapUserDao {
     @Inject
     private MatchingRuleUtils matchingRuleUtils;
 
-    public ApplyMatchingRuleContext getLdapUserWrapper(String login) {
+    public LdapUserWrapper getLdapUserWrapper(String login) {
         LdapQuery query = LdapQueryBuilder.query()
                 .searchScope(SearchScope.SUBTREE)
                 .timeLimit(10_000)
@@ -58,8 +58,7 @@ public class LdapUserDao {
                 .filter(createUserBaseAndLoginFilter(login));
         List<LdapUserWrapper> list = ldapTemplate.search(query, new LdapUserWrapperMapper(ldapConfig));
         if (list.size() == 1) {
-            LdapUserWrapper ldapUserWrapper = list.get(0);
-            return new ApplyMatchingRuleContext(ldapUserWrapper.getLdapUser(), ldapUserWrapper.getLdapUserAttributes());
+            return list.get(0);
         } else {
             return null;
         }

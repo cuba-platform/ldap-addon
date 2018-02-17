@@ -35,9 +35,13 @@ public abstract class MatchingRuleChain {
     public void applyMatchingRules(List<MatchingRule> matchingRules, ApplyMatchingRuleContext applyMatchingRuleContext, User cubaUser) {
         for (MatchingRule matchingRule : matchingRules) {
             if (!matchingRule.getIsDisabled() && isMatchingRuleTypeSupported(matchingRule) && checkRule(matchingRule, applyMatchingRuleContext)) {
+                applyRuleToUser(matchingRule, cubaUser);
                 applyMatchingRuleContext.setAnyRuleApply(true);
                 applyMatchingRuleContext.getAppliedRules().add(matchingRule);
-                applyRuleToUser(matchingRule, cubaUser);
+                if (matchingRule.getAccessGroup() != null) {
+                    applyMatchingRuleContext.getAppliedGroups().add(matchingRule.getAccessGroup());
+                }
+                applyMatchingRuleContext.getAppliedRoles().addAll(matchingRule.getRoles());
                 if (matchingRule.getIsTerminalRule()) {//if terminal rule was satisfied stop execution chain
                     return;
                 }

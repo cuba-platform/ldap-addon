@@ -3,6 +3,7 @@ package com.haulmont.addon.ldap.core.dao;
 import com.haulmont.cuba.core.EntityManager;
 import com.haulmont.cuba.core.Persistence;
 import com.haulmont.cuba.core.TypedQuery;
+import com.haulmont.cuba.core.global.Metadata;
 import com.haulmont.cuba.core.global.PersistenceHelper;
 import com.haulmont.cuba.security.entity.User;
 import com.haulmont.cuba.security.entity.UserRole;
@@ -23,12 +24,16 @@ public class CubaUserDao {
     @Inject
     private Persistence persistence;
 
+    @Inject
+    private Metadata metadata;
+
     @Transactional(readOnly = true)
     public User getCubaUserByLogin(String login) {
         TypedQuery<User> query = persistence.getEntityManager().createQuery("select distinct cu from sec$User cu where cu.login = :login", User.class);
         query.setParameter("login", login);
         query.setViewName("sec-user-view-with-group-roles");
-        return query.getFirstResult();
+
+        return query.getFirstResult() == null ? metadata.create(User.class) : query.getFirstResult();
     }
 
     @Transactional(readOnly = true)

@@ -2,6 +2,9 @@ package com.haulmont.addon.ldap.core.rule;
 
 import com.haulmont.addon.ldap.core.dto.LdapUser;
 import com.haulmont.addon.ldap.entity.MatchingRule;
+import com.haulmont.cuba.security.entity.Group;
+import com.haulmont.cuba.security.entity.Role;
+import com.haulmont.cuba.security.entity.User;
 
 import javax.naming.directory.Attributes;
 import java.util.HashSet;
@@ -11,13 +14,16 @@ public class ApplyMatchingRuleContext {
 
     private final LdapUser ldapUser;
     private final Attributes ldapUserAttributes;
-    private boolean isAnyRuleApply = false;
     private final Set<MatchingRule> appliedRules = new HashSet<>();
-    //TODO: добавить в контекст какие группы роли применились давать юзера
+    private final Set<Role> appliedRoles = new HashSet<>();
+    private final Set<Group> appliedGroups = new HashSet<>();
+    private final User cubaUser;
+    private boolean isAnyRuleApply = false;
 
-    public ApplyMatchingRuleContext(LdapUser ldapUser, Attributes ldapUserAttributes) {
+    public ApplyMatchingRuleContext(LdapUser ldapUser, Attributes ldapUserAttributes, User cubaUser) {
         this.ldapUser = ldapUser;
         this.ldapUserAttributes = ldapUserAttributes;
+        this.cubaUser= cubaUser;
     }
 
     public LdapUser getLdapUser() {
@@ -38,5 +44,17 @@ public class ApplyMatchingRuleContext {
 
     public Set<MatchingRule> getAppliedRules() {
         return appliedRules;
+    }
+
+    public Set<Role> getAppliedRoles() {
+        return appliedRoles;
+    }
+
+    public Set<Group> getAppliedGroups() {
+        return appliedGroups;
+    }
+
+    public User getCubaUser() {
+        return cubaUser;
     }
 }
