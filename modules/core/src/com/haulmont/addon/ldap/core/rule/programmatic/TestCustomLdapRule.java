@@ -13,8 +13,9 @@ import javax.inject.Inject;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@LdapMatchingRule
-public class TestLdapProgrammaticRule implements LdapProgrammaticMatchingRule {
+@LdapMatchingRule(description = "Test programmatic Rule")
+//TODO: програматик на кастом
+public class TestCustomLdapRule implements CustomLdapMatchingRule {
 
     @Inject
     private LdapUserDao ldapUserDao;
@@ -26,18 +27,18 @@ public class TestLdapProgrammaticRule implements LdapProgrammaticMatchingRule {
     private CubaUserDao cubaUserDao;
 
     @Override
-    public boolean checkProgrammaticMatchingRule(ApplyMatchingRuleContext applyMatchingRuleContext) {
+    public boolean checkCustomMatchingRule(ApplyMatchingRuleContext applyMatchingRuleContext) {
         return applyMatchingRuleContext.getLdapUser().getLogin().equalsIgnoreCase("barts");
     }
 
     @Override
-    public Group getAccessGroup() {
+    public Group getAccessGroup() {//TODO: добавить контекст
         User admin =  cubaUserDao.getCubaUserByLogin("admin");
         return admin.getGroup();
     }
 
     @Override
-    public List<Role> getRoles() {
+    public List<Role> getRoles() {//TODO: добавить контекст
         User admin =  cubaUserDao.getCubaUserByLogin("admin");
         return admin.getUserRoles().stream().map(UserRole::getRole).collect(Collectors.toList());
     }
@@ -62,8 +63,4 @@ public class TestLdapProgrammaticRule implements LdapProgrammaticMatchingRule {
         return false;
     }
 
-    @Override
-    public String getDescription() {
-        return "RULE THAT SET ADMIN ROLE";
-    }
 }

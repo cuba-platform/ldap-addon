@@ -6,7 +6,7 @@ import com.haulmont.addon.ldap.core.dao.MatchingRuleDao;
 import com.haulmont.addon.ldap.core.dto.LdapUserWrapper;
 import com.haulmont.addon.ldap.core.rule.ApplyMatchingRuleContext;
 import com.haulmont.addon.ldap.core.rule.MatchingRuleApplierInitializer;
-import com.haulmont.addon.ldap.core.rule.programmatic.LdapProgrammaticMatchingRule;
+import com.haulmont.addon.ldap.core.rule.programmatic.CustomLdapMatchingRule;
 import com.haulmont.addon.ldap.core.spring.events.*;
 import com.haulmont.addon.ldap.dto.TestUserSynchronizationDto;
 import com.haulmont.addon.ldap.entity.AbstractMatchingRule;
@@ -107,8 +107,8 @@ public class UserSynchronizationServiceBean implements UserSynchronizationServic
             List<MatchingRule> matchingRules = matchingRuleDao.getMatchingRules();
             matchingRuleApplierInitializer.getMatchingRuleChain().applyMatchingRules(matchingRules, applyMatchingRuleContext, cubaUser);
             applyMatchingRuleContext.getAppliedRules().forEach(matchingRule -> {
-                if (matchingRule instanceof LdapProgrammaticMatchingRule) {
-                    LdapProgrammaticMatchingRule pmr = (LdapProgrammaticMatchingRule) matchingRule;
+                if (matchingRule instanceof CustomLdapMatchingRule) {
+                    CustomLdapMatchingRule pmr = (CustomLdapMatchingRule) matchingRule;
                     testUserSynchronizationDto.getAppliedMatchingRules().add(matchingRuleDao.mapProgrammaticRule(pmr));
                 } else {
                     testUserSynchronizationDto.getAppliedMatchingRules().add((AbstractMatchingRule) matchingRule);

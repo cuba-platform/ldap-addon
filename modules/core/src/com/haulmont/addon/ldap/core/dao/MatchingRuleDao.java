@@ -1,6 +1,6 @@
 package com.haulmont.addon.ldap.core.dao;
 
-import com.haulmont.addon.ldap.core.rule.programmatic.LdapProgrammaticMatchingRule;
+import com.haulmont.addon.ldap.core.rule.programmatic.CustomLdapMatchingRule;
 import com.haulmont.addon.ldap.dto.ProgrammaticMatchingRuleDto;
 import com.haulmont.addon.ldap.entity.AbstractMatchingRule;
 import com.haulmont.addon.ldap.entity.FixedMatchingRule;
@@ -35,7 +35,7 @@ public class MatchingRuleDao {
     @Inject
     private Messages messages;
 
-    public ProgrammaticMatchingRuleDto mapProgrammaticRule(LdapProgrammaticMatchingRule pmr){
+    public ProgrammaticMatchingRuleDto mapProgrammaticRule(CustomLdapMatchingRule pmr){
         ProgrammaticMatchingRuleDto programmaticMatchingRuleDto = metadata.create(ProgrammaticMatchingRuleDto.class);
         programmaticMatchingRuleDto.setId(pmr.getId());
         programmaticMatchingRuleDto.setDescription(pmr.getDescription());
@@ -58,15 +58,15 @@ public class MatchingRuleDao {
         return query.getResultList();
     }
 
-    public List<LdapProgrammaticMatchingRule> getProgrammaticMatchingRules() {
-        List<LdapProgrammaticMatchingRule> result = new ArrayList<>();
-        Map<String, LdapProgrammaticMatchingRule> map = AppBeans.getAll(LdapProgrammaticMatchingRule.class);
+    public List<CustomLdapMatchingRule> getProgrammaticMatchingRules() {
+        List<CustomLdapMatchingRule> result = new ArrayList<>();
+        Map<String, CustomLdapMatchingRule> map = AppBeans.getAll(CustomLdapMatchingRule.class);
         if (map != null) {
-            for (Map.Entry<String, LdapProgrammaticMatchingRule> me : map.entrySet()) {
+            for (Map.Entry<String, CustomLdapMatchingRule> me : map.entrySet()) {
                 result.add(me.getValue());
             }
         }
-        result.sort(Comparator.comparing(LdapProgrammaticMatchingRule::getOrder));
+        result.sort(Comparator.comparing(CustomLdapMatchingRule::getOrder));
         return result;
     }
 
@@ -104,7 +104,7 @@ public class MatchingRuleDao {
         List<ProgrammaticMatchingRuleDto> programmaticDto = new ArrayList<>(programmaticMatchingRules.size());
 
         for (MatchingRule programmaticMatchingRule : programmaticMatchingRules) {
-            LdapProgrammaticMatchingRule pmr = (LdapProgrammaticMatchingRule) programmaticMatchingRule;
+            CustomLdapMatchingRule pmr = (CustomLdapMatchingRule) programmaticMatchingRule;
             programmaticDto.add(mapProgrammaticRule(pmr));
         }
 
