@@ -1,6 +1,6 @@
 package com.haulmont.addon.ldap.web.screens;
 
-import com.haulmont.addon.ldap.dto.ProgrammaticMatchingRuleDto;
+import com.haulmont.addon.ldap.dto.CustomLdapMatchingRuleDto;
 import com.haulmont.addon.ldap.entity.*;
 import com.haulmont.addon.ldap.service.MatchingRuleService;
 import com.haulmont.addon.ldap.utils.MatchingRuleUtils;
@@ -121,7 +121,7 @@ public class MatchingRuleScreen extends AbstractWindow {
         } else {
             checkBox.setValue(true);
         }
-        if ((entity instanceof ProgrammaticMatchingRuleDto)) {
+        if ((entity instanceof CustomLdapMatchingRuleDto)) {
             checkBox.setEditable(false);
             checkBox.setEnabled(false);
         } else {

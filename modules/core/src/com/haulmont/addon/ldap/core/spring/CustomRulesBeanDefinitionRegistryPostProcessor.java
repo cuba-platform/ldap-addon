@@ -14,11 +14,11 @@ import org.springframework.stereotype.Component;
 
 import java.util.Set;
 
-import static com.haulmont.addon.ldap.core.spring.ProgrammaticRulesBeanDefinitionRegistryPostProcessor.NAME;
+import static com.haulmont.addon.ldap.core.spring.CustomRulesBeanDefinitionRegistryPostProcessor.NAME;
 import static com.haulmont.addon.ldap.core.utils.LdapConstants.LDAP_COMPONENT_PREFIX;
 
 @Component(NAME)
-public class ProgrammaticRulesBeanDefinitionRegistryPostProcessor implements BeanDefinitionRegistryPostProcessor {
+public class CustomRulesBeanDefinitionRegistryPostProcessor implements BeanDefinitionRegistryPostProcessor {
 
     public static final String NAME = "ldap_ProgrammaticRulesBeanDefinitionRegistryPostProcessor";
 

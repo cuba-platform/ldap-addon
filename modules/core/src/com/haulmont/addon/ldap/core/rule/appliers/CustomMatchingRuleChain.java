@@ -6,9 +6,9 @@ import com.haulmont.addon.ldap.entity.MatchingRule;
 import com.haulmont.addon.ldap.entity.MatchingRuleType;
 import com.haulmont.cuba.core.global.Metadata;
 
-public class ProgrammaticMatchingRuleChain extends MatchingRuleChain {
+public class CustomMatchingRuleChain extends MatchingRuleChain {
 
-    public ProgrammaticMatchingRuleChain(MatchingRuleChain next, Metadata metadata) {
+    public CustomMatchingRuleChain(MatchingRuleChain next, Metadata metadata) {
         super(next, MatchingRuleType.PROGRAMMATIC, metadata);
     }
 

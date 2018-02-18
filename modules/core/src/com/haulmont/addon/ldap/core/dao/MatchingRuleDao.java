@@ -1,9 +1,8 @@
 package com.haulmont.addon.ldap.core.dao;
 
 import com.haulmont.addon.ldap.core.rule.programmatic.CustomLdapMatchingRule;
-import com.haulmont.addon.ldap.dto.ProgrammaticMatchingRuleDto;
+import com.haulmont.addon.ldap.dto.CustomLdapMatchingRuleDto;
 import com.haulmont.addon.ldap.entity.AbstractMatchingRule;
-import com.haulmont.addon.ldap.entity.FixedMatchingRule;
 import com.haulmont.addon.ldap.entity.MatchingRule;
 import com.haulmont.addon.ldap.entity.SimpleMatchingRule;
 import com.haulmont.cuba.core.Persistence;
@@ -37,19 +36,19 @@ public class MatchingRuleDao {
     @Inject
     private Messages messages;
 
-    public ProgrammaticMatchingRuleDto mapProgrammaticRule(CustomLdapMatchingRule pmr) {
-        ProgrammaticMatchingRuleDto programmaticMatchingRuleDto = metadata.create(ProgrammaticMatchingRuleDto.class);
-        programmaticMatchingRuleDto.setId(pmr.getId());
-        programmaticMatchingRuleDto.setDescription(pmr.getDescription());
-        programmaticMatchingRuleDto.setOrder(pmr.getOrder());
-        programmaticMatchingRuleDto.setRuleType(pmr.getRuleType());
-        programmaticMatchingRuleDto.setAccessGroup(pmr.getAccessGroup());
-        programmaticMatchingRuleDto.setRoles(pmr.getRoles() == null ? new ArrayList<>() : pmr.getRoles());
-        programmaticMatchingRuleDto.setIsDisabled(pmr.getIsDisabled() == null ? false : pmr.getIsDisabled());
-        programmaticMatchingRuleDto.setIsOverrideExistingAccessGroup(pmr.getIsOverrideExistingAccessGroup() == null ? false : pmr.getIsOverrideExistingAccessGroup());
-        programmaticMatchingRuleDto.setIsOverrideExistingRoles(pmr.getIsOverrideExistingRoles() == null ? false : pmr.getIsOverrideExistingRoles());
-        programmaticMatchingRuleDto.setIsTerminalRule(pmr.getIsTerminalRule() == null ? false : pmr.getIsTerminalRule());
-        return programmaticMatchingRuleDto;
+    public CustomLdapMatchingRuleDto mapProgrammaticRule(CustomLdapMatchingRule pmr) {
+        CustomLdapMatchingRuleDto customLdapMatchingRuleDto = metadata.create(CustomLdapMatchingRuleDto.class);
+        customLdapMatchingRuleDto.setId(pmr.getId());
+        customLdapMatchingRuleDto.setDescription(pmr.getDescription());
+        customLdapMatchingRuleDto.setOrder(pmr.getOrder());
+        customLdapMatchingRuleDto.setRuleType(pmr.getRuleType());
+        customLdapMatchingRuleDto.setAccessGroup(pmr.getAccessGroup());
+        customLdapMatchingRuleDto.setRoles(pmr.getRoles() == null ? new ArrayList<>() : pmr.getRoles());
+        customLdapMatchingRuleDto.setIsDisabled(pmr.getIsDisabled() == null ? false : pmr.getIsDisabled());
+        customLdapMatchingRuleDto.setIsOverrideExistingAccessGroup(pmr.getIsOverrideExistingAccessGroup() == null ? false : pmr.getIsOverrideExistingAccessGroup());
+        customLdapMatchingRuleDto.setIsOverrideExistingRoles(pmr.getIsOverrideExistingRoles() == null ? false : pmr.getIsOverrideExistingRoles());
+        customLdapMatchingRuleDto.setIsTerminalRule(pmr.getIsTerminalRule() == null ? false : pmr.getIsTerminalRule());
+        return customLdapMatchingRuleDto;
     }
 
     @Transactional(readOnly = true)
@@ -107,7 +106,7 @@ public class MatchingRuleDao {
         }
         initializeDbMatchingRules(dbMatchingRules);
         List<? extends MatchingRule> programmaticMatchingRules = getProgrammaticMatchingRules();
-        List<ProgrammaticMatchingRuleDto> programmaticDto = new ArrayList<>(programmaticMatchingRules.size());
+        List<CustomLdapMatchingRuleDto> programmaticDto = new ArrayList<>(programmaticMatchingRules.size());
 
         for (MatchingRule programmaticMatchingRule : programmaticMatchingRules) {
             CustomLdapMatchingRule pmr = (CustomLdapMatchingRule) programmaticMatchingRule;

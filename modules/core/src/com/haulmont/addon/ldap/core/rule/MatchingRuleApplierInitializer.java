@@ -54,7 +54,7 @@ public class MatchingRuleApplierInitializer {
             case SCRIPTING:
                 return new ScriptingMatchingRuleChain(next, metadata);
             case PROGRAMMATIC:
-                return new ProgrammaticMatchingRuleChain(next, metadata);
+                return new CustomMatchingRuleChain(next, metadata);
             case FIXED:
                 return new FixedMatchingRuleChain(next, metadata);
             default:

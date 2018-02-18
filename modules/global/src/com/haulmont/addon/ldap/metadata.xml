@@ -2,7 +2,7 @@
 <metadata xmlns="http://schemas.haulmont.com/cuba/metadata.xsd">
 
     <metadata-model root-package="com.haulmont.addon.ldap" namespace="ldap">
-        <class>com.haulmont.addon.ldap.dto.ProgrammaticMatchingRuleDto</class>
+        <class>com.haulmont.addon.ldap.dto.CustomLdapMatchingRuleDto</class>
     </metadata-model>
 
 </metadata>
