@@ -66,7 +66,7 @@ public class LdapConnectionTesterServiceBean implements LdapConnectionTesterServ
             dirContext.search(StringUtils.EMPTY, DUMMY_FILTER, searchControls);//try to search dummy value in specified context base
             return "SUCCESS";
         } catch (Exception e) {
-            return "FAILED \n" + ExceptionUtils.getStackTrace(e);
+            return ExceptionUtils.getStackTrace(e);
         } finally {
             LdapUtils.closeContext(dirContext);
         }

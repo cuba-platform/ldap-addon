@@ -2,6 +2,7 @@ package com.haulmont.addon.ldap.web.screens;
 
 import com.haulmont.addon.ldap.config.LdapConfig;
 import com.haulmont.addon.ldap.service.LdapConnectionTesterService;
+import com.haulmont.cuba.core.global.Messages;
 import com.haulmont.cuba.gui.components.AbstractWindow;
 import com.haulmont.cuba.gui.components.PasswordField;
 import com.haulmont.cuba.gui.components.TextArea;
@@ -11,6 +12,9 @@ import org.apache.commons.lang.StringUtils;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.util.Map;
+
+import static com.haulmont.cuba.gui.components.Frame.NotificationType.HUMANIZED;
+import static com.haulmont.cuba.gui.components.Frame.NotificationType.WARNING;
 
 public class LdapSettingsEditor extends AbstractWindow {
 
@@ -28,9 +32,6 @@ public class LdapSettingsEditor extends AbstractWindow {
 
     @Named("password")
     private PasswordField passwordField;
-
-    @Named("connectionStatus")
-    private TextArea connectionStatusTextArea;
 
     @Named("loginAttribute")
     private TextField loginAttributeField;
@@ -108,7 +109,13 @@ public class LdapSettingsEditor extends AbstractWindow {
         String contextSourcePassword = passwordField.getValue() == null ? StringUtils.EMPTY : passwordField.getValue();
 
         String result = ldapConnectionTester.testConnection(contextSourceUrl, contextSourceBase, contextSourceUserName, contextSourcePassword);
-        connectionStatusTextArea.setValue(result);
+
+        if ("SUCCESS".equals(result)) {
+            showNotification(getMessage("settingsScreenConnectionSuccessCaption"), getMessage("settingsScreenConnectionSuccessMsg"), HUMANIZED);
+        } else {
+            showNotification(getMessage("settingsScreenConnectionErrorCaption"), result, WARNING);
+        }
+
     }
 
     public void onSaveSchemaSettingsClick() {

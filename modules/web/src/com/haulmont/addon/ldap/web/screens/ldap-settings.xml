@@ -43,8 +43,6 @@
                     <passwordField id="password"
                                    width="370px"/>
                 </flowBox>
-                <textArea id="connectionStatus"
-                          width="798px"/>
                 <buttonsPanel>
                     <button id="saveConnectionSettings"
                             caption="Save"
