@@ -10,73 +10,89 @@ import com.haulmont.cuba.core.config.defaults.DefaultString;
 /**
  * Created by amarin on 12/4/2017.
  */
-@Source(type = SourceType.DATABASE)
 public interface LdapConfig extends Config {
 
+    @Source(type = SourceType.DATABASE)
     @Property("ldap.loginAttribute")
     @DefaultString("sAMAccountName")
     String getLoginAttribute();
 
+    @Source(type = SourceType.DATABASE)
     @Property("ldap.emailAttribute")
     @DefaultString("email")
     String getEmailAttribute();
 
+    @Source(type = SourceType.DATABASE)
     @Property("ldap.cnAttribute")
     @DefaultString("cn")
     String getCnAttribute();
 
+    @Source(type = SourceType.DATABASE)
     @Property("ldap.snAttribute")
     @DefaultString("sn")
     String getSnAttribute();
 
+    @Source(type = SourceType.DATABASE)
     @Property("ldap.memberOfAttribute")
     @DefaultString("memberOf")
     String getMemberOfAttribute();
 
+    @Source(type = SourceType.DATABASE)
     @Property("ldap.accessGroupAttribute")
     @DefaultString("uid")
     String getAccessGroupAttribute();
 
+    @Source(type = SourceType.DATABASE)
     @Property("ldap.positionAttribute")
     @DefaultString("employeeType")
     String getPositionAttribute();
 
+    @Source(type = SourceType.DATABASE)
     @Property("ldap.ouAttribute")
     @DefaultString("ou")
     String getOuAttribute();
 
+    @Source(type = SourceType.DATABASE)
     @Property("ldap.languageAttribute")
     @DefaultString("preferredLanguage")
     String getLanguageAttribute();
 
+    @Source(type = SourceType.DATABASE)
     @Property("ldap.inactiveUserAttribute")
     @DefaultString("accountExpires")
     String getInactiveUserAttribute();
 
+    @Source(type = SourceType.DATABASE)
     @Property("ldap.userPasswordAttribute")
     @DefaultString("userPassword")
     String getUserPasswordAttribute();
 
+    @Source(type = SourceType.DATABASE)
     @Property("ldap.userBase")
     @DefaultString("ou=people")
     String getUserBase();
 
+    @Source(type = SourceType.APP)
     @Property("ldap.useContextSourcePooling")
     @DefaultBoolean(false)
     boolean getUseContextSourcePooling();
 
+    @Source(type = SourceType.APP)
     @Property("ldap.contextSourceUrl")
     @DefaultString("ldap://localhost:10389")
     String getContextSourceUrl();
 
+    @Source(type = SourceType.APP)
     @Property("ldap.contextSourceBase")
     @DefaultString("dc=springframework,dc=org")
     String getContextSourceBase();
 
+    @Source(type = SourceType.APP)
     @Property("ldap.contextSourceUserName")
     @DefaultString("uid=admin,ou=system")
     String getContextSourceUserName();
 
+    @Source(type = SourceType.APP)
     @Property("ldap.contextSourcePassword")
     @DefaultString("secret")
     String getContextSourcePassword();
