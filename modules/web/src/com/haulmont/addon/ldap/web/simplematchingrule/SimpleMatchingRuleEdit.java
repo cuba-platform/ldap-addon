@@ -10,12 +10,4 @@ import javax.inject.Named;
 
 public class SimpleMatchingRuleEdit extends AbstractEditor<SimpleMatchingRule> {
 
-    @Named("conditionsTable.create")
-    private CreateAction conditionsTableCreate;
-
-    @Override
-    protected void postInit() {
-        super.postInit();
-        conditionsTableCreate.setInitialValues(ParamsMap.of("simpleMatchingRule", getItem()));
-    }
 }

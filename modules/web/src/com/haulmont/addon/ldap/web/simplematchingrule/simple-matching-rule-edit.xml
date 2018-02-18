@@ -10,9 +10,9 @@
                     class="com.haulmont.addon.ldap.entity.SimpleMatchingRule"
                     view="simpleMatchingRule-view-with-group-roles-conditions">
             <collectionDatasource id="rolesDs"
-                                  property="roles"/>
+                                  property="roles" allowCommit="false"/>
             <collectionDatasource id="conditionsDs"
-                                  property="conditions"/>
+                                  property="conditions" allowCommit="false"/>
         </datasource>
     </dsContext>
     <dialogMode height="600"

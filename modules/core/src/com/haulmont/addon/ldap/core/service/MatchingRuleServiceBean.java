@@ -34,13 +34,4 @@ public class MatchingRuleServiceBean implements MatchingRuleService{
         return matchingRuleDao.getMatchingRulesGui();
     }
 
-    @Override
-    public FixedMatchingRule getFixedMatchingRule() {
-        return matchingRuleDao.getFixedMatchingRule();
-    }
-
-    @Override
-    public void updateDisabledStateForMatchingRule(UUID id, Boolean isDisabled) {
-        matchingRuleDao.updateDisabledStateForMatchingRule(id, isDisabled);
-    }
 }

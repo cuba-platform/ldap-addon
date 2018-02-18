@@ -52,6 +52,12 @@
                 <button id="ruleRemoveButton"
                         action="matchingRuleTable.remove"
                         caption="msg://ruleRemoveButton"/>
+                <button id="commitButton"
+                        caption="msg://matchingRuleScreenCommitButton"
+                        invoke="onCommitButtonClick"/>
+                <button id="cancelButton"
+                        caption="msg://matchingRuleScreenCancelButton"
+                        invoke="onCancelButtonClick"/>
             </buttonsPanel>
         </table>
     </layout>

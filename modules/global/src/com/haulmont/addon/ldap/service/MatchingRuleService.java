@@ -16,7 +16,4 @@ public interface MatchingRuleService {
 
     List<AbstractMatchingRule> getMatchingRulesGui();
 
-    FixedMatchingRule getFixedMatchingRule();
-
-    void updateDisabledStateForMatchingRule(UUID id, Boolean isDisabled);
 }

@@ -1,17 +1,12 @@
 package com.haulmont.addon.ldap.entity;
 
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.Entity;
-import javax.persistence.Column;
-import javax.persistence.Lob;
+import javax.persistence.*;
+
 import com.haulmont.chile.core.annotations.Composition;
 import com.haulmont.cuba.core.entity.annotation.OnDelete;
 import com.haulmont.cuba.core.global.DeletePolicy;
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang.StringUtils;
 
 import java.util.List;
-import javax.persistence.OneToMany;
 
 @DiscriminatorValue("SIMPLE")
 @Entity(name = "ldap$SimpleMatchingRule")
@@ -21,7 +16,7 @@ public class SimpleMatchingRule extends AbstractMatchingRule {
 
     @Composition
     @OnDelete(DeletePolicy.CASCADE)
-    @OneToMany(mappedBy = "simpleMatchingRule")
+    @OneToMany(mappedBy = "simpleMatchingRule", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<SimpleRuleCondition> conditions;
 
     public SimpleMatchingRule() {

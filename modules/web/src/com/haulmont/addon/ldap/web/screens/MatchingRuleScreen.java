@@ -4,8 +4,8 @@ import com.haulmont.addon.ldap.dto.ProgrammaticMatchingRuleDto;
 import com.haulmont.addon.ldap.entity.*;
 import com.haulmont.addon.ldap.service.MatchingRuleService;
 import com.haulmont.addon.ldap.utils.MatchingRuleUtils;
+import com.haulmont.addon.ldap.web.screens.datasources.MatchingRuleDatasource;
 import com.haulmont.cuba.core.entity.Entity;
-import com.haulmont.cuba.core.global.AppBeans;
 import com.haulmont.cuba.core.global.Metadata;
 import com.haulmont.cuba.gui.WindowManager;
 import com.haulmont.cuba.gui.components.*;
@@ -14,14 +14,15 @@ import com.haulmont.cuba.gui.components.actions.RemoveAction;
 import com.haulmont.cuba.gui.data.CollectionDatasource;
 import com.haulmont.cuba.gui.data.Datasource;
 import com.haulmont.cuba.gui.xml.layout.ComponentsFactory;
-import com.haulmont.cuba.security.entity.Role;
 import org.apache.commons.lang.StringUtils;
 
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.Map;
+
+import static com.haulmont.addon.ldap.entity.MatchingRuleType.FIXED;
+import static com.haulmont.addon.ldap.entity.MatchingRuleType.SIMPLE;
 
 public class MatchingRuleScreen extends AbstractWindow {
 
@@ -40,6 +41,9 @@ public class MatchingRuleScreen extends AbstractWindow {
     @Inject
     private MatchingRuleUtils matchingRuleUtils;
 
+    @Named("abstractMatchingRulesDs")
+    private MatchingRuleDatasource matchingRuleDatasource;
+
 
     @Override
     public void init(Map<String, Object> params) {
@@ -53,20 +57,19 @@ public class MatchingRuleScreen extends AbstractWindow {
             }
         };
 
-        //TODO: пеореопределить EditAction в нем метод internalOpenEditor,
         EditAction customEdit = new EditAction(matchingRuleTable) {
             @Override
             protected void internalOpenEditor(CollectionDatasource datasource, Entity existingItem, Datasource parentDs, Map<String, Object> params) {
-                super.internalOpenEditor(datasource, existingItem, myDS, params);
+                super.internalOpenEditor(datasource, existingItem, datasource, params);
             }
 
             @Override
             public String getWindowId() {
                 AbstractMatchingRule rule = matchingRuleTable.getSingleSelected();
-                if (MatchingRuleType.FIXED.equals(rule.getRuleType())) {
+                if (FIXED.equals(rule.getRuleType())) {
                     return ("ldap$FixedMatchingRule.edit");
                 }
-                if (MatchingRuleType.SIMPLE.equals(rule.getRuleType())) {
+                if (SIMPLE.equals(rule.getRuleType())) {
                     return ("ldap$SimpleMatchingRule.edit");
                 } else {
                     return "";
@@ -79,10 +82,6 @@ public class MatchingRuleScreen extends AbstractWindow {
         customEdit.setBeforeActionPerformedHandler(customEditBeforeActionPerformedHandler);
 
 
-    //public static RemoveAction create(ListComponent target, boolean autocommit) {
-    //    return AppBeans.getPrototype("cuba_RemoveAction", target, autocommit);
-   // }
-
         RemoveAction.BeforeActionPerformedHandler customRemoveBeforeActionPerformedHandler = new RemoveAction.BeforeActionPerformedHandler() {
             @Override
             public boolean beforeActionPerformed() {
@@ -91,7 +90,7 @@ public class MatchingRuleScreen extends AbstractWindow {
             }
         };
 
-        RemoveAction customRemove = new RemoveAction(matchingRuleTable);
+        RemoveAction customRemove = new RemoveAction(matchingRuleTable, false);
         customRemove.setBeforeActionPerformedHandler(customRemoveBeforeActionPerformedHandler);
 
         matchingRuleTable.addAction(customEdit);
@@ -131,8 +130,7 @@ public class MatchingRuleScreen extends AbstractWindow {
                 public void valueChanged(ValueChangeEvent e) {
                     AbstractMatchingRule mr = matchingRuleTable.getSingleSelected();
                     Boolean value = (Boolean) e.getValue();
-                    matchingRuleService.updateDisabledStateForMatchingRule(mr.getId(), !value);
-                    matchingRuleTable.getDatasource().refresh();
+                    mr.setIsDisabled(!value);
                 }
             });
         }
@@ -141,23 +139,51 @@ public class MatchingRuleScreen extends AbstractWindow {
     }
 
     public void onFixedRuleCreateButtonClick() {
-        FixedMatchingRule fixedMatchingRule = matchingRuleService.getFixedMatchingRule();
-        fixedMatchingRule = fixedMatchingRule == null ? metadata.create(FixedMatchingRule.class) : fixedMatchingRule;
+        FixedMatchingRule fixedMatchingRule = (FixedMatchingRule) matchingRuleDatasource.getItems().stream().filter(mr -> FIXED.equals(mr.getRuleType())).findFirst().get();
         openCreateRuleWindow(fixedMatchingRule, "ldap$FixedMatchingRule.edit");
     }
 
     public void onSimpleRuleCreateButtonClick() {
-        SimpleMatchingRule fixedMatchingRule = metadata.create(SimpleMatchingRule.class);
-        openCreateRuleWindow(fixedMatchingRule, "ldap$SimpleMatchingRule.edit");
+        SimpleMatchingRule simpleMatchingRule = metadata.create(SimpleMatchingRule.class);
+        openCreateRuleWindow(simpleMatchingRule, "ldap$SimpleMatchingRule.edit");
     }
 
     private void openCreateRuleWindow(AbstractMatchingRule abstractMatchingRule, String screenName) {
         Map<String, Object> params = new HashMap<>();
-        Window window = openEditor(screenName, abstractMatchingRule, WindowManager.OpenType.NEW_TAB, params);//вызывать с парент ДС
-        window.addListener(new CloseListener() {
-            public void windowClosed(String actionId) {
-                matchingRuleTable.getDatasource().refresh();
-            }
-        });
+        openEditor(screenName, abstractMatchingRule, WindowManager.OpenType.NEW_TAB, params, matchingRuleDatasource);
+    }
+
+    public void onCommitButtonClick() {
+
+        showOptionDialog(
+                getMessage("matchingRuleScreenCommitDialogTitle"),
+                getMessage("matchingRuleScreenCommitDialogMsg"),
+                MessageType.CONFIRMATION,
+                new Action[]{
+                        new DialogAction(DialogAction.Type.YES) {
+                            public void actionPerform(Component component) {
+                                matchingRuleDatasource.commit();
+                            }
+                        },
+                        new DialogAction(DialogAction.Type.NO)
+                }
+        );
+
+    }
+
+    public void onCancelButtonClick() {
+        showOptionDialog(
+                getMessage("matchingRuleScreenCancelDialogTitle"),
+                getMessage("matchingRuleScreenCancelDialogMsg"),
+                MessageType.CONFIRMATION,
+                new Action[]{
+                        new DialogAction(DialogAction.Type.YES) {
+                            public void actionPerform(Component component) {
+                                close(StringUtils.EMPTY);
+                            }
+                        },
+                        new DialogAction(DialogAction.Type.NO)
+                }
+        );
     }
 }

@@ -16,19 +16,26 @@
         <property name="roles"
                   view="_minimal"/>
         <property name="conditions"
-                  view="_local"/>
+                  view="_local">
+            <property name="simpleMatchingRule"
+                      view="_minimal"/>
+        </property>
     </view>
-
     <view class="com.haulmont.cuba.security.entity.UserRole"
           extends="_local"
           name="user-role-view-with-role">
-        <property name="role" view="_local" fetch="JOIN"/>
+        <property fetch="JOIN"
+                  name="role"
+                  view="_local"/>
     </view>
-
     <view class="com.haulmont.cuba.security.entity.User"
           extends="_local"
           name="sec-user-view-with-group-roles">
-        <property name="group" view="_local" fetch="JOIN"/>
-        <property name="userRoles" view="user-role-view-with-role" fetch="JOIN"/>
+        <property fetch="JOIN"
+                  name="group"
+                  view="_local"/>
+        <property fetch="JOIN"
+                  name="userRoles"
+                  view="user-role-view-with-role"/>
     </view>
 </views>

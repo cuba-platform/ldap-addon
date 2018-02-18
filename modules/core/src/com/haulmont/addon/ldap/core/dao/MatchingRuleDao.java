@@ -18,8 +18,10 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.inject.Inject;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.haulmont.addon.ldap.core.dao.MatchingRuleDao.NAME;
+import static com.haulmont.addon.ldap.entity.MatchingRuleType.FIXED;
 
 @Service(NAME)
 public class MatchingRuleDao {
@@ -35,7 +37,7 @@ public class MatchingRuleDao {
     @Inject
     private Messages messages;
 
-    public ProgrammaticMatchingRuleDto mapProgrammaticRule(CustomLdapMatchingRule pmr){
+    public ProgrammaticMatchingRuleDto mapProgrammaticRule(CustomLdapMatchingRule pmr) {
         ProgrammaticMatchingRuleDto programmaticMatchingRuleDto = metadata.create(ProgrammaticMatchingRuleDto.class);
         programmaticMatchingRuleDto.setId(pmr.getId());
         programmaticMatchingRuleDto.setDescription(pmr.getDescription());
@@ -99,6 +101,10 @@ public class MatchingRuleDao {
                 "left join fetch mr.roles roles " +
                 "left join fetch mr.accessGroup group order by mr.order", AbstractMatchingRule.class);
         List<AbstractMatchingRule> dbMatchingRules = query.getResultList();
+        List<AbstractMatchingRule> fixedRules = dbMatchingRules.stream().filter(mr -> FIXED.equals(mr.getRuleType())).collect(Collectors.toList());
+        if (fixedRules.size() != 1) {
+            throw new RuntimeException(messages.formatMessage(MatchingRuleDao.class, "onlySingleDefaultRule"));
+        }
         initializeDbMatchingRules(dbMatchingRules);
         List<? extends MatchingRule> programmaticMatchingRules = getProgrammaticMatchingRules();
         List<ProgrammaticMatchingRuleDto> programmaticDto = new ArrayList<>(programmaticMatchingRules.size());
@@ -113,32 +119,11 @@ public class MatchingRuleDao {
         return result;
     }
 
-    @Transactional(readOnly = true)
-    public FixedMatchingRule getFixedMatchingRule() {
-        TypedQuery<FixedMatchingRule> query = persistence.getEntityManager().createQuery("select distinct mr from ldap$FixedMatchingRule mr " +
-                "left join fetch mr.roles roles " +
-                "left join fetch mr.accessGroup group", FixedMatchingRule.class);
-        List<FixedMatchingRule> list = query.getResultList();
-        if (list.size() > 1) {
-            throw new RuntimeException(messages.formatMessage(MatchingRuleDao.class, "onlySingleDefaultRule"));
-        }
-        FixedMatchingRule result = list.size() == 0 ? null : list.get(0);
-        return result;
-    }
-
-    @Transactional
-    public void updateDisabledStateForMatchingRule(UUID id, Boolean value) {
-        Query query = persistence.getEntityManager().createQuery("update ldap$AbstractMatchingRule mr set mr.isDisabled = :disabled where mr.id = :id");
-        query.setParameter("id", id);
-        query.setParameter("disabled", value);
-        query.executeUpdate();
-    }
-
     private void initializeDbMatchingRules(List<? extends MatchingRule> rules) {
         for (MatchingRule rule : rules) {
             if (rule instanceof SimpleMatchingRule) {
                 SimpleMatchingRule simpleMatchingRule = (SimpleMatchingRule) rule;
-                simpleMatchingRule.getConditions().stream();//initialize conditions in session
+                simpleMatchingRule.getConditions().forEach(con -> con.getSimpleMatchingRule());//initialize conditions in session
             }
         }
     }
