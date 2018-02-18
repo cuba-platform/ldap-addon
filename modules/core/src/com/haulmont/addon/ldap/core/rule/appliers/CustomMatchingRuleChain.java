@@ -9,7 +9,7 @@ import com.haulmont.cuba.core.global.Metadata;
 public class CustomMatchingRuleChain extends MatchingRuleChain {
 
     public CustomMatchingRuleChain(MatchingRuleChain next, Metadata metadata) {
-        super(next, MatchingRuleType.PROGRAMMATIC, metadata);
+        super(next, MatchingRuleType.CUSTOM, metadata);
     }
 
     @Override

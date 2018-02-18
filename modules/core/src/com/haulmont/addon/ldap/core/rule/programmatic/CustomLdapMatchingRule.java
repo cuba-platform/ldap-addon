@@ -17,7 +17,7 @@ public interface CustomLdapMatchingRule extends MatchingRule {
     boolean checkCustomMatchingRule(ApplyMatchingRuleContext applyMatchingRuleContext);
 
     default MatchingRuleType getRuleType() {
-        return MatchingRuleType.PROGRAMMATIC;
+        return MatchingRuleType.CUSTOM;
     }
 
     @Override

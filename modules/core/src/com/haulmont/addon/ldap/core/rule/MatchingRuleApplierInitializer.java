@@ -53,7 +53,7 @@ public class MatchingRuleApplierInitializer {
                 return new SimpleMatchingRuleChain(next, metadata, ldapUserDao);
             case SCRIPTING:
                 return new ScriptingMatchingRuleChain(next, metadata);
-            case PROGRAMMATIC:
+            case CUSTOM:
                 return new CustomMatchingRuleChain(next, metadata);
             case DEFAULT:
                 return new DefaultMatchingRuleChain(next, metadata);

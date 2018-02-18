@@ -4,7 +4,7 @@ public enum MatchingRuleType {
 
     SIMPLE("SIMPLE", 1, "Simple"),
     SCRIPTING("SCRIPTING", 2, "Scripting"),
-    PROGRAMMATIC("PROGRAMMATIC", 3, "Programmatic"),
+    CUSTOM("CUSTOM", 3, "Custom"),
     DEFAULT("DEFAULT", Integer.MAX_VALUE, "Default");
 
     private String code;

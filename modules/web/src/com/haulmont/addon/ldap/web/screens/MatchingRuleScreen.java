@@ -1,6 +1,5 @@
 package com.haulmont.addon.ldap.web.screens;
 
-import com.haulmont.addon.ldap.dto.CustomLdapMatchingRuleDto;
 import com.haulmont.addon.ldap.entity.*;
 import com.haulmont.addon.ldap.service.MatchingRuleService;
 import com.haulmont.addon.ldap.utils.MatchingRuleUtils;
@@ -22,7 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.haulmont.addon.ldap.entity.MatchingRuleType.DEFAULT;
-import static com.haulmont.addon.ldap.entity.MatchingRuleType.PROGRAMMATIC;
+import static com.haulmont.addon.ldap.entity.MatchingRuleType.CUSTOM;
 import static com.haulmont.addon.ldap.entity.MatchingRuleType.SIMPLE;
 
 public class MatchingRuleScreen extends AbstractWindow {
@@ -54,7 +53,7 @@ public class MatchingRuleScreen extends AbstractWindow {
             @Override
             public boolean beforeActionPerformed() {
                 AbstractMatchingRule rule = matchingRuleTable.getSingleSelected();
-                return !PROGRAMMATIC.equals(rule.getRuleType());
+                return !CUSTOM.equals(rule.getRuleType());
             }
         };
 
@@ -87,7 +86,7 @@ public class MatchingRuleScreen extends AbstractWindow {
             @Override
             public boolean beforeActionPerformed() {
                 AbstractMatchingRule rule = matchingRuleTable.getSingleSelected();
-                return !(PROGRAMMATIC.equals(rule.getRuleType()) || MatchingRuleType.DEFAULT.equals(rule.getRuleType()));
+                return !(CUSTOM.equals(rule.getRuleType()) || MatchingRuleType.DEFAULT.equals(rule.getRuleType()));
             }
         };
 
@@ -122,7 +121,7 @@ public class MatchingRuleScreen extends AbstractWindow {
         } else {
             checkBox.setValue(true);
         }
-        if (((PROGRAMMATIC.equals(entity.getRuleType()) || DEFAULT.equals(entity.getRuleType())))) {
+        if (((CUSTOM.equals(entity.getRuleType()) || DEFAULT.equals(entity.getRuleType())))) {
             checkBox.setEditable(false);
             checkBox.setEnabled(false);
         } else {
