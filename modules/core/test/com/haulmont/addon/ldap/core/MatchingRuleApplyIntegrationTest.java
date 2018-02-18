@@ -3,7 +3,7 @@ package com.haulmont.addon.ldap.core;
 
 import com.haulmont.addon.ldap.core.rule.MatchingRuleApplierInitializer;
 import com.haulmont.addon.ldap.core.rule.appliers.MatchingRuleChain;
-import com.haulmont.addon.ldap.entity.FixedMatchingRule;
+import com.haulmont.addon.ldap.entity.DefaultMatchingRule;
 import com.haulmont.addon.ldap.entity.MatchingRuleType;
 import com.haulmont.addon.ldap.entity.SimpleMatchingRule;
 import com.haulmont.cuba.core.Persistence;
@@ -27,7 +27,7 @@ public class MatchingRuleApplyIntegrationTest {
     private ApplicationContext applicationContext;
     private final String login = "joes";
     private final String password = "joespassword";
-    private FixedMatchingRule fixedMatchingRule;
+    private DefaultMatchingRule defaultMatchingRule;
     private SimpleMatchingRule simpleMatchingRule1;
     private SimpleMatchingRule simpleMatchingRule2;
     private Role role1;
@@ -65,18 +65,18 @@ public class MatchingRuleApplyIntegrationTest {
             simpleMatchingRule1.setIsOverrideExistingAccessGroup(true);
             simpleMatchingRule1.setRuleType(MatchingRuleType.SIMPLE);
             simpleMatchingRule1.getRoles().add(role1);
-            simpleMatchingRule1.setLdapCondition("(sAMAccountName=" + login + ")");
+           // simpleMatchingRule1.setLdapCondition("(sAMAccountName=" + login + ")");
 
             simpleMatchingRule2 = metadata.create(SimpleMatchingRule.class);
             simpleMatchingRule2.setAccessGroup(group2);
             simpleMatchingRule2.setRuleType(MatchingRuleType.SIMPLE);
             simpleMatchingRule2.getRoles().add(role2);
-            simpleMatchingRule2.setLdapCondition("(sAMAccountName=fake)");
+            //simpleMatchingRule2.setLdapCondition("(sAMAccountName=fake)");
 
-            fixedMatchingRule = metadata.create(FixedMatchingRule.class);
-            fixedMatchingRule.setAccessGroup(group2);
-            fixedMatchingRule.setRuleType(MatchingRuleType.FIXED);
-            fixedMatchingRule.getRoles().add(role3);
+            defaultMatchingRule = metadata.create(DefaultMatchingRule.class);
+            defaultMatchingRule.setAccessGroup(group2);
+            defaultMatchingRule.setRuleType(MatchingRuleType.DEFAULT);
+            defaultMatchingRule.getRoles().add(role3);
 
 
             entityManager.persist(role1);
@@ -88,7 +88,7 @@ public class MatchingRuleApplyIntegrationTest {
 
             entityManager.persist(simpleMatchingRule1);
             entityManager.persist(simpleMatchingRule2);
-            entityManager.persist(fixedMatchingRule);
+            entityManager.persist(defaultMatchingRule);
         });
 
     }
@@ -105,7 +105,7 @@ public class MatchingRuleApplyIntegrationTest {
 
             entityManager.remove(simpleMatchingRule1);
             entityManager.remove(simpleMatchingRule2);
-            entityManager.remove(fixedMatchingRule);
+            entityManager.remove(defaultMatchingRule);
         });
     }
 
@@ -120,7 +120,7 @@ public class MatchingRuleApplyIntegrationTest {
             Assert.assertEquals(matchingRuleChain.getMatchingRuleType(), mrt);
 
             if (matchingRuleChain.getNext() == null) {
-                Assert.assertEquals(MatchingRuleType.FIXED, mrt);
+                Assert.assertEquals(MatchingRuleType.DEFAULT, mrt);
             }
 
             matchingRuleChain = matchingRuleChain.getNext();

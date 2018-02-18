@@ -55,8 +55,8 @@ public class MatchingRuleApplierInitializer {
                 return new ScriptingMatchingRuleChain(next, metadata);
             case PROGRAMMATIC:
                 return new CustomMatchingRuleChain(next, metadata);
-            case FIXED:
-                return new FixedMatchingRuleChain(next, metadata);
+            case DEFAULT:
+                return new DefaultMatchingRuleChain(next, metadata);
             default:
                 throw new RuntimeException("Invalid matching rule type");
         }

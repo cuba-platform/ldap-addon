@@ -3,8 +3,8 @@
     <include file="/com/haulmont/addon/ldap/screens.xml"/>
     <screen id="ldap$settings"
             template="com/haulmont/addon/ldap/web/screens/ldap-settings.xml"/>
-    <screen id="ldap$FixedMatchingRule.edit"
-            template="com/haulmont/addon/ldap/web/fixedmatchingrule/fixed-matching-rule-edit.xml"/>
+    <screen id="ldap$DefaultMatchingRule.edit"
+            template="com/haulmont/addon/ldap/web/defaultmatchingrule/default-matching-rule-edit.xml"/>
     <screen id="ldap$SimpleMatchingRule.edit"
             template="com/haulmont/addon/ldap/web/simplematchingrule/simple-matching-rule-edit.xml"/>
     <screen id="ldap$SimpleRuleCondition.edit"

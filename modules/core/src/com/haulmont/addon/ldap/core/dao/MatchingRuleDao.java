@@ -20,7 +20,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.haulmont.addon.ldap.core.dao.MatchingRuleDao.NAME;
-import static com.haulmont.addon.ldap.entity.MatchingRuleType.FIXED;
+import static com.haulmont.addon.ldap.entity.MatchingRuleType.DEFAULT;
 
 @Service(NAME)
 public class MatchingRuleDao {
@@ -100,8 +100,8 @@ public class MatchingRuleDao {
                 "left join fetch mr.roles roles " +
                 "left join fetch mr.accessGroup group order by mr.order", AbstractMatchingRule.class);
         List<AbstractMatchingRule> dbMatchingRules = query.getResultList();
-        List<AbstractMatchingRule> fixedRules = dbMatchingRules.stream().filter(mr -> FIXED.equals(mr.getRuleType())).collect(Collectors.toList());
-        if (fixedRules.size() != 1) {
+        List<AbstractMatchingRule> defaultRules = dbMatchingRules.stream().filter(mr -> DEFAULT.equals(mr.getRuleType())).collect(Collectors.toList());
+        if (defaultRules.size() != 1) {
             throw new RuntimeException(messages.formatMessage(MatchingRuleDao.class, "onlySingleDefaultRule"));
         }
         initializeDbMatchingRules(dbMatchingRules);

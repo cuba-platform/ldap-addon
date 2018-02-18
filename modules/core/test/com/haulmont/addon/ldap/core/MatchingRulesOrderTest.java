@@ -43,7 +43,7 @@ public class MatchingRulesOrderTest {
             Assert.assertEquals(matchingRuleChain.getMatchingRuleType(), mrt);
 
             if (matchingRuleChain.getNext() == null) {
-                Assert.assertEquals(MatchingRuleType.FIXED, mrt);
+                Assert.assertEquals(MatchingRuleType.DEFAULT, mrt);
             }
 
             matchingRuleChain = matchingRuleChain.getNext();

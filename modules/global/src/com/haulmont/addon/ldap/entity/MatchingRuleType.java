@@ -5,7 +5,7 @@ public enum MatchingRuleType {
     SIMPLE("SIMPLE", 1, "Simple"),
     SCRIPTING("SCRIPTING", 2, "Scripting"),
     PROGRAMMATIC("PROGRAMMATIC", 3, "Programmatic"),
-    FIXED("FIXED", Integer.MAX_VALUE, "Fixed");
+    DEFAULT("DEFAULT", Integer.MAX_VALUE, "Default");
 
     private String code;
     private Integer processOrder;

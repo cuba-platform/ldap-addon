@@ -40,9 +40,9 @@
             </columns>
             <rows datasource="abstractMatchingRulesDs"/>
             <buttonsPanel height="29px">
-                <button id="fixedRuleCreateButton"
-                        caption="msg://fixedRuleCreateButton"
-                        invoke="onFixedRuleCreateButtonClick"/>
+                <button id="defaultRuleCreateButton"
+                        caption="msg://defaultRuleCreateButton"
+                        invoke="onDefaultRuleCreateButtonClick"/>
                 <button id="simpleRuleCreateButton"
                         caption="msg://simpleRuleCreateButton"
                         invoke="onSimpleRuleCreateButtonClick"/>

@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <window xmlns="http://schemas.haulmont.com/cuba/window.xsd"
         caption="msg://editorCaption"
-        class="com.haulmont.addon.ldap.web.fixedmatchingrule.FixedMatchingRuleEdit"
-        datasource="fixedMatchingRuleDs"
+        class="com.haulmont.addon.ldap.web.defaultmatchingrule.DefaultMatchingRuleEdit"
+        datasource="defaultMatchingRuleDs"
         focusComponent="fieldGroup"
-        messagesPack="com.haulmont.addon.ldap.web.fixedmatchingrule">
+        messagesPack="com.haulmont.addon.ldap.web.defaultmatchingrule">
     <dsContext>
-        <datasource id="fixedMatchingRuleDs"
-                    class="com.haulmont.addon.ldap.entity.FixedMatchingRule"
-                    view="fixedMatchingRule-with-group-roles">
+        <datasource id="defaultMatchingRuleDs"
+                    class="com.haulmont.addon.ldap.entity.DefaultMatchingRule"
+                    view="defaultMatchingRule-with-group-roles">
             <collectionDatasource id="rolesDs"
                                   property="roles"/>
         </datasource>
@@ -18,7 +18,7 @@
     <layout expand="windowActions"
             spacing="true">
         <fieldGroup id="fieldGroup"
-                    datasource="fixedMatchingRuleDs">
+                    datasource="defaultMatchingRuleDs">
             <column width="250px">
                 <field caption="msg://accessGroupFieldCaption"
                        property="accessGroup"/>
@@ -28,8 +28,6 @@
                        property="isOverrideExistingRoles"/>
                 <field caption="msg://isOverrideExistingAccessGroupFieldCaption"
                        property="isOverrideExistingAccessGroup"/>
-                <field caption="msg://isDisabledFieldCaption"
-                       property="isDisabled"/>
                 <field property="description"/>
             </column>
         </fieldGroup>
