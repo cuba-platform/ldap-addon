@@ -8,25 +8,32 @@ import org.apache.commons.lang.StringUtils;
 import java.lang.annotation.Annotation;
 import java.util.UUID;
 
-public interface CustomLdapMatchingRule extends MatchingRule {
+public abstract class CustomLdapMatchingRule implements MatchingRule {
 
-    default UUID getId() {
-        return UUID.randomUUID();
+    private Integer order = 0;
+    private UUID id = UUID.randomUUID();
+
+    public UUID getId() {
+        return id;
     }
 
-    boolean checkCustomMatchingRule(ApplyMatchingRuleContext applyMatchingRuleContext);
+    @Override
+    public Integer getOrder() {
+        return order;
+    }
 
-    default MatchingRuleType getRuleType() {
+    public void setOrder(Integer order) {
+        this.order = order;
+    }
+
+    public abstract boolean checkCustomMatchingRule(ApplyMatchingRuleContext applyMatchingRuleContext);
+
+    public MatchingRuleType getRuleType() {
         return MatchingRuleType.CUSTOM;
     }
 
     @Override
-    default Integer getOrder() {
-        return 0;
-    }
-
-    @Override
-    default String getDescription() {
+    public String getDescription() {
         Class clazz = this.getClass();
         if (clazz.isAnnotationPresent(LdapMatchingRule.class)) {
             Annotation annotation = clazz.getAnnotation(LdapMatchingRule.class);

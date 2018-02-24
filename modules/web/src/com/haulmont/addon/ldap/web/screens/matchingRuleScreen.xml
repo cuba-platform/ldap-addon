@@ -8,57 +8,125 @@
                               class="com.haulmont.addon.ldap.entity.AbstractMatchingRule"
                               datasourceClass="com.haulmont.addon.ldap.web.screens.datasources.MatchingRuleDatasource"
                               view="_local"/>
+        <collectionDatasource id="appliedMatchingRulesDs"
+                              allowCommit="false"
+                              class="com.haulmont.addon.ldap.entity.AbstractMatchingRule"
+                              view="_local"/>
+        <collectionDatasource id="appliedRolesDs"
+                              allowCommit="false"
+                              class="com.haulmont.cuba.security.entity.Role"
+                              view="_local"/>
     </dsContext>
     <dialogMode height="600"
                 width="800"/>
     <layout>
-        <table id="matchingRuleTable"
-               editable="true"
-               height="750px"
+        <split height="100%"
+               orientation="vertical"
+               pos="30"
                width="100%">
-            <actions>
-                <action id="edit"/>
-                <action id="remove"/>
-            </actions>
-            <columns>
-                <column id="matchingRuleTableStateColumn"
-                        caption="msg://matchingRuleTableStateColumn"
-                        generator="generateMatchingRuleTableStateColumnCell"/>
-                <column id="description"/>
-                <column id="matchingRuleTableTypeColumn"
-                        caption="msg://matchingRuleTableTypeColumn"
-                        generator="generateMatchingRuleTableTypeColumnCell"/>
-                <column id="matchingRuleTableCubaColumn"
-                        caption="msg://matchingRuleTableCubaColumn"
-                        generator="generateMatchingRuleTableCubaColumnCell"/>
-                <column id="matchingRuleTableOptionsColumn"
-                        caption="msg://matchingRuleTableOptionsColumn"
-                        generator="generateMatchingRuleTableOptionsColumnCell"/>
-                <column id="matchingRuleTableConditionColumn"
-                        caption="msg://matchingRuleTableConditionColumn"
-                        generator="generateMatchingRuleTableConditionColumnCell"/>
-            </columns>
-            <rows datasource="abstractMatchingRulesDs"/>
-            <buttonsPanel height="29px">
-                <button id="defaultRuleCreateButton"
-                        caption="msg://defaultRuleCreateButton"
-                        invoke="onDefaultRuleCreateButtonClick"/>
-                <button id="simpleRuleCreateButton"
-                        caption="msg://simpleRuleCreateButton"
-                        invoke="onSimpleRuleCreateButtonClick"/>
-                <button id="ruleEditButton"
-                        action="matchingRuleTable.edit"
-                        caption="msg://ruleEditButton"/>
-                <button id="ruleRemoveButton"
-                        action="matchingRuleTable.remove"
-                        caption="msg://ruleRemoveButton"/>
-                <button id="commitButton"
-                        caption="msg://matchingRuleScreenCommitButton"
-                        invoke="onCommitButtonClick"/>
-                <button id="cancelButton"
-                        caption="msg://matchingRuleScreenCancelButton"
-                        invoke="onCancelButtonClick"/>
-            </buttonsPanel>
-        </table>
+            <vbox>
+                <table id="matchingRuleTable"
+                       editable="true"
+                       height="750px"
+                       width="100%">
+                    <actions>
+                        <action id="edit"/>
+                        <action id="remove"/>
+                    </actions>
+                    <columns>
+                        <column id="matchingRuleTableStateColumn"
+                                caption="msg://matchingRuleTableStateColumn"
+                                generator="generateMatchingRuleTableStateColumnCell"/>
+                        <column id="description"/>
+                        <column id="matchingRuleTableTypeColumn"
+                                caption="msg://matchingRuleTableTypeColumn"
+                                generator="generateMatchingRuleTableTypeColumnCell"/>
+                        <column id="matchingRuleTableCubaColumn"
+                                caption="msg://matchingRuleTableCubaColumn"
+                                generator="generateMatchingRuleTableCubaColumnCell"/>
+                        <column id="matchingRuleTableOptionsColumn"
+                                caption="msg://matchingRuleTableOptionsColumn"
+                                generator="generateMatchingRuleTableOptionsColumnCell"/>
+                        <column id="matchingRuleTableConditionColumn"
+                                caption="msg://matchingRuleTableConditionColumn"
+                                generator="generateMatchingRuleTableConditionColumnCell"/>
+                    </columns>
+                    <rows datasource="abstractMatchingRulesDs"/>
+                    <buttonsPanel height="29px">
+                        <button id="defaultRuleCreateButton"
+                                caption="msg://defaultRuleCreateButton"
+                                invoke="onDefaultRuleCreateButtonClick"/>
+                        <button id="simpleRuleCreateButton"
+                                caption="msg://simpleRuleCreateButton"
+                                invoke="onSimpleRuleCreateButtonClick"/>
+                        <button id="ruleEditButton"
+                                action="matchingRuleTable.edit"
+                                caption="msg://ruleEditButton"/>
+                        <button id="ruleRemoveButton"
+                                action="matchingRuleTable.remove"
+                                caption="msg://ruleRemoveButton"/>
+                        <button id="commitButton"
+                                caption="msg://matchingRuleScreenCommitButton"
+                                invoke="onCommitButtonClick"/>
+                        <button id="cancelButton"
+                                caption="msg://matchingRuleScreenCancelButton"
+                                invoke="onCancelButtonClick"/>
+                    </buttonsPanel>
+                </table>
+            </vbox>
+            <vbox margin="true">
+                <flowBox spacing="true"
+                         width="100%">
+                    <label height="20px"
+                           value="msg://testRuleScreenUserName"/>
+                    <textField id="testRuleScreenLogin"/>
+                    <button id="testRuleScreenTestButton"
+                            caption="msg://testRuleScreenTestButton"
+                            invoke="onTestRuleScreenTestButtonClick"/>
+                </flowBox>
+                <flowBox spacing="true">
+                    <label value="msg://testRuleScreenAppliedGroup"/>
+                    <textField id="testRuleScreenAppliedGroup"/>
+                </flowBox>
+                <groupBox spacing="true">
+                    <table id="testRuleScreenRuleTable"
+                           caption="msg://testRuleScreenRuleTable"
+                           height="200px"
+                           width="100%">
+                        <columns>
+                            <column id="description"/>
+                            <column id="testMatchingRuleTableTypeColumn"
+                                    caption="msg://testMatchingRuleTableTypeColumn"
+                                    generator="generateTestMatchingRuleTableTypeColumnCell"/>
+                            <column id="testMatchingRuleTableResultColumn"
+                                    caption="msg://testMatchingRuleTableResultColumn"
+                                    generator="generateTestMatchingRuleTableResultColumnCell"/>
+                            <column id="testMatchingRuleTableOptionsColumn"
+                                    caption="msg://testMatchingRuleTableOptionsColumn"
+                                    generator="generateTestMatchingRuleTableOptionsColumnCell"/>
+                            <column id="testMatchingRuleTableConditionColumn"
+                                    caption="msg://testMatchingRuleTableConditionColumn"
+                                    generator="generateTestMatchingRuleTableConditionColumnCell"/>
+                        </columns>
+                        <rows datasource="appliedMatchingRulesDs"/>
+                    </table>
+                </groupBox>
+                <groupBox spacing="true">
+                    <table id="testRuleScreenRoleTable"
+                           caption="msg://testRuleScreenRoleTable"
+                           height="200px"
+                           width="100%">
+                        <columns>
+                            <column id="name"/>
+                            <column id="locName"/>
+                            <column id="description"/>
+                            <column id="type"/>
+                            <column id="defaultRole"/>
+                        </columns>
+                        <rows datasource="appliedRolesDs"/>
+                    </table>
+                </groupBox>
+            </vbox>
+        </split>
     </layout>
 </window>

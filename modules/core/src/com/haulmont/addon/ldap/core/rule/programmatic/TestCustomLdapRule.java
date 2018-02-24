@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 
 @LdapMatchingRule(description = "Test programmatic Rule")
 //TODO: програматик на кастом
-public class TestCustomLdapRule implements CustomLdapMatchingRule {
+public class TestCustomLdapRule extends CustomLdapMatchingRule {
 
     @Inject
     private LdapUserDao ldapUserDao;

@@ -59,7 +59,7 @@ public class MatchingRuleDao {
         return query.getResultList();
     }
 
-    public List<CustomLdapMatchingRule> getProgrammaticMatchingRules() {
+    public List<CustomLdapMatchingRule> getCustomMatchingRules() {
         List<CustomLdapMatchingRule> result = new ArrayList<>();
         Map<String, CustomLdapMatchingRule> map = AppBeans.getAll(CustomLdapMatchingRule.class);
         if (map != null) {
@@ -79,7 +79,7 @@ public class MatchingRuleDao {
                 "left join fetch mr.accessGroup group order by mr.order", AbstractMatchingRule.class);
         List<? extends MatchingRule> dbMatchingRules = query.getResultList();
         initializeDbMatchingRules(dbMatchingRules);
-        List<? extends MatchingRule> programmaticMatchingRules = getProgrammaticMatchingRules();
+        List<? extends MatchingRule> programmaticMatchingRules = getCustomMatchingRules();
         result.addAll(dbMatchingRules);
         result.addAll(programmaticMatchingRules);
         return result;
@@ -89,7 +89,7 @@ public class MatchingRuleDao {
     public int getMatchingRulesCount() {
         Query query = persistence.getEntityManager().createQuery("select count(mr.id) from ldap$AbstractMatchingRule mr");
         int dbRulesCount = (int) query.getSingleResult();
-        int programmaticRulesCount = getProgrammaticMatchingRules().size();
+        int programmaticRulesCount = getCustomMatchingRules().size();
         return dbRulesCount + programmaticRulesCount;
     }
 
@@ -105,7 +105,7 @@ public class MatchingRuleDao {
             throw new RuntimeException(messages.formatMessage(MatchingRuleDao.class, "onlySingleDefaultRule"));
         }
         initializeDbMatchingRules(dbMatchingRules);
-        List<? extends MatchingRule> programmaticMatchingRules = getProgrammaticMatchingRules();
+        List<? extends MatchingRule> programmaticMatchingRules = getCustomMatchingRules();
         List<CustomLdapMatchingRuleDto> programmaticDto = new ArrayList<>(programmaticMatchingRules.size());
 
         for (MatchingRule programmaticMatchingRule : programmaticMatchingRules) {

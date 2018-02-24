@@ -1,7 +1,9 @@
 package com.haulmont.addon.ldap.web.screens;
 
+import com.haulmont.addon.ldap.dto.TestUserSynchronizationDto;
 import com.haulmont.addon.ldap.entity.*;
 import com.haulmont.addon.ldap.service.MatchingRuleService;
+import com.haulmont.addon.ldap.service.UserSynchronizationService;
 import com.haulmont.addon.ldap.utils.MatchingRuleUtils;
 import com.haulmont.addon.ldap.web.screens.datasources.MatchingRuleDatasource;
 import com.haulmont.cuba.core.entity.Entity;
@@ -13,16 +15,18 @@ import com.haulmont.cuba.gui.components.actions.RemoveAction;
 import com.haulmont.cuba.gui.data.CollectionDatasource;
 import com.haulmont.cuba.gui.data.Datasource;
 import com.haulmont.cuba.gui.xml.layout.ComponentsFactory;
+import com.haulmont.cuba.security.entity.Role;
 import org.apache.commons.lang.StringUtils;
 
 import javax.inject.Inject;
 import javax.inject.Named;
-import java.util.HashMap;
-import java.util.Map;
+import javax.sql.DataSource;
+import java.util.*;
 
 import static com.haulmont.addon.ldap.entity.MatchingRuleType.DEFAULT;
 import static com.haulmont.addon.ldap.entity.MatchingRuleType.CUSTOM;
 import static com.haulmont.addon.ldap.entity.MatchingRuleType.SIMPLE;
+import static com.haulmont.cuba.gui.components.Frame.NotificationType.HUMANIZED;
 
 public class MatchingRuleScreen extends AbstractWindow {
 
@@ -36,24 +40,58 @@ public class MatchingRuleScreen extends AbstractWindow {
     private Metadata metadata;
 
     @Inject
-    private MatchingRuleService matchingRuleService;
-
-    @Inject
     private MatchingRuleUtils matchingRuleUtils;
 
     @Named("abstractMatchingRulesDs")
     private MatchingRuleDatasource matchingRuleDatasource;
 
+    @Named("appliedMatchingRulesDs")
+    private CollectionDatasource<AbstractMatchingRule, UUID> appliedMatchingRulesDs;
+
+    @Named("appliedRolesDs")
+    private CollectionDatasource<Role, UUID> appliedRolesDs;
+
+    @Named("testRuleScreenLogin")
+    private TextField userLoginTextField;
+
+    @Named("testRuleScreenAppliedGroup")
+    private TextField appliedGroupTextField;
+
+    @Inject
+    private UserSynchronizationService userSynchronizationService;
 
     @Override
     public void init(Map<String, Object> params) {
         super.init(params);
+
+        appliedRolesDs.clear();
 
         EditAction.BeforeActionPerformedHandler customEditBeforeActionPerformedHandler = new EditAction.BeforeActionPerformedHandler() {
             @Override
             public boolean beforeActionPerformed() {
                 AbstractMatchingRule rule = matchingRuleTable.getSingleSelected();
                 return !CUSTOM.equals(rule.getRuleType());
+            }
+        };
+
+        EditAction.AfterCommitHandler customAfterCommitHandler = new EditAction.AfterCommitHandler() {
+            @Override
+            public void handle(Entity entity) {
+                AbstractMatchingRule amr = (AbstractMatchingRule) entity;
+                if (MatchingRuleType.SIMPLE.equals(amr.getRuleType())) {
+                    matchingRuleDatasource.getItems().forEach(mr -> {
+                        if (MatchingRuleType.SIMPLE.equals(mr.getRuleType()) && mr.getId().equals(amr.getId())) {
+                            ((SimpleMatchingRule)amr).getConditions().forEach(con -> {
+                                Optional<SimpleRuleCondition> src = ((SimpleMatchingRule) mr).getConditions().stream().filter(c -> c.getId().equals(con.getId())).findFirst();
+                                if (src.isPresent()) {
+                                    src.get().setAttribute(con.getAttribute());
+                                    src.get().setAttributeValue(con.getAttributeValue());
+                                }
+                            });
+                        }
+                    });
+                }
+                matchingRuleTable.repaint();
             }
         };
 
@@ -80,6 +118,7 @@ public class MatchingRuleScreen extends AbstractWindow {
         };
 
         customEdit.setBeforeActionPerformedHandler(customEditBeforeActionPerformedHandler);
+        customEdit.setAfterCommitHandler(customAfterCommitHandler);
 
 
         RemoveAction.BeforeActionPerformedHandler customRemoveBeforeActionPerformedHandler = new RemoveAction.BeforeActionPerformedHandler() {
@@ -185,5 +224,40 @@ public class MatchingRuleScreen extends AbstractWindow {
                         new DialogAction(DialogAction.Type.NO)
                 }
         );
+    }
+
+    public Component generateTestMatchingRuleTableTypeColumnCell(AbstractMatchingRule entity) {
+        return new Table.PlainTextCell(entity.getRuleType().name());
+    }
+
+    public Component generateTestMatchingRuleTableOptionsColumnCell(AbstractMatchingRule entity) {
+        return new Table.PlainTextCell(matchingRuleUtils.generateMatchingRuleOptionsColumn(entity));
+    }
+
+    public Component generateTestMatchingRuleTableResultColumnCell(AbstractMatchingRule entity) {
+        return new Table.PlainTextCell(matchingRuleUtils.generateMatchingRuleRolesAccessGroupColumn(entity));
+    }
+
+    public Component generateTestMatchingRuleTableConditionColumnCell(AbstractMatchingRule entity) {
+        return new Table.PlainTextCell(matchingRuleUtils.generateMatchingRuleTableConditionColumn(entity));
+    }
+
+    public void onTestRuleScreenTestButtonClick() {
+        String login = userLoginTextField.getValue();
+        if (StringUtils.isNotEmpty(login)) {
+            appliedMatchingRulesDs.clear();
+            appliedRolesDs.clear();
+            appliedGroupTextField.setValue(StringUtils.EMPTY);
+
+            TestUserSynchronizationDto dto = userSynchronizationService.testUserSynchronization(login, new ArrayList<>(matchingRuleDatasource.getItems()));
+            if (!dto.isUserExistsInLdap()) {
+                showNotification(getMessage("testRuleScreenUserNotInLdapCaption"), getMessage("testRuleScreenUserNotInLdap"), HUMANIZED);
+            } else {
+                dto.getAppliedMatchingRules().forEach(matchingRule -> appliedMatchingRulesDs.addItem(matchingRule));
+                dto.getAppliedCubaRoles().forEach(role -> appliedRolesDs.addItem(role));
+                appliedGroupTextField.setValue(dto.getGroup() == null ? StringUtils.EMPTY : dto.getGroup().getName());
+            }
+        }
+
     }
 }

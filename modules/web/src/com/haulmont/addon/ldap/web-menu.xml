@@ -4,6 +4,5 @@
           insertBefore="administration">
         <item screen="ldap$settings"/>
         <item screen="ldap$matchingRuleScreen"/>
-        <item screen="ldap$testMatchingRuleScreen"/>
     </menu>
 </menu-config>

@@ -25,6 +25,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.haulmont.addon.ldap.entity.MatchingRuleType.CUSTOM;
+
 @Service(UserSynchronizationService.NAME)
 public class UserSynchronizationServiceBean implements UserSynchronizationService {
 
@@ -93,30 +95,39 @@ public class UserSynchronizationServiceBean implements UserSynchronizationServic
     }
 
     @Override
-    public TestUserSynchronizationDto testUserSynchronization(String login) {
+    public TestUserSynchronizationDto testUserSynchronization(String login, List<AbstractMatchingRule> rulesToApply) {
         TestUserSynchronizationDto testUserSynchronizationDto = new TestUserSynchronizationDto();
         LdapUserWrapper ldapUserWrapper = ldapUserDao.getLdapUserWrapper(login);
-        if (ldapUserWrapper != null) {
-            User cubaUser = cubaUserDao.getCubaUserByLogin(login);
-            ApplyMatchingRuleContext applyMatchingRuleContext = new ApplyMatchingRuleContext(ldapUserWrapper.getLdapUser(), ldapUserWrapper.getLdapUserAttributes(), cubaUser);
-            if (cubaUser.getUserRoles() != null) {
-                cubaUser.getUserRoles().clear();
-            } else {
-                cubaUser.setUserRoles(new ArrayList<>());
-            }
-            List<MatchingRule> matchingRules = matchingRuleDao.getMatchingRules();
-            matchingRuleApplierInitializer.getMatchingRuleChain().applyMatchingRules(matchingRules, applyMatchingRuleContext, cubaUser);
-            applyMatchingRuleContext.getAppliedRules().forEach(matchingRule -> {
-                if (matchingRule instanceof CustomLdapMatchingRule) {
-                    CustomLdapMatchingRule pmr = (CustomLdapMatchingRule) matchingRule;
-                    testUserSynchronizationDto.getAppliedMatchingRules().add(matchingRuleDao.mapProgrammaticRule(pmr));
-                } else {
-                    testUserSynchronizationDto.getAppliedMatchingRules().add((AbstractMatchingRule) matchingRule);
-                }
-            });
+        if (ldapUserWrapper == null) return testUserSynchronizationDto;
 
-            testUserSynchronizationDto.getAppliedCubaRoles().addAll(cubaUser.getUserRoles().stream().map(UserRole::getRole).collect(Collectors.toList()));
+        testUserSynchronizationDto.setUserExistsInLdap(true);
+        User cubaUser = cubaUserDao.getCubaUserByLogin(login);
+
+        List<MatchingRule> result = rulesToApply.stream().filter(r -> !CUSTOM.equals(r.getRuleType())).collect(Collectors.toList());
+        List<CustomLdapMatchingRule> customRules = matchingRuleDao.getCustomMatchingRules();
+        rulesToApply.stream().filter(r -> CUSTOM.equals(r.getRuleType())).forEach(customRuleDto -> {
+            CustomLdapMatchingRule clmr = customRules.stream().filter(cr -> cr.getId().equals(customRuleDto.getId())).findFirst().get();
+            result.add(clmr);
+        });
+
+        ApplyMatchingRuleContext applyMatchingRuleContext = new ApplyMatchingRuleContext(ldapUserWrapper.getLdapUser(), ldapUserWrapper.getLdapUserAttributes(), cubaUser);
+        if (cubaUser.getUserRoles() != null) {
+            cubaUser.getUserRoles().clear();
+        } else {
+            cubaUser.setUserRoles(new ArrayList<>());
         }
+        matchingRuleApplierInitializer.getMatchingRuleChain().applyMatchingRules(result, applyMatchingRuleContext, cubaUser);
+        applyMatchingRuleContext.getAppliedRules().forEach(matchingRule -> {
+            if (matchingRule instanceof CustomLdapMatchingRule) {
+                CustomLdapMatchingRule pmr = (CustomLdapMatchingRule) matchingRule;
+                testUserSynchronizationDto.getAppliedMatchingRules().add(matchingRuleDao.mapProgrammaticRule(pmr));
+            } else {
+                testUserSynchronizationDto.getAppliedMatchingRules().add((AbstractMatchingRule) matchingRule);
+            }
+        });
+
+        testUserSynchronizationDto.getAppliedCubaRoles().addAll(cubaUser.getUserRoles().stream().map(UserRole::getRole).collect(Collectors.toList()));
+        testUserSynchronizationDto.setGroup(cubaUser.getGroup());
 
         return testUserSynchronizationDto;
     }
