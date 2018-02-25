@@ -120,11 +120,7 @@ public class UserSynchronizationServiceBean implements UserSynchronizationServic
         });
 
         ApplyMatchingRuleContext applyMatchingRuleContext = new ApplyMatchingRuleContext(ldapUserWrapper.getLdapUser(), ldapUserWrapper.getLdapUserAttributes(), cubaUser);
-        if (cubaUser.getUserRoles() != null) {
-            cubaUser.getUserRoles().clear();
-        } else {
-            cubaUser.setUserRoles(new ArrayList<>());
-        }
+        cubaUser.getUserRoles().clear();
 
         result.sort((r1, r2) -> {
             int o1 = r1.getOrder() == null || r1.getOrder().getOrder() == null ? 0 : r1.getOrder().getOrder();

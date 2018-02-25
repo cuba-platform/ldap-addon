@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.haulmont.addon.ldap.core.dao.CubaUserDao.NAME;
@@ -33,7 +34,12 @@ public class CubaUserDao {
         query.setParameter("login", login);
         query.setViewName("sec-user-view-with-group-roles");
 
-        return query.getFirstResult() == null ? metadata.create(User.class) : query.getFirstResult();
+        User cubaUser = query.getFirstResult();
+        if (cubaUser == null) {
+            cubaUser = metadata.create(User.class);
+            cubaUser.setUserRoles(new ArrayList<>());
+        }
+        return cubaUser;
     }
 
     @Transactional(readOnly = true)
