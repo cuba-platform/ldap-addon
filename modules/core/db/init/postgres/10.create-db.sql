@@ -10,13 +10,13 @@ create table LDAP_MATCHING_RULE (
     DELETED_BY varchar(50),
     RULE_TYPE varchar(31),
     --
+    MATCHING_RULE_ORDER_ID uuid,
     ACCESS_GROUP_ID uuid,
     IS_TERMINAL_RULE boolean,
     IS_OVERRIDE_EXISTING_ROLES boolean,
     IS_OVERRIDE_EXIST_ACCESS_GRP boolean,
     IS_DISABLED boolean,
     DESCRIPTION varchar(1500),
-    ORDER_ integer,
     --
     -- from ldap$ScriptingMatchingRule
     STRING_CONDITION text,
@@ -49,3 +49,19 @@ create table LDAP_SIMPLE_RULE_CONDITION (
     primary key (ID)
 )^
 -- end LDAP_SIMPLE_RULE_CONDITION
+-- begin LDAP_MATCHING_RULE_ORDER
+create table LDAP_MATCHING_RULE_ORDER (
+    ID uuid,
+    VERSION integer not null,
+    CREATE_TS timestamp,
+    CREATED_BY varchar(50),
+    UPDATE_TS timestamp,
+    UPDATED_BY varchar(50),
+    DELETE_TS timestamp,
+    DELETED_BY varchar(50),
+    --
+    ORDER_ integer,
+    --
+    primary key (ID)
+)^
+-- end LDAP_MATCHING_RULE_ORDER

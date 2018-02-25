@@ -44,11 +44,10 @@ public class CubaUserDao {
     }
 
     @Transactional
-    public void saveCubaUser(User cubaUser, List<UserRole> originalUserRoles) {
+    public void saveCubaUser(User cubaUser) {
         EntityManager entityManager = persistence.getEntityManager();
         User mergedUser = PersistenceHelper.isNew(cubaUser) ? cubaUser : entityManager.merge(cubaUser);
         mergedUser.getUserRoles().forEach(entityManager::persist);
-        originalUserRoles.stream().filter(ur -> !mergedUser.getUserRoles().contains(ur)).forEach(entityManager::remove);
         entityManager.persist(mergedUser);
     }
 }

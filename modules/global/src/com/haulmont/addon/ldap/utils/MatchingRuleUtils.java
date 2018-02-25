@@ -56,7 +56,7 @@ public class MatchingRuleUtils {
         return sb.toString();
     }
 
-    public String generateMatchingRuleOptionsColumn (AbstractMatchingRule entity){
+    public String generateMatchingRuleOptionsColumn(AbstractMatchingRule entity) {
         StringBuilder sb = new StringBuilder();
         if (entity.getIsTerminalRule()) {
             sb.append("Terminal; ");
@@ -78,7 +78,7 @@ public class MatchingRuleUtils {
         return sb.toString();
     }
 
-    public String generateMatchingRuleRolesAccessGroupColumn (AbstractMatchingRule entity){
+    public String generateMatchingRuleRolesAccessGroupColumn(AbstractMatchingRule entity) {
         StringBuilder sb = new StringBuilder("Roles: ");
         for (Role role : entity.getRoles()) {
             sb.append(role.getName());
@@ -91,7 +91,7 @@ public class MatchingRuleUtils {
         return sb.toString();
     }
 
-    public String generateMatchingRuleTableConditionColumn(AbstractMatchingRule entity){
+    public String generateMatchingRuleTableConditionColumn(AbstractMatchingRule entity) {
         if (entity instanceof SimpleMatchingRule) {
             SimpleMatchingRule simpleMatchingRule = (SimpleMatchingRule) entity;
             return getStringCondition(simpleMatchingRule.getConditions());
@@ -102,4 +102,15 @@ public class MatchingRuleUtils {
             return StringUtils.EMPTY;
         }
     }
+
+    public String generateMatchingRuleTableOrderColumn(AbstractMatchingRule entity) {
+        MatchingRuleOrder matchingRuleOrder = entity.getOrder();
+
+        if (entity.getOrder() == null || entity.getOrder().getOrder() == null) {
+            return StringUtils.EMPTY;
+        }
+        return matchingRuleOrder.getOrder().toString();
+    }
+
+
 }

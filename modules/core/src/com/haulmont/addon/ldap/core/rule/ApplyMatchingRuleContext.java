@@ -8,17 +8,19 @@ import com.haulmont.cuba.security.entity.User;
 
 import javax.naming.directory.Attributes;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 public class ApplyMatchingRuleContext {
 
     private final LdapUser ldapUser;
     private final Attributes ldapUserAttributes;
-    private final Set<MatchingRule> appliedRules = new HashSet<>();
-    private final Set<Role> appliedRoles = new HashSet<>();
-    private final Set<Group> appliedGroups = new HashSet<>();
+    private final Set<MatchingRule> appliedRules = new LinkedHashSet<>();
+    private final Set<Role> appliedRoles = new LinkedHashSet<>();
+    private final Set<Group> appliedGroups = new LinkedHashSet<>();
     private final User cubaUser;
     private boolean isAnyRuleApply = false;
+    private boolean stopExecution = false;
 
     public ApplyMatchingRuleContext(LdapUser ldapUser, Attributes ldapUserAttributes, User cubaUser) {
         this.ldapUser = ldapUser;
@@ -56,5 +58,13 @@ public class ApplyMatchingRuleContext {
 
     public User getCubaUser() {
         return cubaUser;
+    }
+
+    public boolean isStopExecution() {
+        return stopExecution;
+    }
+
+    public void setStopExecution(boolean stopExecution) {
+        this.stopExecution = stopExecution;
     }
 }

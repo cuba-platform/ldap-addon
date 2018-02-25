@@ -5,6 +5,7 @@
         messagesPack="com.haulmont.addon.ldap.web.screens">
     <dsContext>
         <collectionDatasource id="abstractMatchingRulesDs"
+                              allowCommit="false"
                               class="com.haulmont.addon.ldap.entity.AbstractMatchingRule"
                               datasourceClass="com.haulmont.addon.ldap.web.screens.datasources.MatchingRuleDatasource"
                               view="_local"/>
@@ -37,6 +38,9 @@
                         <column id="matchingRuleTableStateColumn"
                                 caption="msg://matchingRuleTableStateColumn"
                                 generator="generateMatchingRuleTableStateColumnCell"/>
+                        <column id="matchingRuleTableOrderColumn"
+                                caption="msg://matchingRuleTableOrderColumn"
+                                generator="generateMatchingRuleTableOrderColumnCell"/>
                         <column id="description"/>
                         <column id="matchingRuleTableTypeColumn"
                                 caption="msg://matchingRuleTableTypeColumn"
@@ -85,7 +89,8 @@
                             invoke="onTestRuleScreenTestButtonClick"/>
                 </flowBox>
                 <flowBox spacing="true">
-                    <label value="msg://testRuleScreenAppliedGroup"/>
+                    <label value="msg://testRuleScreenAppliedGroup"
+                           width="67px"/>
                     <textField id="testRuleScreenAppliedGroup"/>
                 </flowBox>
                 <groupBox spacing="true">

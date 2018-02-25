@@ -23,5 +23,5 @@ public interface MatchingRule {
 
     String getDescription();
 
-    Integer getOrder();
+    MatchingRuleOrder getOrder();
 }

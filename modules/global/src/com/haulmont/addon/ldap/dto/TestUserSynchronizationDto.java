@@ -7,12 +7,13 @@ import com.haulmont.cuba.security.entity.Role;
 
 import java.io.Serializable;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 public class TestUserSynchronizationDto implements Serializable{
 
-    private final Set<AbstractMatchingRule> appliedMatchingRules = new HashSet<>();
-    private final Set<Role> appliedCubaRoles = new HashSet<>();
+    private final Set<AbstractMatchingRule> appliedMatchingRules = new LinkedHashSet<>();
+    private final Set<Role> appliedCubaRoles = new LinkedHashSet<>();
     private Group group;
     private boolean isUserExistsInLdap = false;
 

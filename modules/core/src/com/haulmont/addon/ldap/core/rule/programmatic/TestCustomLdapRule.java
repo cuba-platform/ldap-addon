@@ -13,8 +13,7 @@ import javax.inject.Inject;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@LdapMatchingRule(description = "Test programmatic Rule")
-//TODO: програматик на кастом
+@LdapMatchingRule(uuid = "cd7beff5-53df-408e-ba16-b0d103fdc02c", description = "Test programmatic Rule")
 public class TestCustomLdapRule extends CustomLdapMatchingRule {
 
     @Inject
@@ -33,13 +32,13 @@ public class TestCustomLdapRule extends CustomLdapMatchingRule {
 
     @Override
     public Group getAccessGroup() {//TODO: добавить контекст
-        User admin =  cubaUserDao.getCubaUserByLogin("admin");
+        User admin = cubaUserDao.getCubaUserByLogin("admin");
         return admin.getGroup();
     }
 
     @Override
     public List<Role> getRoles() {//TODO: добавить контекст
-        User admin =  cubaUserDao.getCubaUserByLogin("admin");
+        User admin = cubaUserDao.getCubaUserByLogin("admin");
         return admin.getUserRoles().stream().map(UserRole::getRole).collect(Collectors.toList());
     }
 

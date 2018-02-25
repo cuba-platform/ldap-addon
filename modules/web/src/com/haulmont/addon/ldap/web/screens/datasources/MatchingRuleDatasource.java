@@ -29,4 +29,5 @@ public class MatchingRuleDatasource extends CustomCollectionDatasource<AbstractM
     public int getCount() {
         return matchingRuleService.getMatchingRulesCount();
     }
+
 }

@@ -32,4 +32,8 @@ public class MatchingRuleServiceBean implements MatchingRuleService{
         return matchingRuleDao.getMatchingRulesGui();
     }
 
+    @Override
+    public void saveMatchingRulesWithOrder(List<AbstractMatchingRule> matchingRules) {
+        matchingRuleDao.saveMatchingRulesWithOrder(matchingRules);
+    }
 }

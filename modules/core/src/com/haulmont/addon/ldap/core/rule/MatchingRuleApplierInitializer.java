@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 import static com.haulmont.addon.ldap.core.rule.MatchingRuleApplierInitializer.NAME;
 
 @Component(NAME)
+//TODO: chain уже не нужен
 public class MatchingRuleApplierInitializer {
 
     public static final String NAME = "ldap_MatchingRuleApplierInitializer";
@@ -33,10 +34,9 @@ public class MatchingRuleApplierInitializer {
 
     @PostConstruct
     void initChain() {
-        List<MatchingRuleType> typesByProcessOrderDesc = Arrays.stream(MatchingRuleType.values()).sorted(Comparator.comparing(MatchingRuleType::getProcessOrder).reversed())
-                .collect(Collectors.toList());
+        List<MatchingRuleType> matchingRuleTypes = Arrays.stream(MatchingRuleType.values()).collect(Collectors.toList());
         MatchingRuleChain next = null;
-        for (MatchingRuleType mrt : typesByProcessOrderDesc) {
+        for (MatchingRuleType mrt : matchingRuleTypes) {
             MatchingRuleChain mrc = getChainElement(mrt, next);
             next = mrc;
         }

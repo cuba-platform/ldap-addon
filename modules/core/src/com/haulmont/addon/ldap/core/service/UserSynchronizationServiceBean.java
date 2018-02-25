@@ -16,6 +16,7 @@ import com.haulmont.cuba.core.global.Metadata;
 import com.haulmont.cuba.core.global.PersistenceHelper;
 import com.haulmont.cuba.security.entity.User;
 import com.haulmont.cuba.security.entity.UserRole;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
@@ -57,14 +58,19 @@ public class UserSynchronizationServiceBean implements UserSynchronizationServic
         LdapUserWrapper ldapUserWrapper = ldapUserDao.getLdapUserWrapper(login);
         if (ldapUserWrapper != null) {
             User cubaUser = cubaUserDao.getCubaUserByLogin(login);
+            cubaUser.getUserRoles().clear();//user get roles only from LDAP
             ApplyMatchingRuleContext applyMatchingRuleContext = new ApplyMatchingRuleContext(ldapUserWrapper.getLdapUser(), ldapUserWrapper.getLdapUserAttributes(), cubaUser);
             setCommonAttributesFromLdapUser(applyMatchingRuleContext, cubaUser, login);
             List<MatchingRule> matchingRules = matchingRuleDao.getMatchingRules();
-            List<UserRole> originalUserRoles = new ArrayList<>(cubaUser.getUserRoles());
             applicationEventPublisher.publishEvent(new BeforeUserUpdatedFromLdapEvent(this, applyMatchingRuleContext, cubaUser));
-            matchingRuleApplierInitializer.getMatchingRuleChain().applyMatchingRules(matchingRules, applyMatchingRuleContext, cubaUser);
+            for (MatchingRule mr : matchingRules) {
+                matchingRuleApplierInitializer.getMatchingRuleChain().applyMatchingRule(mr, applyMatchingRuleContext, cubaUser);
+                if (applyMatchingRuleContext.isStopExecution()) {
+                    break;
+                }
+            }
             applicationEventPublisher.publishEvent(new AfterUserUpdatedFromLdapEvent(this, applyMatchingRuleContext, cubaUser));
-            cubaUserDao.saveCubaUser(cubaUser, originalUserRoles);
+            cubaUserDao.saveCubaUser(cubaUser);
         }
     }
 
@@ -95,6 +101,7 @@ public class UserSynchronizationServiceBean implements UserSynchronizationServic
     }
 
     @Override
+    //TODO: объединить synchronizeUser и testUserSynchronization
     public TestUserSynchronizationDto testUserSynchronization(String login, List<AbstractMatchingRule> rulesToApply) {
         TestUserSynchronizationDto testUserSynchronizationDto = new TestUserSynchronizationDto();
         LdapUserWrapper ldapUserWrapper = ldapUserDao.getLdapUserWrapper(login);
@@ -107,7 +114,9 @@ public class UserSynchronizationServiceBean implements UserSynchronizationServic
         List<CustomLdapMatchingRule> customRules = matchingRuleDao.getCustomMatchingRules();
         rulesToApply.stream().filter(r -> CUSTOM.equals(r.getRuleType())).forEach(customRuleDto -> {
             CustomLdapMatchingRule clmr = customRules.stream().filter(cr -> cr.getId().equals(customRuleDto.getId())).findFirst().get();
-            result.add(clmr);
+            CustomLdapMatchingRule tempClmr = clmr.clone(clmr);
+            tempClmr.setOrder(customRuleDto.getOrder());
+            result.add(tempClmr);
         });
 
         ApplyMatchingRuleContext applyMatchingRuleContext = new ApplyMatchingRuleContext(ldapUserWrapper.getLdapUser(), ldapUserWrapper.getLdapUserAttributes(), cubaUser);
@@ -116,9 +125,21 @@ public class UserSynchronizationServiceBean implements UserSynchronizationServic
         } else {
             cubaUser.setUserRoles(new ArrayList<>());
         }
-        matchingRuleApplierInitializer.getMatchingRuleChain().applyMatchingRules(result, applyMatchingRuleContext, cubaUser);
+
+        result.sort((r1, r2) -> {
+            int o1 = r1.getOrder() == null || r1.getOrder().getOrder() == null ? 0 : r1.getOrder().getOrder();
+            int o2 = r2.getOrder() == null || r2.getOrder().getOrder() == null ? 0 : r2.getOrder().getOrder();
+            return o1 - o2;
+        });
+
+        for (MatchingRule mr : result) {
+            matchingRuleApplierInitializer.getMatchingRuleChain().applyMatchingRule(mr, applyMatchingRuleContext, cubaUser);
+            if (applyMatchingRuleContext.isStopExecution()) {
+                break;
+            }
+        }
         applyMatchingRuleContext.getAppliedRules().forEach(matchingRule -> {
-            if (matchingRule instanceof CustomLdapMatchingRule) {
+            if (CUSTOM.equals(matchingRule.getRuleType())) {
                 CustomLdapMatchingRule pmr = (CustomLdapMatchingRule) matchingRule;
                 testUserSynchronizationDto.getAppliedMatchingRules().add(matchingRuleDao.mapProgrammaticRule(pmr));
             } else {

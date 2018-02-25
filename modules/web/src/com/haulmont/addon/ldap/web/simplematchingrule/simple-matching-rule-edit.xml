@@ -8,11 +8,13 @@
     <dsContext>
         <datasource id="simpleMatchingRuleDs"
                     class="com.haulmont.addon.ldap.entity.SimpleMatchingRule"
-                    view="simpleMatchingRule-view-with-group-roles-conditions">
+                    view="simpleMatchingRule-view-with-group-roles-conditions-order">
             <collectionDatasource id="rolesDs"
-                                  property="roles" allowCommit="false"/>
+                                  allowCommit="false"
+                                  property="roles"/>
             <collectionDatasource id="conditionsDs"
-                                  property="conditions" allowCommit="false"/>
+                                  allowCommit="false"
+                                  property="conditions"/>
         </datasource>
     </dsContext>
     <dialogMode height="600"
@@ -33,7 +35,6 @@
                 <field caption="msg://isDisabledFieldCaption"
                        property="isDisabled"/>
                 <field property="description"/>
-                <field property="order"/>
             </column>
         </fieldGroup>
         <groupBox id="conditionsBox"

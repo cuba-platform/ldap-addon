@@ -32,23 +32,22 @@ public abstract class MatchingRuleChain {
 
     abstract boolean checkRule(MatchingRule matchingRule, ApplyMatchingRuleContext applyMatchingRuleContext);
 
-    public void applyMatchingRules(List<MatchingRule> matchingRules, ApplyMatchingRuleContext applyMatchingRuleContext, User cubaUser) {
-        for (MatchingRule matchingRule : matchingRules) {
-            if (!matchingRule.getIsDisabled() && isMatchingRuleTypeSupported(matchingRule) && checkRule(matchingRule, applyMatchingRuleContext)) {
-                applyRuleToUser(matchingRule, cubaUser);
-                applyMatchingRuleContext.setAnyRuleApply(true);
-                applyMatchingRuleContext.getAppliedRules().add(matchingRule);
-                if (matchingRule.getAccessGroup() != null) {
-                    applyMatchingRuleContext.getAppliedGroups().add(matchingRule.getAccessGroup());
-                }
-                applyMatchingRuleContext.getAppliedRoles().addAll(matchingRule.getRoles());
-                if (matchingRule.getIsTerminalRule()) {//if terminal rule was satisfied stop execution chain
-                    return;
-                }
+    public void applyMatchingRule(MatchingRule matchingRule, ApplyMatchingRuleContext applyMatchingRuleContext, User cubaUser) {
+        if (!matchingRule.getIsDisabled() && isMatchingRuleTypeSupported(matchingRule) && checkRule(matchingRule, applyMatchingRuleContext)) {
+            applyRuleToUser(matchingRule, cubaUser);
+            applyMatchingRuleContext.setAnyRuleApply(true);
+            applyMatchingRuleContext.getAppliedRules().add(matchingRule);
+            if (matchingRule.getAccessGroup() != null) {
+                applyMatchingRuleContext.getAppliedGroups().add(matchingRule.getAccessGroup());
+            }
+            applyMatchingRuleContext.getAppliedRoles().addAll(matchingRule.getRoles());
+            if (matchingRule.getIsTerminalRule()) {//if terminal rule was satisfied stop execution chain
+                applyMatchingRuleContext.setStopExecution(true);
+                return;
             }
         }
         if (next != null) {//if exists next element in chain and no terminal rule was applied
-            next.applyMatchingRules(matchingRules, applyMatchingRuleContext, cubaUser);
+            next.applyMatchingRule(matchingRule, applyMatchingRuleContext, cubaUser);
         }
     }
 

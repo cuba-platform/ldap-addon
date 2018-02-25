@@ -2,15 +2,17 @@
 <views xmlns="http://schemas.haulmont.com/cuba/view.xsd">
     <view class="com.haulmont.addon.ldap.entity.DefaultMatchingRule"
           extends="_local"
-          name="defaultMatchingRule-with-group-roles">
+          name="defaultMatchingRule-with-group-roles-order">
         <property name="accessGroup"
                   view="_minimal"/>
         <property name="roles"
                   view="_minimal"/>
+        <property name="order"
+                  view="_local"/>
     </view>
     <view class="com.haulmont.addon.ldap.entity.SimpleMatchingRule"
           extends="_local"
-          name="simpleMatchingRule-view-with-group-roles-conditions">
+          name="simpleMatchingRule-view-with-group-roles-conditions-order">
         <property name="accessGroup"
                   view="_minimal"/>
         <property name="roles"
@@ -20,6 +22,9 @@
             <property name="simpleMatchingRule"
                       view="_minimal"/>
         </property>
+        <property fetch="JOIN"
+                  name="order"
+                  view="_local"/>
     </view>
     <view class="com.haulmont.cuba.security.entity.UserRole"
           extends="_local"

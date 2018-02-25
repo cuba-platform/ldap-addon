@@ -14,4 +14,6 @@ public interface MatchingRuleService {
 
     List<AbstractMatchingRule> getMatchingRulesGui();
 
+    void saveMatchingRulesWithOrder(List<AbstractMatchingRule> matchingRules);
+
 }

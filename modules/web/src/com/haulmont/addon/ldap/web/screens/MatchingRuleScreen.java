@@ -6,6 +6,7 @@ import com.haulmont.addon.ldap.service.MatchingRuleService;
 import com.haulmont.addon.ldap.service.UserSynchronizationService;
 import com.haulmont.addon.ldap.utils.MatchingRuleUtils;
 import com.haulmont.addon.ldap.web.screens.datasources.MatchingRuleDatasource;
+import com.haulmont.chile.core.datatypes.Datatypes;
 import com.haulmont.cuba.core.entity.Entity;
 import com.haulmont.cuba.core.global.Metadata;
 import com.haulmont.cuba.gui.WindowManager;
@@ -20,8 +21,8 @@ import org.apache.commons.lang.StringUtils;
 
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.sql.DataSource;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.haulmont.addon.ldap.entity.MatchingRuleType.DEFAULT;
 import static com.haulmont.addon.ldap.entity.MatchingRuleType.CUSTOM;
@@ -60,6 +61,9 @@ public class MatchingRuleScreen extends AbstractWindow {
     @Inject
     private UserSynchronizationService userSynchronizationService;
 
+    @Inject
+    private MatchingRuleService matchingRuleService;
+
     @Override
     public void init(Map<String, Object> params) {
         super.init(params);
@@ -81,7 +85,7 @@ public class MatchingRuleScreen extends AbstractWindow {
                 if (MatchingRuleType.SIMPLE.equals(amr.getRuleType())) {
                     matchingRuleDatasource.getItems().forEach(mr -> {
                         if (MatchingRuleType.SIMPLE.equals(mr.getRuleType()) && mr.getId().equals(amr.getId())) {
-                            ((SimpleMatchingRule)amr).getConditions().forEach(con -> {
+                            ((SimpleMatchingRule) amr).getConditions().forEach(con -> {
                                 Optional<SimpleRuleCondition> src = ((SimpleMatchingRule) mr).getConditions().stream().filter(c -> c.getId().equals(con.getId())).findFirst();
                                 if (src.isPresent()) {
                                     src.get().setAttribute(con.getAttribute());
@@ -193,20 +197,22 @@ public class MatchingRuleScreen extends AbstractWindow {
     }
 
     public void onCommitButtonClick() {
-
-        showOptionDialog(
-                getMessage("matchingRuleScreenCommitDialogTitle"),
-                getMessage("matchingRuleScreenCommitDialogMsg"),
-                MessageType.CONFIRMATION,
-                new Action[]{
-                        new DialogAction(DialogAction.Type.YES) {
-                            public void actionPerform(Component component) {
-                                matchingRuleDatasource.commit();
-                            }
-                        },
-                        new DialogAction(DialogAction.Type.NO)
-                }
-        );
+        if (validateMatchingRulesOrder(new ArrayList<>(matchingRuleDatasource.getItems()))) {
+            showOptionDialog(
+                    getMessage("matchingRuleScreenCommitDialogTitle"),
+                    getMessage("matchingRuleScreenCommitDialogMsg"),
+                    MessageType.CONFIRMATION,
+                    new Action[]{
+                            new DialogAction(DialogAction.Type.YES) {
+                                public void actionPerform(Component component) {
+                                    matchingRuleService.saveMatchingRulesWithOrder(new ArrayList<>(matchingRuleDatasource.getItems()));
+                                    matchingRuleDatasource.refresh();
+                                }
+                            },
+                            new DialogAction(DialogAction.Type.NO)
+                    }
+            );
+        }
 
     }
 
@@ -258,6 +264,63 @@ public class MatchingRuleScreen extends AbstractWindow {
                 appliedGroupTextField.setValue(dto.getGroup() == null ? StringUtils.EMPTY : dto.getGroup().getName());
             }
         }
+
+    }
+
+    public Component generateMatchingRuleTableOrderColumnCell(AbstractMatchingRule entity) {
+        TextField textField = componentsFactory.createComponent(TextField.class);
+        textField.setValue(matchingRuleUtils.generateMatchingRuleTableOrderColumn(entity));
+        textField.setWidth("50");
+        if (DEFAULT.equals(entity.getRuleType())) {
+            textField.setEditable(false);
+            textField.setEnabled(false);
+            textField.setValue(getMessage("matchingRuleTableDefaultRuleOrder"));
+        } else {
+            textField.setDatatype(Datatypes.get("positiveNumberDataType"));
+        }
+        textField.addValueChangeListener(new ValueChangeListener() {
+            @Override
+            public void valueChanged(ValueChangeEvent e) {
+                AbstractMatchingRule mr = matchingRuleTable.getSingleSelected();
+                Integer order = (Integer) e.getValue();
+                MatchingRuleOrder matchingRuleOrder = mr.getOrder();
+                if (matchingRuleOrder == null) {
+                    MatchingRuleOrder newOrder = metadata.create(MatchingRuleOrder.class);
+                    newOrder.setOrder(order);
+                    if (MatchingRuleType.CUSTOM.equals(mr.getRuleType())) {
+                        newOrder.setId(mr.getId());
+                    }
+                    mr.setOrder(newOrder);
+                } else {
+                    matchingRuleOrder.setOrder(order);
+                }
+
+            }
+        });
+
+        return textField;
+    }
+
+    private boolean validateMatchingRulesOrder(List<AbstractMatchingRule> matchingRules) {
+        boolean result = true;
+        Optional<AbstractMatchingRule> nullOrder = matchingRules.stream().filter(mr -> mr.getOrder() == null || mr.getOrder().getOrder() == null).findAny();
+        if (nullOrder.isPresent()) {
+            result = false;
+            showNotification(getMessage("matchingRuleScreenEmptyOrderCaption"), getMessage("matchingRuleScreenEmptyOrder"), HUMANIZED);
+        }
+
+        Map<Integer, Long> countMap = matchingRules.stream()
+                .filter(mr -> mr.getOrder() != null && mr.getOrder().getOrder() != null)
+                .collect(Collectors.groupingBy(mr -> mr.getOrder().getOrder(), Collectors.counting()));
+        for (Map.Entry<Integer, Long> entry : countMap.entrySet()) {
+            if (entry.getValue() > 1) {
+                result = false;
+                showNotification(getMessage("matchingRuleScreenDuplicationOrderCaption"), getMessage("matchingRuleScreenDuplicationOrder"), HUMANIZED);
+                break;
+            }
+        }
+
+        return result;
 
     }
 }
