@@ -32,7 +32,7 @@ import static com.haulmont.cuba.gui.components.Frame.NotificationType.HUMANIZED;
 public class MatchingRuleScreen extends AbstractWindow {
 
     @Named("matchingRuleTable")
-    private Table<AbstractMatchingRule> matchingRuleTable;
+    private Table<AbstractCommonMatchingRule> matchingRuleTable;
 
     @Inject
     private ComponentsFactory componentsFactory;
@@ -47,7 +47,7 @@ public class MatchingRuleScreen extends AbstractWindow {
     private MatchingRuleDatasource matchingRuleDatasource;
 
     @Named("appliedMatchingRulesDs")
-    private CollectionDatasource<AbstractMatchingRule, UUID> appliedMatchingRulesDs;
+    private CollectionDatasource<AbstractCommonMatchingRule, UUID> appliedMatchingRulesDs;
 
     @Named("appliedRolesDs")
     private CollectionDatasource<Role, UUID> appliedRolesDs;
@@ -64,6 +64,8 @@ public class MatchingRuleScreen extends AbstractWindow {
     @Inject
     private MatchingRuleService matchingRuleService;
 
+    private final static Integer DEFAULT_RULE_ORDER = 0;
+
     @Override
     public void init(Map<String, Object> params) {
         super.init(params);
@@ -73,7 +75,7 @@ public class MatchingRuleScreen extends AbstractWindow {
         EditAction.BeforeActionPerformedHandler customEditBeforeActionPerformedHandler = new EditAction.BeforeActionPerformedHandler() {
             @Override
             public boolean beforeActionPerformed() {
-                AbstractMatchingRule rule = matchingRuleTable.getSingleSelected();
+                AbstractCommonMatchingRule rule = matchingRuleTable.getSingleSelected();
                 return !CUSTOM.equals(rule.getRuleType());
             }
         };
@@ -81,7 +83,7 @@ public class MatchingRuleScreen extends AbstractWindow {
         EditAction.AfterCommitHandler customAfterCommitHandler = new EditAction.AfterCommitHandler() {
             @Override
             public void handle(Entity entity) {
-                AbstractMatchingRule amr = (AbstractMatchingRule) entity;
+                AbstractCommonMatchingRule amr = (AbstractCommonMatchingRule) entity;
                 if (MatchingRuleType.SIMPLE.equals(amr.getRuleType())) {
                     matchingRuleDatasource.getItems().forEach(mr -> {
                         if (MatchingRuleType.SIMPLE.equals(mr.getRuleType()) && mr.getId().equals(amr.getId())) {
@@ -107,7 +109,7 @@ public class MatchingRuleScreen extends AbstractWindow {
 
             @Override
             public String getWindowId() {
-                AbstractMatchingRule rule = matchingRuleTable.getSingleSelected();
+                AbstractCommonMatchingRule rule = matchingRuleTable.getSingleSelected();
                 if (DEFAULT.equals(rule.getRuleType())) {
                     return ("ldap$DefaultMatchingRule.edit");
                 }
@@ -128,7 +130,7 @@ public class MatchingRuleScreen extends AbstractWindow {
         RemoveAction.BeforeActionPerformedHandler customRemoveBeforeActionPerformedHandler = new RemoveAction.BeforeActionPerformedHandler() {
             @Override
             public boolean beforeActionPerformed() {
-                AbstractMatchingRule rule = matchingRuleTable.getSingleSelected();
+                AbstractCommonMatchingRule rule = matchingRuleTable.getSingleSelected();
                 return !(CUSTOM.equals(rule.getRuleType()) || MatchingRuleType.DEFAULT.equals(rule.getRuleType()));
             }
         };
@@ -141,23 +143,23 @@ public class MatchingRuleScreen extends AbstractWindow {
     }
 
 
-    public Component generateMatchingRuleTableConditionColumnCell(AbstractMatchingRule entity) {
+    public Component generateMatchingRuleTableConditionColumnCell(AbstractCommonMatchingRule entity) {
         return new Table.PlainTextCell(matchingRuleUtils.generateMatchingRuleTableConditionColumn(entity));
     }
 
-    public Component generateMatchingRuleTableCubaColumnCell(AbstractMatchingRule entity) {
+    public Component generateMatchingRuleTableCubaColumnCell(AbstractCommonMatchingRule entity) {
         return new Table.PlainTextCell(matchingRuleUtils.generateMatchingRuleRolesAccessGroupColumn(entity));
     }
 
-    public Component generateMatchingRuleTableTypeColumnCell(AbstractMatchingRule entity) {
+    public Component generateMatchingRuleTableTypeColumnCell(AbstractCommonMatchingRule entity) {
         return new Table.PlainTextCell(entity.getRuleType().getName());
     }
 
-    public Component generateMatchingRuleTableOptionsColumnCell(AbstractMatchingRule entity) {
+    public Component generateMatchingRuleTableOptionsColumnCell(AbstractCommonMatchingRule entity) {
         return new Table.PlainTextCell(matchingRuleUtils.generateMatchingRuleOptionsColumn(entity));
     }
 
-    public Component generateMatchingRuleTableStateColumnCell(AbstractMatchingRule entity) {
+    public Component generateMatchingRuleTableStateColumnCell(AbstractCommonMatchingRule entity) {
         CheckBox checkBox = componentsFactory.createComponent(CheckBox.class);
         if (entity.getIsDisabled()) {
             checkBox.setValue(false);
@@ -171,7 +173,7 @@ public class MatchingRuleScreen extends AbstractWindow {
             checkBox.addValueChangeListener(new ValueChangeListener() {
                 @Override
                 public void valueChanged(ValueChangeEvent e) {
-                    AbstractMatchingRule mr = matchingRuleTable.getSingleSelected();
+                    AbstractCommonMatchingRule mr = matchingRuleTable.getSingleSelected();
                     Boolean value = (Boolean) e.getValue();
                     mr.setIsDisabled(!value);
                 }
@@ -191,7 +193,7 @@ public class MatchingRuleScreen extends AbstractWindow {
         openCreateRuleWindow(simpleMatchingRule, "ldap$SimpleMatchingRule.edit");
     }
 
-    private void openCreateRuleWindow(AbstractMatchingRule abstractMatchingRule, String screenName) {
+    private void openCreateRuleWindow(AbstractCommonMatchingRule abstractMatchingRule, String screenName) {
         Map<String, Object> params = new HashMap<>();
         openEditor(screenName, abstractMatchingRule, WindowManager.OpenType.NEW_TAB, params, matchingRuleDatasource);
     }
@@ -232,19 +234,19 @@ public class MatchingRuleScreen extends AbstractWindow {
         );
     }
 
-    public Component generateTestMatchingRuleTableTypeColumnCell(AbstractMatchingRule entity) {
+    public Component generateTestMatchingRuleTableTypeColumnCell(AbstractCommonMatchingRule entity) {
         return new Table.PlainTextCell(entity.getRuleType().name());
     }
 
-    public Component generateTestMatchingRuleTableOptionsColumnCell(AbstractMatchingRule entity) {
+    public Component generateTestMatchingRuleTableOptionsColumnCell(AbstractCommonMatchingRule entity) {
         return new Table.PlainTextCell(matchingRuleUtils.generateMatchingRuleOptionsColumn(entity));
     }
 
-    public Component generateTestMatchingRuleTableResultColumnCell(AbstractMatchingRule entity) {
+    public Component generateTestMatchingRuleTableResultColumnCell(AbstractCommonMatchingRule entity) {
         return new Table.PlainTextCell(matchingRuleUtils.generateMatchingRuleRolesAccessGroupColumn(entity));
     }
 
-    public Component generateTestMatchingRuleTableConditionColumnCell(AbstractMatchingRule entity) {
+    public Component generateTestMatchingRuleTableConditionColumnCell(AbstractCommonMatchingRule entity) {
         return new Table.PlainTextCell(matchingRuleUtils.generateMatchingRuleTableConditionColumn(entity));
     }
 
@@ -267,7 +269,7 @@ public class MatchingRuleScreen extends AbstractWindow {
 
     }
 
-    public Component generateMatchingRuleTableOrderColumnCell(AbstractMatchingRule entity) {
+    public Component generateMatchingRuleTableOrderColumnCell(AbstractCommonMatchingRule entity) {
         TextField textField = componentsFactory.createComponent(TextField.class);
         textField.setValue(matchingRuleUtils.generateMatchingRuleTableOrderColumn(entity));
         textField.setWidth("50");
@@ -281,37 +283,28 @@ public class MatchingRuleScreen extends AbstractWindow {
         textField.addValueChangeListener(new ValueChangeListener() {
             @Override
             public void valueChanged(ValueChangeEvent e) {
-                AbstractMatchingRule mr = matchingRuleTable.getSingleSelected();
+                AbstractCommonMatchingRule mr = matchingRuleTable.getSingleSelected();
                 Integer order = (Integer) e.getValue();
                 MatchingRuleOrder matchingRuleOrder = mr.getOrder();
-                if (matchingRuleOrder == null) {
-                    MatchingRuleOrder newOrder = metadata.create(MatchingRuleOrder.class);
-                    newOrder.setOrder(order);
-                    if (MatchingRuleType.CUSTOM.equals(mr.getRuleType())) {
-                        newOrder.setId(mr.getId());
-                    }
-                    mr.setOrder(newOrder);
-                } else {
-                    matchingRuleOrder.setOrder(order);
+                matchingRuleOrder.setOrder(order);
+                if (MatchingRuleType.CUSTOM.equals(mr.getRuleType())) {
+                    matchingRuleOrder.setCustomMatchingRuleId(mr.getMatchingRuleId());
                 }
-
             }
         });
 
         return textField;
     }
 
-    private boolean validateMatchingRulesOrder(List<AbstractMatchingRule> matchingRules) {
+    private boolean validateMatchingRulesOrder(List<AbstractCommonMatchingRule> matchingRules) {
         boolean result = true;
-        Optional<AbstractMatchingRule> nullOrder = matchingRules.stream().filter(mr -> mr.getOrder() == null || mr.getOrder().getOrder() == null).findAny();
-        if (nullOrder.isPresent()) {
+        Optional<AbstractCommonMatchingRule> defaultOrder = matchingRules.stream().filter(mr -> DEFAULT_RULE_ORDER.equals(mr.getOrder().getOrder())).findAny();
+        if (defaultOrder.isPresent()) {
             result = false;
             showNotification(getMessage("matchingRuleScreenEmptyOrderCaption"), getMessage("matchingRuleScreenEmptyOrder"), HUMANIZED);
         }
 
-        Map<Integer, Long> countMap = matchingRules.stream()
-                .filter(mr -> mr.getOrder() != null && mr.getOrder().getOrder() != null)
-                .collect(Collectors.groupingBy(mr -> mr.getOrder().getOrder(), Collectors.counting()));
+        Map<Integer, Long> countMap = matchingRules.stream().collect(Collectors.groupingBy(mr -> mr.getOrder().getOrder(), Collectors.counting()));
         for (Map.Entry<Integer, Long> entry : countMap.entrySet()) {
             if (entry.getValue() > 1) {
                 result = false;
@@ -322,5 +315,9 @@ public class MatchingRuleScreen extends AbstractWindow {
 
         return result;
 
+    }
+
+    public Component generateMatchingRuleTableDescriptionColumnCell(AbstractCommonMatchingRule entity) {
+        return new Table.PlainTextCell(matchingRuleUtils.generateMatchingRuleTableDescriptionColumn(entity));
     }
 }

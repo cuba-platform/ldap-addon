@@ -10,7 +10,7 @@ import java.util.List;
 
 @DiscriminatorValue("SIMPLE")
 @Entity(name = "ldap$SimpleMatchingRule")
-public class SimpleMatchingRule extends AbstractMatchingRule {
+public class SimpleMatchingRule extends AbstractDbStoredMatchingRule {
     private static final long serialVersionUID = -2383286286785487816L;
 
 

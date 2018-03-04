@@ -6,13 +6,11 @@
     <dsContext>
         <collectionDatasource id="abstractMatchingRulesDs"
                               allowCommit="false"
-                              class="com.haulmont.addon.ldap.entity.AbstractMatchingRule"
-                              datasourceClass="com.haulmont.addon.ldap.web.screens.datasources.MatchingRuleDatasource"
-                              view="_local"/>
+                              class="com.haulmont.addon.ldap.entity.AbstractCommonMatchingRule"
+                              datasourceClass="com.haulmont.addon.ldap.web.screens.datasources.MatchingRuleDatasource"/>
         <collectionDatasource id="appliedMatchingRulesDs"
                               allowCommit="false"
-                              class="com.haulmont.addon.ldap.entity.AbstractMatchingRule"
-                              view="_local"/>
+                              class="com.haulmont.addon.ldap.entity.AbstractCommonMatchingRule"/>
         <collectionDatasource id="appliedRolesDs"
                               allowCommit="false"
                               class="com.haulmont.cuba.security.entity.Role"
@@ -41,7 +39,9 @@
                         <column id="matchingRuleTableOrderColumn"
                                 caption="msg://matchingRuleTableOrderColumn"
                                 generator="generateMatchingRuleTableOrderColumnCell"/>
-                        <column id="description"/>
+                        <column id="description"
+                                caption="msg://matchingRuleTableDescriptionColumn"
+                                generator="generateMatchingRuleTableDescriptionColumnCell"/>
                         <column id="matchingRuleTableTypeColumn"
                                 caption="msg://matchingRuleTableTypeColumn"
                                 generator="generateMatchingRuleTableTypeColumnCell"/>
@@ -99,7 +99,9 @@
                            height="200px"
                            width="100%">
                         <columns>
-                            <column id="description"/>
+                            <column id="description"
+                                    caption="msg://testMatchingRuleTableDescriptionColumn"
+                                    generator="generateMatchingRuleTableDescriptionColumnCell"/>
                             <column id="testMatchingRuleTableTypeColumn"
                                     caption="msg://testMatchingRuleTableTypeColumn"
                                     generator="generateTestMatchingRuleTableTypeColumnCell"/>

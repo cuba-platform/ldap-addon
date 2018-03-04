@@ -1,34 +1,29 @@
 package com.haulmont.addon.ldap.core.rule.programmatic;
 
+import com.haulmont.addon.ldap.core.dao.MatchingRuleOrderDao;
 import com.haulmont.addon.ldap.core.rule.ApplyMatchingRuleContext;
-import com.haulmont.addon.ldap.entity.MatchingRule;
+import com.haulmont.addon.ldap.entity.CommonMatchingRule;
 import com.haulmont.addon.ldap.entity.MatchingRuleOrder;
 import com.haulmont.addon.ldap.entity.MatchingRuleType;
-import org.apache.commons.lang.StringUtils;
+import com.haulmont.cuba.core.global.AppBeans;
 
 import java.lang.annotation.Annotation;
-import java.util.UUID;
 
-//TODO: добавить ApplyMatchingRuleContext как ThreadLocal
-public abstract class CustomLdapMatchingRule implements MatchingRule, Cloneable {
+public interface CustomLdapMatchingRule extends CommonMatchingRule {
 
-    private MatchingRuleOrder order;
 
-    public abstract boolean checkCustomMatchingRule(ApplyMatchingRuleContext applyMatchingRuleContext);
+    void applyCustomMatchingRule(ApplyMatchingRuleContext applyMatchingRuleContext);
 
-    public final MatchingRuleType getRuleType() {
+    default MatchingRuleType getRuleType() {
         return MatchingRuleType.CUSTOM;
     }
 
-    public final UUID getId() {
-        Class clazz = this.getClass();
-        Annotation annotation = clazz.getAnnotation(LdapMatchingRule.class);
-        LdapMatchingRule ldapMatchingRule = (LdapMatchingRule) annotation;
-        return UUID.fromString(ldapMatchingRule.uuid());
+    default String getMatchingRuleId() {
+        return this.getClass().getName();
     }
 
     @Override
-    public final String getDescription() {
+    default String getDescription() {
         Class clazz = this.getClass();
         Annotation annotation = clazz.getAnnotation(LdapMatchingRule.class);
         LdapMatchingRule ldapMatchingRule = (LdapMatchingRule) annotation;
@@ -36,21 +31,9 @@ public abstract class CustomLdapMatchingRule implements MatchingRule, Cloneable 
     }
 
     @Override
-    public final MatchingRuleOrder getOrder() {
-        return order;
+    default MatchingRuleOrder getOrder() {
+        MatchingRuleOrderDao matchingRuleOrderDao = AppBeans.get(MatchingRuleOrderDao.class);
+        return matchingRuleOrderDao.getCustomRuleOrder(getMatchingRuleId());
     }
 
-    public final void setOrder(MatchingRuleOrder order) {
-        this.order = order;
-    }
-
-    public final CustomLdapMatchingRule clone(CustomLdapMatchingRule source) {
-        CustomLdapMatchingRule temp = null;
-        try {
-            temp = (CustomLdapMatchingRule) this.clone();
-        } catch (CloneNotSupportedException e) {
-            throw new RuntimeException(e);
-        }
-        return temp;
-    }
 }

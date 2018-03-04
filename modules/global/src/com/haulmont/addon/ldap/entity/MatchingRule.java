@@ -5,9 +5,7 @@ import com.haulmont.cuba.security.entity.Role;
 
 import java.util.List;
 
-public interface MatchingRule {
-
-    MatchingRuleType getRuleType();
+public interface MatchingRule extends CommonMatchingRule {
 
     Group getAccessGroup();
 
@@ -20,8 +18,4 @@ public interface MatchingRule {
     Boolean getIsOverrideExistingAccessGroup();
 
     Boolean getIsDisabled();
-
-    String getDescription();
-
-    MatchingRuleOrder getOrder();
 }

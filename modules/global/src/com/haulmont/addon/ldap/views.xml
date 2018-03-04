@@ -8,7 +8,7 @@
         <property name="roles"
                   view="_minimal"/>
         <property name="order"
-                  view="_local"/>
+                  view="_minimal"/>
     </view>
     <view class="com.haulmont.addon.ldap.entity.SimpleMatchingRule"
           extends="_local"
@@ -22,9 +22,8 @@
             <property name="simpleMatchingRule"
                       view="_minimal"/>
         </property>
-        <property fetch="JOIN"
-                  name="order"
-                  view="_local"/>
+        <property name="order"
+                  view="_minimal"/>
     </view>
     <view class="com.haulmont.cuba.security.entity.UserRole"
           extends="_local"

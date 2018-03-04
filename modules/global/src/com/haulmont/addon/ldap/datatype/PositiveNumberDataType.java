@@ -17,7 +17,7 @@ public class PositiveNumberDataType extends IntegerDatatype {
     @Override
     public Integer parse(String value, Locale locale) throws ParseException {
         Integer val = super.parse(value);
-        if (val != null && val <= 0) {
+        if (val != null && val < 0) {
             throw new ParseException(String.format("Value must be positive: \"%s\"", value), 0);
         }
         return val;

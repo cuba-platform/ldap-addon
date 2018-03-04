@@ -7,7 +7,7 @@ import javax.persistence.Lob;
 
 @DiscriminatorValue("SCRIPTING")
 @Entity(name = "ldap$ScriptingMatchingRule")
-public class ScriptingMatchingRule extends AbstractMatchingRule {
+public class ScriptingMatchingRule extends AbstractDbStoredMatchingRule {
     private static final long serialVersionUID = -5385890969244419336L;
 
     public ScriptingMatchingRule() {

@@ -1,17 +1,9 @@
 package com.haulmont.addon.ldap.core;
 
 
-import com.haulmont.addon.ldap.core.rule.MatchingRuleApplierInitializer;
-import com.haulmont.addon.ldap.core.rule.appliers.MatchingRuleChain;
-import com.haulmont.addon.ldap.entity.MatchingRuleType;
 import com.haulmont.cuba.core.Persistence;
 import org.junit.*;
 import org.springframework.context.ApplicationContext;
-
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertEquals;
 
@@ -34,8 +26,8 @@ public class MatchingRulesOrderTest {
 
     @Test
     public void testMatchingRulesOrder() {
-        /*MatchingRuleApplierInitializer matchingRuleApplierInitializer = (MatchingRuleApplierInitializer) applicationContext.getBean(MatchingRuleApplierInitializer.NAME);
-        MatchingRuleChain matchingRuleChain = matchingRuleApplierInitializer.getMatchingRuleChain();
+        /*MatchingRuleApplier matchingRuleApplierInitializer = (MatchingRuleApplier) applicationContext.getBean(MatchingRuleApplier.NAME);
+        MatchingRuleProcessor matchingRuleChain = matchingRuleApplierInitializer.getMatchingRuleProcessor();
         List<MatchingRuleType> typesByProcessOrderAsc = Arrays.stream(MatchingRuleType.values()).sorted(Comparator.comparing(MatchingRuleType::getProcessOrder))
                 .collect(Collectors.toList());
 

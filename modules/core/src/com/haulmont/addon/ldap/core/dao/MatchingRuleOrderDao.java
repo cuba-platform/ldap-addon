@@ -4,12 +4,12 @@ import com.haulmont.addon.ldap.entity.MatchingRuleOrder;
 import com.haulmont.cuba.core.EntityManager;
 import com.haulmont.cuba.core.Persistence;
 import com.haulmont.cuba.core.TypedQuery;
+import com.haulmont.cuba.core.global.Metadata;
 import com.haulmont.cuba.core.global.PersistenceHelper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
-import java.util.UUID;
 
 import static com.haulmont.addon.ldap.core.dao.MatchingRuleOrderDao.NAME;
 
@@ -21,13 +21,18 @@ public class MatchingRuleOrderDao {
     @Inject
     private Persistence persistence;
 
+    @Inject
+    private Metadata metadata;
+
 
     @Transactional(readOnly = true)
-    public MatchingRuleOrder getOrderById(UUID id) {
+    public MatchingRuleOrder getCustomRuleOrder(String customMatchingRuleId) {
         TypedQuery<MatchingRuleOrder> query = persistence.getEntityManager().createQuery("select mro from ldap$MatchingRuleOrder mro " +
-                "where mro.id = :id", MatchingRuleOrder.class);
-        query.setParameter("id", id);
-        return query.getFirstResult();
+                "where mro.customMatchingRuleId = :customMatchingRuleId", MatchingRuleOrder.class);
+        query.setParameter("customMatchingRuleId", customMatchingRuleId);
+        MatchingRuleOrder matchingRuleOrder = query.getFirstResult();
+        return matchingRuleOrder == null ? metadata.create(MatchingRuleOrder.class) : matchingRuleOrder;
+
     }
 
     @Transactional

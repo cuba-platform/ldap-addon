@@ -4,31 +4,16 @@ import javax.persistence.*;
 
 import com.haulmont.cuba.security.entity.Group;
 import com.haulmont.cuba.security.entity.Role;
-import com.haulmont.cuba.core.entity.StandardEntity;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.haulmont.chile.core.annotations.Composition;
-import com.haulmont.cuba.core.entity.annotation.OnDelete;
-import com.haulmont.cuba.core.global.DeletePolicy;
-
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "RULE_TYPE", discriminatorType = DiscriminatorType.STRING)
 @Table(name = "LDAP_MATCHING_RULE")
-@Entity(name = "ldap$AbstractMatchingRule")
-public abstract class AbstractMatchingRule extends StandardEntity implements MatchingRule {
-    private static final long serialVersionUID = 1956446424046023194L;
-
-    @Column(name = "RULE_TYPE")
-    @Enumerated(EnumType.STRING)
-    private MatchingRuleType ruleType;
-
-    @Composition
-    @OnDelete(DeletePolicy.CASCADE)
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "MATCHING_RULE_ORDER_ID")
-    protected MatchingRuleOrder order;
+@Entity(name = "ldap$AbstractDbStoredMatchingRule")
+public abstract class AbstractDbStoredMatchingRule extends AbstractCommonMatchingRule implements MatchingRule {
+    private static final long serialVersionUID = 1956446424046023195L;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ACCESS_GROUP_ID")
@@ -48,31 +33,6 @@ public abstract class AbstractMatchingRule extends StandardEntity implements Mat
 
     @Column(name = "IS_OVERRIDE_EXIST_ACCESS_GRP")
     private Boolean isOverrideExistingAccessGroup = false;
-
-    @Column(name = "IS_DISABLED")
-    private Boolean isDisabled = false;
-
-    @Column(name = "DESCRIPTION", length = 1500)
-    private String description;
-
-
-    @Override
-    public MatchingRuleType getRuleType() {
-        return ruleType;
-    }
-
-    public void setRuleType(MatchingRuleType ruleType) {
-        this.ruleType = ruleType;
-    }
-
-    @Override
-    public MatchingRuleOrder getOrder() {
-        return order;
-    }
-
-    public void setOrder(MatchingRuleOrder order) {
-        this.order = order;
-    }
 
     @Override
     public Group getAccessGroup() {
@@ -119,21 +79,4 @@ public abstract class AbstractMatchingRule extends StandardEntity implements Mat
         isOverrideExistingAccessGroup = overrideExistingAccessGroup;
     }
 
-    @Override
-    public Boolean getIsDisabled() {
-        return isDisabled;
-    }
-
-    public void setIsDisabled(Boolean disabled) {
-        isDisabled = disabled;
-    }
-
-    @Override
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
 }

@@ -60,7 +60,8 @@ create table LDAP_MATCHING_RULE_ORDER (
     DELETE_TS timestamp,
     DELETED_BY varchar(50),
     --
-    ORDER_ integer,
+    ORDER_ integer not null,
+    CUSTOM_MATCHING_RULE_ID varchar(255),
     --
     primary key (ID)
 )^

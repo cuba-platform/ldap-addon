@@ -3,7 +3,8 @@
              version="2.0">
     <persistence-unit name="ldap"
                       transaction-type="RESOURCE_LOCAL">
-        <class>com.haulmont.addon.ldap.entity.AbstractMatchingRule</class>
+        <class>com.haulmont.addon.ldap.entity.AbstractCommonMatchingRule</class>
+        <class>com.haulmont.addon.ldap.entity.AbstractDbStoredMatchingRule</class>
         <class>com.haulmont.addon.ldap.entity.DefaultMatchingRule</class>
         <class>com.haulmont.addon.ldap.entity.SimpleMatchingRule</class>
         <class>com.haulmont.addon.ldap.entity.ScriptingMatchingRule</class>

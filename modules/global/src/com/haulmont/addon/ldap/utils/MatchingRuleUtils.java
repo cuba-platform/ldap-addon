@@ -11,6 +11,9 @@ import javax.inject.Inject;
 
 import java.util.List;
 
+import static com.haulmont.addon.ldap.entity.MatchingRuleType.CUSTOM;
+import static com.haulmont.addon.ldap.entity.MatchingRuleType.SCRIPTING;
+import static com.haulmont.addon.ldap.entity.MatchingRuleType.SIMPLE;
 import static com.haulmont.addon.ldap.utils.MatchingRuleUtils.NAME;
 
 @Component(NAME)
@@ -56,21 +59,24 @@ public class MatchingRuleUtils {
         return sb.toString();
     }
 
-    public String generateMatchingRuleOptionsColumn(AbstractMatchingRule entity) {
+    public String generateMatchingRuleOptionsColumn(AbstractCommonMatchingRule entity) {
+        if (CUSTOM.equals(entity.getRuleType())) return StringUtils.EMPTY;
+
+        AbstractDbStoredMatchingRule dbStoredMatchingRule = ((AbstractDbStoredMatchingRule) entity);
         StringBuilder sb = new StringBuilder();
-        if (entity.getIsTerminalRule()) {
+        if (dbStoredMatchingRule.getIsTerminalRule()) {
             sb.append("Terminal; ");
         } else {
             sb.append("Pass-through; ");
         }
 
-        if (entity.getIsOverrideExistingAccessGroup()) {
+        if (dbStoredMatchingRule.getIsOverrideExistingAccessGroup()) {
             sb.append("Override access group; ");
         } else {
             sb.append("Don't override access group; ");
         }
 
-        if (entity.getIsOverrideExistingRoles()) {
+        if (dbStoredMatchingRule.getIsOverrideExistingRoles()) {
             sb.append("Override existing roles; ");
         } else {
             sb.append("Don't Override existing roles; ");
@@ -78,24 +84,27 @@ public class MatchingRuleUtils {
         return sb.toString();
     }
 
-    public String generateMatchingRuleRolesAccessGroupColumn(AbstractMatchingRule entity) {
+    public String generateMatchingRuleRolesAccessGroupColumn(AbstractCommonMatchingRule entity) {
+        if (CUSTOM.equals(entity.getRuleType())) return StringUtils.EMPTY;
+
+        AbstractDbStoredMatchingRule dbStoredMatchingRule = ((AbstractDbStoredMatchingRule) entity);
         StringBuilder sb = new StringBuilder("Roles: ");
-        for (Role role : entity.getRoles()) {
+        for (Role role : ((AbstractDbStoredMatchingRule) entity).getRoles()) {
             sb.append(role.getName());
             sb.append(";");
         }
         sb.append("\n");
         sb.append("Access group: ");
-        sb.append(entity.getAccessGroup() == null ? StringUtils.EMPTY : entity.getAccessGroup().getName());
+        sb.append(dbStoredMatchingRule.getAccessGroup() == null ? StringUtils.EMPTY : dbStoredMatchingRule.getAccessGroup().getName());
 
         return sb.toString();
     }
 
-    public String generateMatchingRuleTableConditionColumn(AbstractMatchingRule entity) {
-        if (entity instanceof SimpleMatchingRule) {
+    public String generateMatchingRuleTableConditionColumn(AbstractCommonMatchingRule entity) {
+        if (SIMPLE.equals(entity.getRuleType())) {
             SimpleMatchingRule simpleMatchingRule = (SimpleMatchingRule) entity;
             return getStringCondition(simpleMatchingRule.getConditions());
-        } else if ((entity instanceof ScriptingMatchingRule)) {
+        } else if (SCRIPTING.equals(entity.getRuleType())) {
             ScriptingMatchingRule scriptingMatchingRule = (ScriptingMatchingRule) entity;
             return scriptingMatchingRule.getScriptingCondition();
         } else {
@@ -103,13 +112,12 @@ public class MatchingRuleUtils {
         }
     }
 
-    public String generateMatchingRuleTableOrderColumn(AbstractMatchingRule entity) {
-        MatchingRuleOrder matchingRuleOrder = entity.getOrder();
+    public String generateMatchingRuleTableOrderColumn(AbstractCommonMatchingRule entity) {
+        return entity.getOrder().getOrder().toString();
+    }
 
-        if (entity.getOrder() == null || entity.getOrder().getOrder() == null) {
-            return StringUtils.EMPTY;
-        }
-        return matchingRuleOrder.getOrder().toString();
+    public String generateMatchingRuleTableDescriptionColumn(AbstractCommonMatchingRule entity) {
+        return entity.getDescription();
     }
 
 
