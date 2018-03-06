@@ -207,7 +207,9 @@ public class MatchingRuleScreen extends AbstractWindow {
                     new Action[]{
                             new DialogAction(DialogAction.Type.YES) {
                                 public void actionPerform(Component component) {
-                                    matchingRuleService.saveMatchingRulesWithOrder(new ArrayList<>(matchingRuleDatasource.getItems()));
+                                    List<AbstractCommonMatchingRule> itemsToSave = new ArrayList<>(matchingRuleDatasource.getItems());
+                                    List<AbstractCommonMatchingRule> itemsToDelete = new ArrayList<>(matchingRuleDatasource.getItemsToDelete());
+                                    matchingRuleService.saveMatchingRulesWithOrder(itemsToSave, itemsToDelete);
                                     matchingRuleDatasource.refresh();
                                 }
                             },
@@ -226,7 +228,7 @@ public class MatchingRuleScreen extends AbstractWindow {
                 new Action[]{
                         new DialogAction(DialogAction.Type.YES) {
                             public void actionPerform(Component component) {
-                                close(StringUtils.EMPTY);
+                                matchingRuleDatasource.refresh();
                             }
                         },
                         new DialogAction(DialogAction.Type.NO)

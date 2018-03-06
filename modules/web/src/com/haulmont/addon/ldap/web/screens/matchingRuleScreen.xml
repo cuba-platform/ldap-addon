@@ -91,7 +91,9 @@
                 <flowBox spacing="true">
                     <label value="msg://testRuleScreenAppliedGroup"
                            width="67px"/>
-                    <textField id="testRuleScreenAppliedGroup"/>
+                    <textField id="testRuleScreenAppliedGroup"
+                               editable="false"
+                               enable="false"/>
                 </flowBox>
                 <groupBox spacing="true">
                     <table id="testRuleScreenRuleTable"

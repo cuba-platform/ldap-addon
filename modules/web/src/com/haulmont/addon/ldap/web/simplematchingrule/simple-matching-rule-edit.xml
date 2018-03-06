@@ -34,7 +34,8 @@
                        property="isOverrideExistingAccessGroup"/>
                 <field caption="msg://isDisabledFieldCaption"
                        property="isDisabled"/>
-                <field property="description"/>
+                <field caption="msg://descriptionFieldCaption"
+                       property="description"/>
             </column>
         </fieldGroup>
         <groupBox id="conditionsBox"

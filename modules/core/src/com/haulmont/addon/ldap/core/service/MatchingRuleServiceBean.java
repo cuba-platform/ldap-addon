@@ -33,7 +33,7 @@ public class MatchingRuleServiceBean implements MatchingRuleService {
     }
 
     @Override
-    public void saveMatchingRulesWithOrder(List<AbstractCommonMatchingRule> matchingRules) {
-        matchingRuleDao.saveMatchingRulesWithOrder(matchingRules);
+    public void saveMatchingRulesWithOrder(List<AbstractCommonMatchingRule> matchingRules, List<AbstractCommonMatchingRule> matchingRulesToDelete) {
+        matchingRuleDao.saveMatchingRulesWithOrder(matchingRules, matchingRulesToDelete);
     }
 }

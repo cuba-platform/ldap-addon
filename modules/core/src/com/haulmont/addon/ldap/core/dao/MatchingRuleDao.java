@@ -92,7 +92,7 @@ public class MatchingRuleDao {
     }
 
     @Transactional
-    public void saveMatchingRulesWithOrder(List<AbstractCommonMatchingRule> matchingRules) {
+    public void saveMatchingRulesWithOrder(List<AbstractCommonMatchingRule> matchingRules, List<AbstractCommonMatchingRule> matchingRulesToDelete) {
 
         List<CommonMatchingRule> defaultRules = matchingRules.stream().filter(mr -> DEFAULT.equals(mr.getRuleType())).collect(Collectors.toList());
         if (defaultRules.size() != 1) {
@@ -108,13 +108,15 @@ public class MatchingRuleDao {
                 entityManager.persist(mergedRule);
             }
         });
+
+        matchingRulesToDelete.forEach(entityManager::remove);
     }
 
     private void initializeDbMatchingRules(List<? extends CommonMatchingRule> rules) {
         for (CommonMatchingRule rule : rules) {
             if (MatchingRuleType.SIMPLE.equals(rule.getRuleType())) {
                 SimpleMatchingRule simpleMatchingRule = (SimpleMatchingRule) rule;
-                simpleMatchingRule.getConditions().forEach(con -> con.getSimpleMatchingRule());
+                simpleMatchingRule.getConditions().forEach(SimpleRuleCondition::getSimpleMatchingRule);
             }
         }
     }

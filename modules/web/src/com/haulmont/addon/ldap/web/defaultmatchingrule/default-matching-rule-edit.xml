@@ -10,6 +10,7 @@
                     class="com.haulmont.addon.ldap.entity.DefaultMatchingRule"
                     view="defaultMatchingRule-with-group-roles-order">
             <collectionDatasource id="rolesDs"
+                                  allowCommit="false"
                                   property="roles"/>
         </datasource>
     </dsContext>
@@ -28,7 +29,8 @@
                        property="isOverrideExistingRoles"/>
                 <field caption="msg://isOverrideExistingAccessGroupFieldCaption"
                        property="isOverrideExistingAccessGroup"/>
-                <field property="description"/>
+                <field caption="msg://descriptionFieldCaption"
+                       property="description"/>
             </column>
         </fieldGroup>
         <groupBox id="rolesBox"

@@ -56,6 +56,7 @@ public class UserSynchronizationServiceBean implements UserSynchronizationServic
         LdapUserWrapper ldapUserWrapper = ldapUserDao.getLdapUserWrapper(login);
         if (ldapUserWrapper != null) {
             User cubaUser = cubaUserDao.getCubaUserByLogin(login);
+            List<UserRole> originalRoles = new ArrayList<>(cubaUser.getUserRoles());
             cubaUser.getUserRoles().clear();//user get roles only from LDAP
             ApplyMatchingRuleContext applyMatchingRuleContext = new ApplyMatchingRuleContext(ldapUserWrapper.getLdapUser(), ldapUserWrapper.getLdapUserAttributes(), cubaUser);
             setCommonAttributesFromLdapUser(applyMatchingRuleContext, cubaUser, login);
@@ -63,7 +64,7 @@ public class UserSynchronizationServiceBean implements UserSynchronizationServic
             applicationEventPublisher.publishEvent(new BeforeUserUpdatedFromLdapEvent(this, applyMatchingRuleContext, cubaUser));
             matchingRuleApplier.applyMatchingRules(matchingRules, applyMatchingRuleContext);
             applicationEventPublisher.publishEvent(new AfterUserUpdatedFromLdapEvent(this, applyMatchingRuleContext, cubaUser));
-            cubaUserDao.saveCubaUser(cubaUser);
+            cubaUserDao.saveCubaUser(cubaUser, originalRoles);
         }
     }
 

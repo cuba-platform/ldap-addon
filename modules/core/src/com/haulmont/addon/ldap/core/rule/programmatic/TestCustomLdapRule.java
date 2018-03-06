@@ -28,6 +28,8 @@ public class TestCustomLdapRule implements CustomLdapMatchingRule {
             applyMatchingRuleContext.getCurrentRoles().add(admin.getUserRoles().get(0).getRole());
             applyMatchingRuleContext.getAppliedRules().add(this);
             applyMatchingRuleContext.setAnyRuleApply(true);
+            applyMatchingRuleContext.getAppliedGroups().add(admin.getGroup());
+            applyMatchingRuleContext.setCurrentGroup(admin.getGroup());
         }
     }
 
