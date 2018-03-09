@@ -19,7 +19,7 @@ public abstract class MatchingRuleProcessor {
         this.matchingRuleType = matchingRuleType;
     }
 
-    abstract void applyMatchingRule(CommonMatchingRule matchingRule, ApplyMatchingRuleContext applyMatchingRuleContext);
+    abstract boolean applyMatchingRule(CommonMatchingRule matchingRule, ApplyMatchingRuleContext applyMatchingRuleContext);
 
     public MatchingRuleType getMatchingRuleType() {
         return matchingRuleType;

@@ -1,11 +1,9 @@
 package com.haulmont.addon.ldap.entity;
 
-import com.haulmont.chile.core.annotations.Composition;
 import com.haulmont.cuba.core.entity.StandardEntity;
-import com.haulmont.cuba.core.entity.annotation.OnDelete;
-import com.haulmont.cuba.core.global.DeletePolicy;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 @MappedSuperclass
 public abstract class AbstractCommonMatchingRule extends StandardEntity implements CommonMatchingRule {
@@ -16,17 +14,28 @@ public abstract class AbstractCommonMatchingRule extends StandardEntity implemen
     private MatchingRuleType ruleType;
 
 
-    @Composition
-    @OnDelete(DeletePolicy.CASCADE)
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.LAZY, optional = false, cascade = CascadeType.ALL)
+    @JoinColumn(name = "MATCHING_RULE_STATUS_ID")
+    @NotNull
+    private MatchingRuleStatus status = new MatchingRuleStatus();
+
+    @OneToOne(fetch = FetchType.LAZY, optional = false, cascade = CascadeType.ALL)
     @JoinColumn(name = "MATCHING_RULE_ORDER_ID")
-    protected MatchingRuleOrder order = new MatchingRuleOrder();
+    @NotNull
+    private MatchingRuleOrder order = new MatchingRuleOrder();
 
     @Column(name = "DESCRIPTION", length = 1500)
     private String description;
 
-    @Column(name = "IS_DISABLED")
-    private Boolean isDisabled = false;
+
+    public void setStatus(MatchingRuleStatus status) {
+        this.status = status;
+    }
+
+    public MatchingRuleStatus getStatus() {
+        return status;
+    }
+
 
     public void setOrder(MatchingRuleOrder order) {
         this.order = order;
@@ -56,13 +65,6 @@ public abstract class AbstractCommonMatchingRule extends StandardEntity implemen
         this.description = description;
     }
 
-    public Boolean getIsDisabled() {
-        return isDisabled;
-    }
-
-    public void setIsDisabled(Boolean disabled) {
-        isDisabled = disabled;
-    }
 
     @Override
     public String getMatchingRuleId() {

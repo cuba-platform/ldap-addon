@@ -159,25 +159,20 @@ public class MatchingRuleScreen extends AbstractWindow {
         return new Table.PlainTextCell(matchingRuleUtils.generateMatchingRuleOptionsColumn(entity));
     }
 
-    public Component generateMatchingRuleTableStateColumnCell(AbstractCommonMatchingRule entity) {
+    public Component generateMatchingRuleTableStatusColumnCell(AbstractCommonMatchingRule entity) {
         CheckBox checkBox = componentsFactory.createComponent(CheckBox.class);
-        if (entity.getIsDisabled()) {
-            checkBox.setValue(false);
-        } else {
-            checkBox.setValue(true);
-        }
-        if (((CUSTOM.equals(entity.getRuleType()) || DEFAULT.equals(entity.getRuleType())))) {
+        checkBox.setValue(entity.getStatus().getIsActive());
+        checkBox.addValueChangeListener(new ValueChangeListener() {
+            @Override
+            public void valueChanged(ValueChangeEvent e) {
+                AbstractCommonMatchingRule mr = matchingRuleTable.getSingleSelected();
+                Boolean value = (Boolean) e.getValue();
+                mr.getStatus().setIsActive(value);
+            }
+        });
+        if ((DEFAULT.equals(entity.getRuleType()))) {
             checkBox.setEditable(false);
             checkBox.setEnabled(false);
-        } else {
-            checkBox.addValueChangeListener(new ValueChangeListener() {
-                @Override
-                public void valueChanged(ValueChangeEvent e) {
-                    AbstractCommonMatchingRule mr = matchingRuleTable.getSingleSelected();
-                    Boolean value = (Boolean) e.getValue();
-                    mr.setIsDisabled(!value);
-                }
-            });
         }
 
         return checkBox;
@@ -209,7 +204,7 @@ public class MatchingRuleScreen extends AbstractWindow {
                                 public void actionPerform(Component component) {
                                     List<AbstractCommonMatchingRule> itemsToSave = new ArrayList<>(matchingRuleDatasource.getItems());
                                     List<AbstractCommonMatchingRule> itemsToDelete = new ArrayList<>(matchingRuleDatasource.getItemsToDelete());
-                                    matchingRuleService.saveMatchingRulesWithOrder(itemsToSave, itemsToDelete);
+                                    matchingRuleService.saveMatchingRules(itemsToSave, itemsToDelete);
                                     matchingRuleDatasource.refresh();
                                 }
                             },
@@ -289,9 +284,6 @@ public class MatchingRuleScreen extends AbstractWindow {
                 Integer order = (Integer) e.getValue();
                 MatchingRuleOrder matchingRuleOrder = mr.getOrder();
                 matchingRuleOrder.setOrder(order);
-                if (MatchingRuleType.CUSTOM.equals(mr.getRuleType())) {
-                    matchingRuleOrder.setCustomMatchingRuleId(mr.getMatchingRuleId());
-                }
             }
         });
 

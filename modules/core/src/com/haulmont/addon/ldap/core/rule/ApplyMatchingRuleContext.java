@@ -15,8 +15,6 @@ public class ApplyMatchingRuleContext {
     private final LdapUser ldapUser;
     private final Attributes ldapUserAttributes;
     private final Set<CommonMatchingRule> appliedRules = new LinkedHashSet<>();
-    private final Set<Role> appliedRoles = new LinkedHashSet<>();
-    private final Set<Group> appliedGroups = new LinkedHashSet<>();
     private final Set<Role> currentRoles = new LinkedHashSet<>();
     private Group currentGroup;
     private final User cubaUser;
@@ -47,14 +45,6 @@ public class ApplyMatchingRuleContext {
 
     public Set<CommonMatchingRule> getAppliedRules() {
         return appliedRules;
-    }
-
-    public Set<Role> getAppliedRoles() {
-        return appliedRoles;
-    }
-
-    public Set<Group> getAppliedGroups() {
-        return appliedGroups;
     }
 
     public User getCubaUser() {

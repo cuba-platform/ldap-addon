@@ -19,8 +19,8 @@ public class CustomMatchingRuleProcessor extends MatchingRuleProcessor {
     }
 
     @Override
-    void applyMatchingRule(CommonMatchingRule matchingRule, ApplyMatchingRuleContext applyMatchingRuleContext) {
+    public boolean applyMatchingRule(CommonMatchingRule matchingRule, ApplyMatchingRuleContext applyMatchingRuleContext) {
         CustomLdapMatchingRule programmaticMatchingRule = (CustomLdapMatchingRule) matchingRule;
-        programmaticMatchingRule.applyCustomMatchingRule(applyMatchingRuleContext);
+        return programmaticMatchingRule.applyCustomMatchingRule(applyMatchingRuleContext);
     }
 }

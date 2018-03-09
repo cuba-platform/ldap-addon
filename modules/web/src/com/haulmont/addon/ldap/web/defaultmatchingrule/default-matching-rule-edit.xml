@@ -8,7 +8,7 @@
     <dsContext>
         <datasource id="defaultMatchingRuleDs"
                     class="com.haulmont.addon.ldap.entity.DefaultMatchingRule"
-                    view="defaultMatchingRule-with-group-roles-order">
+                    view="defaultMatchingRule-with-group-roles-order-status">
             <collectionDatasource id="rolesDs"
                                   allowCommit="false"
                                   property="roles"/>

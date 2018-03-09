@@ -22,19 +22,13 @@ public class TestCustomLdapRule implements CustomLdapMatchingRule {
 
     @Override
     //TODO: легко забыть добавить нужные значения в контекст
-    public void applyCustomMatchingRule(ApplyMatchingRuleContext applyMatchingRuleContext) {
+    public boolean applyCustomMatchingRule(ApplyMatchingRuleContext applyMatchingRuleContext) {
         if (applyMatchingRuleContext.getLdapUser().getLogin().equalsIgnoreCase("barts")) {
             User admin = cubaUserDao.getCubaUserByLogin("admin");
             applyMatchingRuleContext.getCurrentRoles().add(admin.getUserRoles().get(0).getRole());
-            applyMatchingRuleContext.getAppliedRules().add(this);
-            applyMatchingRuleContext.setAnyRuleApply(true);
-            applyMatchingRuleContext.getAppliedGroups().add(admin.getGroup());
             applyMatchingRuleContext.setCurrentGroup(admin.getGroup());
+            applyMatchingRuleContext.getAppliedRules().add(new CustomLdapMatchingRuleWrapper(this));
         }
-    }
-
-    @Override
-    public Boolean getIsDisabled() {
-        return false;
+        return true;
     }
 }

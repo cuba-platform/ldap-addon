@@ -11,5 +11,5 @@ public interface CommonMatchingRule {
 
     MatchingRuleOrder getOrder();
 
-    Boolean getIsDisabled();
+    MatchingRuleStatus getStatus();
 }

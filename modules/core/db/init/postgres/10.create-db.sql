@@ -8,15 +8,15 @@ create table LDAP_MATCHING_RULE (
     UPDATED_BY varchar(50),
     DELETE_TS timestamp,
     DELETED_BY varchar(50),
+    MATCHING_RULE_STATUS_ID uuid not null,
+    MATCHING_RULE_ORDER_ID uuid not null,
+    DESCRIPTION varchar(1500),
     RULE_TYPE varchar(31),
     --
-    MATCHING_RULE_ORDER_ID uuid,
     ACCESS_GROUP_ID uuid,
     IS_TERMINAL_RULE boolean,
     IS_OVERRIDE_EXISTING_ROLES boolean,
     IS_OVERRIDE_EXIST_ACCESS_GRP boolean,
-    IS_DISABLED boolean,
-    DESCRIPTION varchar(1500),
     --
     -- from ldap$ScriptingMatchingRule
     STRING_CONDITION text,
@@ -66,3 +66,20 @@ create table LDAP_MATCHING_RULE_ORDER (
     primary key (ID)
 )^
 -- end LDAP_MATCHING_RULE_ORDER
+-- begin LDAP_MATCHING_RULE_STATUS
+create table LDAP_MATCHING_RULE_STATUS (
+    ID uuid,
+    VERSION integer not null,
+    CREATE_TS timestamp,
+    CREATED_BY varchar(50),
+    UPDATE_TS timestamp,
+    UPDATED_BY varchar(50),
+    DELETE_TS timestamp,
+    DELETED_BY varchar(50),
+    --
+    CUSTOM_MATCHING_RULE_ID varchar(255),
+    IS_ACTIVE boolean not null,
+    --
+    primary key (ID)
+)^
+-- end LDAP_MATCHING_RULE_STATUS

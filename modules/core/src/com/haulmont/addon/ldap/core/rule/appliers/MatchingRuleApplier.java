@@ -12,6 +12,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,10 +32,15 @@ public class MatchingRuleApplier {
     private Metadata metadata;
 
     public void applyMatchingRules(List<CommonMatchingRule> matchingRules, ApplyMatchingRuleContext applyMatchingRuleContext) {
-        List<CommonMatchingRule> activeMatchingRules = matchingRules.stream().filter(cmr -> !cmr.getIsDisabled()).collect(Collectors.toList());
+        List<CommonMatchingRule> activeMatchingRules = matchingRules.stream().filter(cmr -> cmr.getStatus().getIsActive())
+                .sorted(Comparator.comparing(mr -> mr.getOrder().getOrder()))
+                .collect(Collectors.toList());
 
         for (CommonMatchingRule commonMatchingRule : activeMatchingRules) {
-            matchingRuleProcessors.get(commonMatchingRule.getRuleType()).applyMatchingRule(commonMatchingRule, applyMatchingRuleContext);
+            boolean isRuleApplied = matchingRuleProcessors.get(commonMatchingRule.getRuleType()).applyMatchingRule(commonMatchingRule, applyMatchingRuleContext);
+            if (isRuleApplied) {
+                applyMatchingRuleContext.setAnyRuleApply(true);
+            }
             if (applyMatchingRuleContext.isTerminalRuleApply()) {
                 break;
             }

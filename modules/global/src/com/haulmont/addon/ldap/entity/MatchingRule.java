@@ -16,6 +16,4 @@ public interface MatchingRule extends CommonMatchingRule {
     Boolean getIsOverrideExistingRoles();
 
     Boolean getIsOverrideExistingAccessGroup();
-
-    Boolean getIsDisabled();
 }

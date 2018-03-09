@@ -105,24 +105,23 @@ public class UserSynchronizationServiceBean implements UserSynchronizationServic
         User cubaUser = cubaUserDao.getCubaUserByLogin(login);
 
         List<CommonMatchingRule> result = rulesToApply.stream().filter(r -> !CUSTOM.equals(r.getRuleType())).collect(Collectors.toList());
-        List<CustomLdapMatchingRule> customRules = matchingRuleDao.getCustomMatchingRules();
+        List<CustomLdapMatchingRuleWrapper> customRules = matchingRuleDao.getCustomMatchingRules();
         rulesToApply.stream().filter(r -> CUSTOM.equals(r.getRuleType())).forEach(customRuleDto -> {
-            CustomLdapMatchingRule clmr = customRules.stream().filter(cr -> cr.getMatchingRuleId().equals(customRuleDto.getMatchingRuleId())).findFirst().get();
-            CustomLdapMatchingRuleWrapper wrapper = new CustomLdapMatchingRuleWrapper(clmr, clmr.getMatchingRuleId(), customRuleDto.getOrder(), clmr.getIsDisabled(), clmr.getDescription());
+            CustomLdapMatchingRuleWrapper wrapper = customRules.stream().filter(cr -> cr.getMatchingRuleId().equals(customRuleDto.getMatchingRuleId())).findFirst().get();
+            wrapper.getOrder().setOrder(customRuleDto.getOrder().getOrder());
+            wrapper.getStatus().setIsActive(customRuleDto.getStatus().getIsActive());
             result.add(wrapper);
         });
 
         ApplyMatchingRuleContext applyMatchingRuleContext = new ApplyMatchingRuleContext(ldapUserWrapper.getLdapUser(), ldapUserWrapper.getLdapUserAttributes(), cubaUser);
         cubaUser.getUserRoles().clear();
 
-        result.sort(Comparator.comparing(mr -> mr.getOrder().getOrder()));
-
         matchingRuleApplier.applyMatchingRules(result, applyMatchingRuleContext);
 
         applyMatchingRuleContext.getAppliedRules().forEach(matchingRule -> {
             if (CUSTOM.equals(matchingRule.getRuleType())) {
-                CustomLdapMatchingRule pmr = (CustomLdapMatchingRule) matchingRule;
-                testUserSynchronizationDto.getAppliedMatchingRules().add(matchingRuleDao.mapProgrammaticRuleToDto(pmr));
+                CustomLdapMatchingRuleWrapper cmr = (CustomLdapMatchingRuleWrapper) matchingRule;
+                testUserSynchronizationDto.getAppliedMatchingRules().add(matchingRuleDao.mapCustomRuleToDto(cmr));
             } else {
                 testUserSynchronizationDto.getAppliedMatchingRules().add((AbstractDbStoredMatchingRule) matchingRule);
             }

@@ -14,19 +14,16 @@ public abstract class DbStoredMatchingRuleProcessor extends MatchingRuleProcesso
     public abstract boolean checkMatchingRule(AbstractDbStoredMatchingRule matchingRule, ApplyMatchingRuleContext applyMatchingRuleContext);
 
     @Override
-    void applyMatchingRule(CommonMatchingRule matchingRule, ApplyMatchingRuleContext applyMatchingRuleContext) {
+    boolean applyMatchingRule(CommonMatchingRule matchingRule, ApplyMatchingRuleContext applyMatchingRuleContext) {
         AbstractDbStoredMatchingRule abstractDbStoredMatchingRule = (AbstractDbStoredMatchingRule) matchingRule;
+        boolean isRuleApplied = checkMatchingRule(abstractDbStoredMatchingRule, applyMatchingRuleContext);
 
-        if (checkMatchingRule(abstractDbStoredMatchingRule, applyMatchingRuleContext)) {
+        if (isRuleApplied) {
             changeGroupAndRolesInMatchingRuleContext(abstractDbStoredMatchingRule, applyMatchingRuleContext);
-            applyMatchingRuleContext.setAnyRuleApply(true);
             applyMatchingRuleContext.getAppliedRules().add(abstractDbStoredMatchingRule);
-            if (abstractDbStoredMatchingRule.getAccessGroup() != null) {
-                applyMatchingRuleContext.getAppliedGroups().add(abstractDbStoredMatchingRule.getAccessGroup());
-            }
-            applyMatchingRuleContext.getAppliedRoles().addAll(abstractDbStoredMatchingRule.getRoles());
             applyMatchingRuleContext.setTerminalRuleApply(abstractDbStoredMatchingRule.getIsTerminalRule());
         }
+        return isRuleApplied;
     }
 
     private void changeGroupAndRolesInMatchingRuleContext(AbstractDbStoredMatchingRule abstractDbStoredMatchingRule, ApplyMatchingRuleContext applyMatchingRuleContext) {

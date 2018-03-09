@@ -8,7 +8,7 @@
     <dsContext>
         <datasource id="simpleMatchingRuleDs"
                     class="com.haulmont.addon.ldap.entity.SimpleMatchingRule"
-                    view="simpleMatchingRule-view-with-group-roles-conditions-order">
+                    view="simpleMatchingRule-view-with-group-roles-conditions-order-status">
             <collectionDatasource id="rolesDs"
                                   allowCommit="false"
                                   property="roles"/>
@@ -32,8 +32,6 @@
                        property="isOverrideExistingRoles"/>
                 <field caption="msg://isOverrideExistingAccessGroupFieldCaption"
                        property="isOverrideExistingAccessGroup"/>
-                <field caption="msg://isDisabledFieldCaption"
-                       property="isDisabled"/>
                 <field caption="msg://descriptionFieldCaption"
                        property="description"/>
             </column>

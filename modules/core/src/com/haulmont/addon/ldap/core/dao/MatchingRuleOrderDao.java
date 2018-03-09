@@ -6,6 +6,7 @@ import com.haulmont.cuba.core.Persistence;
 import com.haulmont.cuba.core.TypedQuery;
 import com.haulmont.cuba.core.global.Metadata;
 import com.haulmont.cuba.core.global.PersistenceHelper;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,7 +32,11 @@ public class MatchingRuleOrderDao {
                 "where mro.customMatchingRuleId = :customMatchingRuleId", MatchingRuleOrder.class);
         query.setParameter("customMatchingRuleId", customMatchingRuleId);
         MatchingRuleOrder matchingRuleOrder = query.getFirstResult();
-        return matchingRuleOrder == null ? metadata.create(MatchingRuleOrder.class) : matchingRuleOrder;
+        matchingRuleOrder = matchingRuleOrder == null ? metadata.create(MatchingRuleOrder.class) : matchingRuleOrder;
+        if (StringUtils.isEmpty(matchingRuleOrder.getCustomMatchingRuleId())) {
+            matchingRuleOrder.setCustomMatchingRuleId(customMatchingRuleId);
+        }
+        return matchingRuleOrder;
 
     }
 
