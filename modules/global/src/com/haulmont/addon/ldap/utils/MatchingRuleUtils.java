@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
 
+import java.text.ParseException;
 import java.util.List;
 
 import static com.haulmont.addon.ldap.entity.MatchingRuleType.CUSTOM;
@@ -118,6 +119,13 @@ public class MatchingRuleUtils {
 
     public String generateMatchingRuleTableDescriptionColumn(AbstractCommonMatchingRule entity) {
         return entity.getDescription();
+    }
+
+    public boolean validateRuleOrder(Integer order) {
+        if (order == null || order <= 0 || order == Integer.MAX_VALUE) {
+            return false;
+        }
+        return true;
     }
 
 

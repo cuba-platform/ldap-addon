@@ -7,6 +7,8 @@ import com.haulmont.addon.ldap.service.UserSynchronizationService;
 import com.haulmont.addon.ldap.utils.MatchingRuleUtils;
 import com.haulmont.addon.ldap.web.screens.datasources.MatchingRuleDatasource;
 import com.haulmont.chile.core.datatypes.Datatypes;
+import com.haulmont.chile.core.model.MetaProperty;
+import com.haulmont.chile.core.model.MetaPropertyPath;
 import com.haulmont.cuba.core.entity.Entity;
 import com.haulmont.cuba.core.global.Metadata;
 import com.haulmont.cuba.gui.WindowManager;
@@ -66,9 +68,31 @@ public class MatchingRuleScreen extends AbstractWindow {
 
     private final static Integer DEFAULT_RULE_ORDER = 0;
 
+    private final static String UP = "UP";
+
+    private final static String DOWN = "DOWN";
+
     @Override
     public void init(Map<String, Object> params) {
         super.init(params);
+
+        CollectionDatasource.CollectionChangeListener sortListener = new CollectionDatasource.CollectionChangeListener() {
+            @Override
+            public void collectionChanged(CollectionDatasource.CollectionChangeEvent e) {
+                if (CollectionDatasource.Operation.ADD.equals(e.getOperation())) {
+                    Optional<Integer> maxOrder = matchingRuleDatasource.getItems().stream().filter(mr -> !DEFAULT.equals(mr.getRuleType()))
+                            .max(Comparator.comparing(mr -> mr.getOrder().getOrder())).map(mr -> mr.getOrder().getOrder());
+                    int order = maxOrder.isPresent() ? maxOrder.get() + 1 : 1;
+                    Optional<AbstractCommonMatchingRule> ruleWithoutOrder = e.getItems().stream()
+                            .filter(mr -> DEFAULT_RULE_ORDER.equals(((AbstractCommonMatchingRule) mr).getOrder().getOrder())).findAny();
+                    if (ruleWithoutOrder.isPresent()) {
+                        ruleWithoutOrder.get().getOrder().setOrder(order);
+                    }
+                    sortDsByOrder();
+                }
+            }
+        };
+        matchingRuleDatasource.addCollectionChangeListener(sortListener);
 
         appliedRolesDs.clear();
 
@@ -275,15 +299,20 @@ public class MatchingRuleScreen extends AbstractWindow {
             textField.setEnabled(false);
             textField.setValue(getMessage("matchingRuleTableDefaultRuleOrder"));
         } else {
-            textField.setDatatype(Datatypes.get("positiveNumberDataType"));
+            textField.setDatatype(Datatypes.get(Integer.class));
         }
         textField.addValueChangeListener(new ValueChangeListener() {
             @Override
             public void valueChanged(ValueChangeEvent e) {
+                if (!matchingRuleUtils.validateRuleOrder((Integer) e.getValue())) {
+                    textField.setValue(e.getPrevValue());
+                    return;
+                }
                 AbstractCommonMatchingRule mr = matchingRuleTable.getSingleSelected();
                 Integer order = (Integer) e.getValue();
                 MatchingRuleOrder matchingRuleOrder = mr.getOrder();
                 matchingRuleOrder.setOrder(order);
+                sortDsByOrder();
             }
         });
 
@@ -313,5 +342,43 @@ public class MatchingRuleScreen extends AbstractWindow {
 
     public Component generateMatchingRuleTableDescriptionColumnCell(AbstractCommonMatchingRule entity) {
         return new Table.PlainTextCell(matchingRuleUtils.generateMatchingRuleTableDescriptionColumn(entity));
+    }
+
+    public void onUpClick() {
+        changeOrderClick(UP);
+    }
+
+    public void onDownClick() {
+        changeOrderClick(DOWN);
+    }
+
+    private void sortDsByOrder() {
+        List<CollectionDatasource.Sortable.SortInfo> sorts = new ArrayList<>(1);
+        MetaPropertyPath orderPath = matchingRuleDatasource.getMetaClass().getPropertyPath("order.order");
+        CollectionDatasource.Sortable.SortInfo<MetaPropertyPath> sortInfo = new CollectionDatasource.Sortable.SortInfo<>();
+        sortInfo.setPropertyPath(orderPath);
+        sortInfo.setOrder(CollectionDatasource.Sortable.Order.ASC);
+        sorts.add(sortInfo);
+        matchingRuleDatasource.sort(sorts.toArray(new CollectionDatasource.Sortable.SortInfo[1]));
+    }
+
+    private void changeOrderClick(String direction) {
+        AbstractCommonMatchingRule selected = matchingRuleTable.getSingleSelected();
+        if (selected == null) return;
+        int selectedOrder = selected.getOrder().getOrder();
+        int neighbourElementPosition = direction.equals(UP) ? -1 : 1;
+        List<AbstractCommonMatchingRule> items = new ArrayList<>(matchingRuleDatasource.getItems());
+        int i = 0;
+        for (AbstractCommonMatchingRule acmr : items) {
+            if (acmr == selected) {
+                if (i == 0 && direction.equals(UP)) return;
+                AbstractCommonMatchingRule neighbourElement = items.get(i + neighbourElementPosition);
+                if (DEFAULT.equals(selected.getRuleType()) || DEFAULT.equals(neighbourElement.getRuleType())) return;
+                selected.getOrder().setOrder(neighbourElement.getOrder().getOrder());
+                neighbourElement.getOrder().setOrder(selectedOrder);
+                sortDsByOrder();
+            }
+            i++;
+        }
     }
 }

@@ -28,6 +28,8 @@ public class MatchingRuleDao {
 
     public final static String NAME = "ldap_MatchingRuleDao";
 
+    private final static Integer DEFAULT_RULE_ORDER = 0;
+
     @Inject
     private Persistence persistence;
 
@@ -93,9 +95,17 @@ public class MatchingRuleDao {
 
     @Transactional(readOnly = true)
     public List<AbstractCommonMatchingRule> getMatchingRulesGui() {
-        return getMatchingRules().stream()
+        List<AbstractCommonMatchingRule> result = getMatchingRules().stream()
                 .map(mr -> MatchingRuleType.CUSTOM.equals(mr.getRuleType()) ? mapCustomRuleToDto((CustomLdapMatchingRuleWrapper) mr) : (AbstractCommonMatchingRule) mr)
                 .collect(Collectors.toList());
+        int i = 1;
+        for (AbstractCommonMatchingRule acmr : result) {
+            if (DEFAULT_RULE_ORDER.equals(acmr.getOrder().getOrder())) {
+                acmr.getOrder().setOrder(i);
+                i++;
+            }
+        }
+        return result;
     }
 
     @Transactional
