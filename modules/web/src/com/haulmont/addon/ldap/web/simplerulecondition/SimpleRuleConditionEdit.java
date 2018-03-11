@@ -1,17 +1,36 @@
 package com.haulmont.addon.ldap.web.simplerulecondition;
 
+import com.haulmont.addon.ldap.service.LdapService;
 import com.haulmont.cuba.core.entity.Entity;
+import com.haulmont.cuba.core.global.PersistenceHelper;
 import com.haulmont.cuba.gui.components.AbstractEditor;
 import com.haulmont.addon.ldap.entity.SimpleRuleCondition;
+import com.haulmont.cuba.gui.components.FieldGroup;
+import com.haulmont.cuba.gui.components.LookupField;
 import com.haulmont.cuba.gui.data.Datasource;
+import com.haulmont.cuba.gui.xml.layout.ComponentsFactory;
+import com.haulmont.cuba.web.gui.components.WebLookupField;
 
+import javax.inject.Inject;
 import javax.inject.Named;
+import java.util.Map;
+
+import com.haulmont.cuba.gui.components.Component;
 
 public class SimpleRuleConditionEdit extends AbstractEditor<SimpleRuleCondition> {
 
 
     @Named("simpleRuleConditionDs")
     private Datasource<SimpleRuleCondition> simpleRuleConditionDs;
+
+    @Named("fieldGroup")
+    private FieldGroup fieldGroup;
+
+    @Inject
+    private ComponentsFactory componentsFactory;
+
+    @Inject
+    private LdapService ldapService;
 
     @Override
     public void setItem(Entity item) {
@@ -21,5 +40,25 @@ public class SimpleRuleConditionEdit extends AbstractEditor<SimpleRuleCondition>
         src.setAttribute(inMemorySrc.getAttribute());
         src.setAttributeValue(inMemorySrc.getAttributeValue());
 
+    }
+
+    @Override
+    protected void postInit() {
+        super.postInit();
+        FieldGroup.FieldConfig attributeField = fieldGroup.getField("attribute");
+        LookupField lookupField = componentsFactory.createComponent(LookupField.class);
+        lookupField.setOptionsList(ldapService.getLdapUserAttributesNames());
+        attributeField.setComponent(lookupField);
+        String attribute = simpleRuleConditionDs.getItem().getAttribute();
+        lookupField.setValue(attribute);
+    }
+
+    @Override
+    protected boolean preCommit() {
+        FieldGroup.FieldConfig attributeField = fieldGroup.getField("attribute");
+        LookupField lookupField = (LookupField) attributeField.getComponent();
+        String val = lookupField.getValue();
+        simpleRuleConditionDs.getItem().setAttribute(val);
+        return true;
     }
 }

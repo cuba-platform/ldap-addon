@@ -25,6 +25,14 @@ public class SimpleRuleCondition extends StandardEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "SIMPLE_MATCHING_RULE_ID")
     protected SimpleMatchingRule simpleMatchingRule;
+    public String getAttribute() {
+        return attribute;
+    }
+
+    public void setAttribute(String attribute) {
+        this.attribute = attribute;
+    }
+
 
     public void setSimpleMatchingRule(SimpleMatchingRule simpleMatchingRule) {
         this.simpleMatchingRule = simpleMatchingRule;
@@ -32,16 +40,6 @@ public class SimpleRuleCondition extends StandardEntity {
 
     public SimpleMatchingRule getSimpleMatchingRule() {
         return simpleMatchingRule;
-    }
-
-
-
-    public void setAttribute(SimpleRuleConditionAttribute attribute) {
-        this.attribute = attribute == null ? null : attribute.getId();
-    }
-
-    public SimpleRuleConditionAttribute getAttribute() {
-        return attribute == null ? null : SimpleRuleConditionAttribute.fromId(attribute);
     }
 
     public void setAttributeValue(String attributeValue) {

@@ -97,23 +97,72 @@ public interface LdapConfig extends Config {
     @DefaultString("secret")
     String getContextSourcePassword();
 
+    @Source(type = SourceType.DATABASE)
+    @Property("ldap.schemaBase")
+    @DefaultString("ou=schema")
+    String getSchemaBase();
+
+    @Source(type = SourceType.DATABASE)
+    @Property("ldap.ldapUserObjectClasses")
+    @DefaultString("person;inetOrgPerson")
+    String getLdapUserObjectClasses();
+
+    @Source(type = SourceType.DATABASE)
+    @Property("ldap.metaObjectClassName")
+    @DefaultString("metaObjectClass")
+    String getMetaObjectClassName();
+
+    @Source(type = SourceType.DATABASE)
+    @Property("ldap.objectClassPropertyName")
+    @DefaultString("m-name")
+    String getObjectClassPropertyName();
+
+    @Source(type = SourceType.DATABASE)
+    @Property("ldap.attributePropertyName")
+    @DefaultString("m-must;m-may")
+    String getAttributePropertyName();
+
     void setContextSourceUrl(String contextSourceUrl);
+
     void setContextSourceBase(String contextSourceBase);
+
     void setContextSourceUserName(String contextSourceUserName);
+
     void setContextSourcePassword(String contextSourcePassword);
 
     void setLoginAttribute(String login);
+
     void setEmailAttribute(String email);
+
     void setCnAttribute(String cn);
+
     void setSnAttribute(String sn);
+
     void setMemberOfAttribute(String memberOf);
+
     void setAccessGroupAttribute(String accessGroupAttribute);
+
     void setPositionAttribute(String positionAttribute);
+
     void setOuAttribute(String ouAttribute);
+
     void setLanguageAttribute(String languageAttribute);
+
     void setInactiveUserAttribute(String inactiveUserAttribute);
+
     void setUserPasswordAttribute(String userPasswordAttribute);
+
     void setUserBase(String userBase);
 
     void setUseContextSourcePooling(boolean useContextSourcePooling);
+
+    void setSchemaBase(String schemaBase);
+
+    void setLdapUserObjectClasses(String ldapUserObjectClasses);
+
+    void setMetaObjectClassName(String metaObjectClassName);
+
+    void setObjectClassPropertyName(String objectClassPropertyName);
+
+    void setAttributePropertyName(String schemaBase);
 }

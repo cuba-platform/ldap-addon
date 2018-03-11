@@ -18,6 +18,6 @@ public class LdapUserMapper implements ContextMapper<LdapUser> {
     @Override
     public LdapUser mapFromContext(Object ctx) throws NamingException {
         DirContextAdapter context = (DirContextAdapter) ctx;
-        return LdapUserMapperUtils.mapLdapUser(context, ldapConfig);
+        return LdapHelper.mapLdapUser(context, ldapConfig);
     }
 }

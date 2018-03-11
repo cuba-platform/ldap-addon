@@ -3,6 +3,14 @@
         caption="msg://ldapSettingsScreenCaption"
         class="com.haulmont.addon.ldap.web.screens.LdapSettingsEditor"
         messagesPack="com.haulmont.addon.ldap.web.screens">
+    <dsContext>
+        <collectionDatasource id="ldapUserAttributesDs"
+                              class="com.haulmont.addon.ldap.entity.LdapUserAttribute">
+            <query>
+                <![CDATA[select e from ldap$LdapUserAttribute e]]>
+            </query>
+        </collectionDatasource>
+    </dsContext>
     <dialogMode height="600"
                 width="800"/>
     <layout>
@@ -52,8 +60,8 @@
                             invoke="onTestConnectionClick"/>
                 </buttonsPanel>
             </tab>
-            <tab id="SchemaTab"
-                 caption="Schema"
+            <tab id="basicAttrTab"
+                 caption="Basic Attributes"
                  margin="true,false,false,false"
                  spacing="true">
                 <flowBox spacing="true">
@@ -125,6 +133,72 @@
                 <button id="saveSchemaSettings"
                         caption="Save"
                         invoke="onSaveSchemaSettingsClick"/>
+            </tab>
+            <tab id="schemaTab"
+                 caption="Schema"
+                 margin="true,false,false,false"
+                 spacing="true">
+                <flowBox spacing="true">
+                    <label value="msg://settingsScreenSchemaBase"
+                           width="160px"/>
+                    <textField id="schemaBase"
+                               width="370px"/>
+                </flowBox>
+                <flowBox spacing="true">
+                    <label value="msg://settingsScreenUserObjectClasses"
+                           width="160px"/>
+                    <textField id="ldapUserObjectClassesTextField"
+                               width="370px"/>
+                </flowBox>
+                <flowBox spacing="true">
+                    <label value="msg://settingsScreenMetaObjectClassName"
+                           width="160px"/>
+                    <textField id="metaObjectClassNameTextField"
+                               width="370px"/>
+                </flowBox>
+                <flowBox spacing="true">
+                    <label value="msg://settingsScreenObjectClassPropertyName"
+                           width="160px"/>
+                    <textField id="objectClassPropertyNameTextField"
+                               width="370px"/>
+                </flowBox>
+                <flowBox spacing="true">
+                    <label height="17px"
+                           value="msg://settingsScreenAttributrPropertyName"
+                           width="160px"/>
+                    <textField id="attributePropertyNameTextField"
+                               width="370px"/>
+                </flowBox>
+                <buttonsPanel>
+                    <button id="updateLdapSchemaUserAttributesButton"
+                            caption="msg://settingsScreenResreshLdapAttributes"
+                            invoke="onUpdateLdapSchemaUserAttributesButtonClick"/>
+                    <button id="settingsScreenSaveSchemaValuesButton"
+                            caption="msg://settingsScreenSaveSchemaValues"
+                            invoke="onSettingsScreenSaveSchemaValuesButtonClick"/>
+                </buttonsPanel>
+                <table id="schemaTabLdapAttributeTable"
+                       height="500px"
+                       width="100%">
+                    <actions>
+                        <action id="create"
+                                caption="create"/>
+                        <action id="edit"
+                                caption="Edit"/>
+                        <action id="remove"
+                                caption="Remove"/>
+                    </actions>
+                    <columns>
+                        <column id="attributeName"/>
+                    </columns>
+                    <rows datasource="ldapUserAttributesDs"/>
+                    <buttonsPanel>
+                        <button action="schemaTabLdapAttributeTable.create"
+                                caption="msg://schemaTabLdapAttributeTableCreate"/>
+                        <button action="schemaTabLdapAttributeTable.remove"
+                                caption="msg://schemaTabLdapAttributeTableRemove"/>
+                    </buttonsPanel>
+                </table>
             </tab>
         </tabSheet>
     </layout>

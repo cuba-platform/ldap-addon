@@ -1,17 +1,18 @@
 package com.haulmont.addon.ldap.web.screens;
 
 import com.haulmont.addon.ldap.config.LdapConfig;
-import com.haulmont.addon.ldap.service.LdapConnectionTesterService;
-import com.haulmont.cuba.core.global.Messages;
+import com.haulmont.addon.ldap.entity.LdapUserAttribute;
+import com.haulmont.addon.ldap.service.LdapService;
 import com.haulmont.cuba.gui.components.AbstractWindow;
 import com.haulmont.cuba.gui.components.PasswordField;
-import com.haulmont.cuba.gui.components.TextArea;
 import com.haulmont.cuba.gui.components.TextField;
+import com.haulmont.cuba.gui.data.CollectionDatasource;
 import org.apache.commons.lang.StringUtils;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.util.Map;
+import java.util.UUID;
 
 import static com.haulmont.cuba.gui.components.Frame.NotificationType.HUMANIZED;
 import static com.haulmont.cuba.gui.components.Frame.NotificationType.WARNING;
@@ -66,8 +67,27 @@ public class LdapSettingsEditor extends AbstractWindow {
     @Named("userBase")
     private TextField userBaseField;
 
+    @Named("schemaBase")
+    private TextField schemaBaseTextField;
+
+    @Named("ldapUserObjectClassesTextField")
+    private TextField ldapUserObjectClassesTextField;
+
+    @Named("objectClassPropertyNameTextField")
+    private TextField objectClassPropertyNameTextField;
+
+    @Named("attributePropertyNameTextField")
+    private TextField attributePropertyNameTextField;
+
+    @Named("metaObjectClassNameTextField")
+    private TextField metaObjectClassNameTextField;
+
     @Inject
-    private LdapConnectionTesterService ldapConnectionTester;
+    private LdapService ldapService;
+
+
+    @Named("ldapUserAttributesDs")
+    private CollectionDatasource<LdapUserAttribute, UUID> ldapUserAttributesDs;
 
     @Override
     public void init(Map<String, Object> params) {
@@ -87,6 +107,12 @@ public class LdapSettingsEditor extends AbstractWindow {
         ouAttributeAttributeField.setValue(ldapConfig.getOuAttribute());
         accessGroupAttributeField.setValue(ldapConfig.getAccessGroupAttribute());
         accountExpiresAttributeField.setValue(ldapConfig.getInactiveUserAttribute());
+
+        schemaBaseTextField.setValue(ldapConfig.getSchemaBase());
+        ldapUserObjectClassesTextField.setValue(ldapConfig.getLdapUserObjectClasses());
+        metaObjectClassNameTextField.setValue(ldapConfig.getMetaObjectClassName());
+        objectClassPropertyNameTextField.setValue(ldapConfig.getObjectClassPropertyName());
+        attributePropertyNameTextField.setValue(ldapConfig.getAttributePropertyName());
     }
 
     public void onSaveConnectionSettingsClick() {
@@ -108,7 +134,7 @@ public class LdapSettingsEditor extends AbstractWindow {
         String contextSourceUserName = userField.getValue() == null ? StringUtils.EMPTY : userField.getValue();
         String contextSourcePassword = passwordField.getValue() == null ? StringUtils.EMPTY : passwordField.getValue();
 
-        String result = ldapConnectionTester.testConnection(contextSourceUrl, contextSourceBase, contextSourceUserName, contextSourcePassword);
+        String result = ldapService.testConnection(contextSourceUrl, contextSourceBase, contextSourceUserName, contextSourcePassword);
 
         if ("SUCCESS".equals(result)) {
             showNotification(getMessage("settingsScreenConnectionSuccessCaption"), getMessage("settingsScreenConnectionSuccessMsg"), HUMANIZED);
@@ -142,5 +168,26 @@ public class LdapSettingsEditor extends AbstractWindow {
         ldapConfig.setOuAttribute(ou);
         ldapConfig.setAccessGroupAttribute(accessGroup);
         ldapConfig.setInactiveUserAttribute(accountExpires);
+    }
+
+    public void onUpdateLdapSchemaUserAttributesButtonClick() {
+        ldapService.fillLdapUserAttributes(schemaBaseTextField.getValue(), ldapUserObjectClassesTextField.getValue(), metaObjectClassNameTextField.getValue(),
+                objectClassPropertyNameTextField.getValue(), attributePropertyNameTextField.getValue(),
+                ldapConfig.getContextSourceUrl(), ldapConfig.getContextSourceUserName(), ldapConfig.getContextSourcePassword());
+        ldapUserAttributesDs.refresh();
+    }
+
+    public void onSettingsScreenSaveSchemaValuesButtonClick() {
+        String schemaBase = schemaBaseTextField.getValue();
+        String ldapUserObjectClasses = ldapUserObjectClassesTextField.getValue();
+        String metaObjectClassName = metaObjectClassNameTextField.getValue();
+        String objectClassPropertyName = objectClassPropertyNameTextField.getValue();
+        String attributePropertyName = attributePropertyNameTextField.getValue();
+
+        ldapConfig.setSchemaBase(schemaBase);
+        ldapConfig.setLdapUserObjectClasses(ldapUserObjectClasses);
+        ldapConfig.setMetaObjectClassName(metaObjectClassName);
+        ldapConfig.setObjectClassPropertyName(objectClassPropertyName);
+        ldapConfig.setAttributePropertyName(attributePropertyName);
     }
 }

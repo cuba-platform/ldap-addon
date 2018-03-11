@@ -14,7 +14,7 @@
         <property name="remoteServices">
             <map>
                 <entry key="ldap_UserSynchronizationService" value="com.haulmont.addon.ldap.service.UserSynchronizationService"/>
-                <entry key="ldap_LdapConnectionTesterService" value="com.haulmont.addon.ldap.service.LdapConnectionTesterService"/>
+                <entry key="ldap_LdapConnectionTesterService" value="com.haulmont.addon.ldap.service.LdapService"/>
                 <entry key="ldap_MatchingRuleService" value="com.haulmont.addon.ldap.service.MatchingRuleService"/>
                 <entry key="ldap_AuthUserService" value="com.haulmont.addon.ldap.service.AuthUserService"/>
             </map>

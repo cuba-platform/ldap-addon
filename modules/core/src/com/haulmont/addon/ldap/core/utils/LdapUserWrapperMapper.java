@@ -19,7 +19,7 @@ public class LdapUserWrapperMapper implements ContextMapper<LdapUserWrapper> {
     @Override
     public LdapUserWrapper mapFromContext(Object ctx) {
         DirContextAdapter context = (DirContextAdapter) ctx;
-        LdapUser ldapUser = LdapUserMapperUtils.mapLdapUser(context, ldapConfig);
+        LdapUser ldapUser = LdapHelper.mapLdapUser(context, ldapConfig);
         Attributes attributes = context.getAttributes();
         return new LdapUserWrapper(ldapUser, attributes);
     }

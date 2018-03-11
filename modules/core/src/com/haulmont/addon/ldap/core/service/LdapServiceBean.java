@@ -1,25 +1,36 @@
 package com.haulmont.addon.ldap.core.service;
 
+import com.haulmont.addon.ldap.core.dao.LdapUserAttributeDao;
 import com.haulmont.addon.ldap.core.spring.AnonymousLdapContextSource;
-import com.haulmont.addon.ldap.service.LdapConnectionTesterService;
+import com.haulmont.addon.ldap.core.utils.LdapHelper;
+import com.haulmont.addon.ldap.service.LdapService;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.springframework.ldap.core.support.LdapContextSource;
 import org.springframework.ldap.support.LdapUtils;
 import org.springframework.stereotype.Service;
 
+import javax.inject.Inject;
+import javax.naming.NamingEnumeration;
+import javax.naming.directory.Attributes;
 import javax.naming.directory.DirContext;
 import javax.naming.directory.SearchControls;
+import javax.naming.directory.SearchResult;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static javax.naming.directory.SearchControls.SUBTREE_SCOPE;
 
-@Service(LdapConnectionTesterService.NAME)
-public class LdapConnectionTesterServiceBean implements LdapConnectionTesterService {
+@Service(LdapService.NAME)
+public class LdapServiceBean implements LdapService {
 
     private final String DUMMY_FILTER = "ou=system";
+
+    @Inject
+    private LdapUserAttributeDao ldapUserAttributeDao;
 
     private Map<String, Object> getAdditionalEnvProperties(String url) {
         Map<String, Object> map = new HashMap<>();
@@ -72,5 +83,34 @@ public class LdapConnectionTesterServiceBean implements LdapConnectionTesterServ
         }
     }
 
+    @Override
+    public void fillLdapUserAttributes(String schemaBase, String objectClasses, String metaObjectClassName, String objectClassName, String attributeClassName, String url, String user, String password) {
+        LdapContextSource ldapContextSource = null;
+        DirContext dirContext = null;
+        List<String> schemaAttributes = new ArrayList<>();
+        try {
+            ldapContextSource = createAuthenticatedContext(url, schemaBase);
+            dirContext = ldapContextSource.getContext(user, password);
+            SearchControls searchControls = new SearchControls();
+            searchControls.setSearchScope(SUBTREE_SCOPE);
+            searchControls.setTimeLimit(30_000);
+            String filter = LdapHelper.createSchemaFilter(objectClasses, metaObjectClassName, objectClassName);
+            NamingEnumeration objectClassesResult = dirContext.search(StringUtils.EMPTY, filter, searchControls);
+            while (objectClassesResult.hasMore()) {
+                SearchResult searchResult = (SearchResult) objectClassesResult.next();
+                Attributes attributes = searchResult.getAttributes();
+                schemaAttributes.addAll(LdapHelper.getSchemaAttributes(attributes, attributeClassName.split(";")));
+            }
+            ldapUserAttributeDao.refreshLdapUserAttributes(schemaAttributes);
+        } catch (Exception e) {
+            throw new RuntimeException("Can't load LDAP schema", e);
+        } finally {
+            LdapUtils.closeContext(dirContext);
+        }
+    }
 
+    @Override
+    public List<String> getLdapUserAttributesNames() {
+        return ldapUserAttributeDao.getLdapUserAttributesNames();
+    }
 }

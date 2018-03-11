@@ -11,4 +11,6 @@
             template="com/haulmont/addon/ldap/web/simplerulecondition/simple-rule-condition-edit.xml"/>
     <screen id="ldap$matchingRuleScreen"
             template="com/haulmont/addon/ldap/web/screens/matchingRuleScreen.xml"/>
+    <screen id="ldap$LdapUserAttribute.edit"
+            template="com/haulmont/addon/ldap/web/ldapuserattribute/ldap-user-attribute-edit.xml"/>
 </screen-config>

@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <window xmlns="http://schemas.haulmont.com/cuba/window.xsd"
         caption="msg://editorCaption"
-        class="com.haulmont.addon.ldap.web.simplerulecondition.SimpleRuleConditionEdit"
-        datasource="simpleRuleConditionDs"
+        class="com.haulmont.addon.ldap.web.ldapuserattribute.LdapUserAttributeEdit"
+        datasource="ldapUserAttributeDs"
         focusComponent="fieldGroup"
-        messagesPack="com.haulmont.addon.ldap.web.simplerulecondition">
+        messagesPack="com.haulmont.addon.ldap.web.ldapuserattribute">
     <dsContext>
-        <datasource id="simpleRuleConditionDs"
-                    class="com.haulmont.addon.ldap.entity.SimpleRuleCondition"
+        <datasource id="ldapUserAttributeDs"
+                    class="com.haulmont.addon.ldap.entity.LdapUserAttribute"
                     view="_local"/>
     </dsContext>
     <dialogMode height="600"
@@ -15,12 +15,9 @@
     <layout expand="windowActions"
             spacing="true">
         <fieldGroup id="fieldGroup"
-                    datasource="simpleRuleConditionDs">
+                    datasource="ldapUserAttributeDs">
             <column width="250px">
-                <field custom="true"
-                       property="attribute"/>
-                <field property="attributeValue"
-                       rows="5"/>
+                <field property="attributeName"/>
             </column>
         </fieldGroup>
         <frame id="windowActions"

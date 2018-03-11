@@ -51,7 +51,7 @@ public class MatchingRuleUtils {
         StringBuilder sb = new StringBuilder();
         if (CollectionUtils.isNotEmpty(conditions)) {
             for (SimpleRuleCondition simpleRuleCondition : conditions) {
-                sb.append(getLdapAttributeName(simpleRuleCondition.getAttribute()));
+                sb.append(simpleRuleCondition.getAttribute());
                 sb.append("=");
                 sb.append(simpleRuleCondition.getAttributeValue());
                 sb.append("\n");

@@ -11,5 +11,6 @@
         <class>com.haulmont.addon.ldap.entity.SimpleRuleCondition</class>
         <class>com.haulmont.addon.ldap.entity.MatchingRuleOrder</class>
         <class>com.haulmont.addon.ldap.entity.MatchingRuleStatus</class>
+        <class>com.haulmont.addon.ldap.entity.LdapUserAttribute</class>
     </persistence-unit>
 </persistence>

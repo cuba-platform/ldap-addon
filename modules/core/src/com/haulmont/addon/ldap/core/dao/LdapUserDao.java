@@ -120,7 +120,7 @@ public class LdapUserDao {
     private Filter parseSimpleRuleConditions(List<SimpleRuleCondition> conditions) {
         Filter prevFilter = null;
         for (SimpleRuleCondition simpleRuleCondition : conditions) {
-            String attributeName = matchingRuleUtils.getLdapAttributeName(simpleRuleCondition.getAttribute());
+            String attributeName = simpleRuleCondition.getAttribute();
             if (StringUtils.isNotEmpty(attributeName)) {
                 Filter ef = new EqualsFilter(attributeName, simpleRuleCondition.getAttributeValue());
                 if (prevFilter != null) {
