@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://schemas.haulmont.com/cuba/window.xsd"
+        caption="msg://browseCaption"
+        class="com.haulmont.addon.ldap.web.usersynchronizationlog.UserSynchronizationLogBrowse"
+        focusComponent="userSynchronizationLogsTable"
+        lookupComponent="userSynchronizationLogsTable"
+        messagesPack="com.haulmont.addon.ldap.web.usersynchronizationlog">
+    <dsContext>
+        <groupDatasource id="userSynchronizationLogsDs"
+                         class="com.haulmont.addon.ldap.entity.UserSynchronizationLog"
+                         view="_local">
+            <query>
+                <![CDATA[select e from ldap$UserSynchronizationLog e]]>
+            </query>
+        </groupDatasource>
+    </dsContext>
+    <dialogMode height="600"
+                width="800"/>
+    <layout expand="userSynchronizationLogsTable"
+            spacing="true">
+        <filter id="filter"
+                applyTo="userSynchronizationLogsTable"
+                datasource="userSynchronizationLogsDs">
+            <properties include=".*"/>
+        </filter>
+        <groupTable id="userSynchronizationLogsTable"
+                    width="100%">
+            <actions>
+                <action id="edit"/>
+            </actions>
+            <columns>
+                <column id="login"/>
+                <column id="ldapAttributes"/>
+                <column id="result"/>
+                <column id="appliedRules"/>
+                <column id="rolesBefore"/>
+                <column id="rolesAfter"/>
+                <column id="accessGroupBefore"/>
+                <column id="accessGroupAfter"/>
+                <column id="userInfoBefore"/>
+                <column id="userInfoAfter"/>
+                <column id="errorText"/>
+                <column id="isNewUser"/>
+                <column id="isDeactivated"/>
+            </columns>
+            <rows datasource="userSynchronizationLogsDs"/>
+            <rowsCount/>
+        </groupTable>
+    </layout>
+</window>

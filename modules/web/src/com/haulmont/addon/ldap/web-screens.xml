@@ -13,4 +13,8 @@
             template="com/haulmont/addon/ldap/web/screens/matchingRuleScreen.xml"/>
     <screen id="ldap$LdapUserAttribute.edit"
             template="com/haulmont/addon/ldap/web/ldapuserattribute/ldap-user-attribute-edit.xml"/>
+    <screen id="ldap$UserSynchronizationLog.browse"
+            template="com/haulmont/addon/ldap/web/usersynchronizationlog/user-synchronization-log-browse.xml"/>
+    <screen id="ldap$UserSynchronizationLog.edit"
+            template="com/haulmont/addon/ldap/web/usersynchronizationlog/user-synchronization-log-edit.xml"/>
 </screen-config>

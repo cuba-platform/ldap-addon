@@ -3,16 +3,15 @@ package com.haulmont.addon.ldap.core.dao;
 import com.haulmont.addon.ldap.config.LdapConfig;
 import com.haulmont.addon.ldap.core.dto.LdapUser;
 import com.haulmont.addon.ldap.core.dto.LdapUserWrapper;
-import com.haulmont.addon.ldap.core.rule.ApplyMatchingRuleContext;
 import com.haulmont.addon.ldap.core.utils.LdapConstants;
 import com.haulmont.addon.ldap.core.utils.LdapUserMapper;
 import com.haulmont.addon.ldap.core.utils.LdapUserWrapperMapper;
 import com.haulmont.addon.ldap.entity.SimpleRuleCondition;
-import com.haulmont.addon.ldap.entity.SimpleRuleConditionAttribute;
-import com.haulmont.addon.ldap.utils.MatchingRuleUtils;
 import com.haulmont.cuba.core.global.Messages;
 import com.haulmont.cuba.security.global.LoginException;
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.ldap.core.LdapTemplate;
 import org.springframework.ldap.filter.AndFilter;
@@ -22,7 +21,6 @@ import org.springframework.ldap.filter.HardcodedFilter;
 import org.springframework.ldap.query.LdapQuery;
 import org.springframework.ldap.query.LdapQueryBuilder;
 import org.springframework.ldap.query.SearchScope;
-import org.springframework.ldap.support.LdapEncoder;
 import org.springframework.ldap.support.LdapUtils;
 import org.springframework.stereotype.Service;
 
@@ -34,6 +32,8 @@ import static com.haulmont.addon.ldap.core.dao.LdapUserDao.NAME;
 
 @Service(NAME)
 public class LdapUserDao {
+
+    private final Logger logger = LoggerFactory.getLogger(LdapUserDao.class);
 
     public final static String NAME = "ldap_LdapUserDao";
 
@@ -48,7 +48,7 @@ public class LdapUserDao {
     private Messages messages;
 
     @Inject
-    private MatchingRuleUtils matchingRuleUtils;
+    private UserSynchronizationLogDao userSynchronizationLogDao;
 
     public LdapUserWrapper getLdapUserWrapper(String login) {
         LdapQuery query = LdapQueryBuilder.query()
@@ -81,10 +81,14 @@ public class LdapUserDao {
 
     public void authenticateLdapUser(String login, String password, Locale messagesLocale) throws LoginException {
         if (!ldapTemplate.authenticate(LdapUtils.emptyLdapName(), createUserBaseAndLoginFilter(login).encode(), password)) {
-            throw new LoginException(
-                    messages.formatMessage(LdapUserDao.class, "LoginException.InvalidLoginOrPassword", messagesLocale, login)
-            );
+            String loginFailedMessage = messages.formatMessage(LdapUserDao.class, "LoginException.InvalidLoginOrPassword", messagesLocale, login);
+            logger.warn(loginFailedMessage);
+            throw new LoginException(loginFailedMessage);
+        } else {
+            String loginSuccessMessage = messages.formatMessage(LdapUserDao.class, "successLdapLogin", messagesLocale, login);
+            logger.warn(loginSuccessMessage);
         }
+
     }
 
 

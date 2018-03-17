@@ -1,5 +1,6 @@
 package com.haulmont.addon.ldap.core.dao;
 
+import com.haulmont.addon.ldap.core.rule.ApplyMatchingRuleContext;
 import com.haulmont.cuba.core.EntityManager;
 import com.haulmont.cuba.core.Persistence;
 import com.haulmont.cuba.core.TypedQuery;
@@ -29,6 +30,9 @@ public class CubaUserDao {
     @Inject
     private Metadata metadata;
 
+    @Inject
+    private UserSynchronizationLogDao userSynchronizationLogDao;
+
     @Transactional(readOnly = true)
     public User getCubaUserByLogin(String login) {
         TypedQuery<User> query = persistence.getEntityManager().createQuery("select distinct cu from sec$User cu where cu.login = :login", User.class);
@@ -51,11 +55,12 @@ public class CubaUserDao {
     }
 
     @Transactional
-    public void saveCubaUser(User cubaUser, List<UserRole> rolesToDelete) {
+    public void saveCubaUser(User cubaUser, User originalUser, ApplyMatchingRuleContext applyMatchingRuleContext) {
         EntityManager entityManager = persistence.getEntityManager();
         User mergedUser = PersistenceHelper.isNew(cubaUser) ? cubaUser : entityManager.merge(cubaUser);
-        rolesToDelete.forEach(entityManager::remove);
+        originalUser.getUserRoles().forEach(entityManager::remove);
         mergedUser.getUserRoles().forEach(entityManager::persist);
         entityManager.persist(mergedUser);
+        userSynchronizationLogDao.logUserSynchronization(applyMatchingRuleContext, originalUser);
     }
 }

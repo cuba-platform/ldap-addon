@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://schemas.haulmont.com/cuba/window.xsd"
+        caption="msg://editorCaption"
+        class="com.haulmont.addon.ldap.web.usersynchronizationlog.UserSynchronizationLogEdit"
+        datasource="userSynchronizationLogDs"
+        focusComponent="fieldGroup"
+        messagesPack="com.haulmont.addon.ldap.web.usersynchronizationlog">
+    <dsContext>
+        <datasource id="userSynchronizationLogDs"
+                    class="com.haulmont.addon.ldap.entity.UserSynchronizationLog"
+                    view="_local"/>
+    </dsContext>
+    <dialogMode height="600"
+                width="800"/>
+    <layout expand="scrollBox"
+            spacing="true">
+        <scrollBox id="scrollBox"
+                   spacing="true">
+            <fieldGroup id="fieldGroup"
+                        datasource="userSynchronizationLogDs"
+                        editable="false"
+                        width="100%">
+                <column width="100%">
+                    <field property="login"/>
+                    <field property="ldapAttributes"
+                           rows="5"/>
+                    <field property="result"/>
+                    <field property="appliedRules"
+                           rows="5"/>
+                    <field property="rolesBefore"
+                           rows="5"/>
+                    <field property="rolesAfter"
+                           rows="5"/>
+                    <field property="accessGroupBefore"/>
+                    <field property="accessGroupAfter"/>
+                    <field property="userInfoBefore"
+                           rows="5"/>
+                    <field property="userInfoAfter"
+                           rows="5"/>
+                    <field property="errorText"
+                           rows="5"/>
+                    <field property="isNewUser"/>
+                    <field property="isDeactivated"/>
+                </column>
+            </fieldGroup>
+        </scrollBox>
+        <frame id="windowActions"
+               screen="editWindowActions"/>
+    </layout>
+</window>

@@ -31,7 +31,7 @@ public class LdapComponentAuthProvider implements CubaAuthProvider {
         //TODO: механизм принудительного обновления пользователей из лдап (с кубы в лдап, из лдап в кубу)
         if (!"admin".equalsIgnoreCase(login)) {//TODO:временно
             authUserService.ldapAuth(login, password, messagesLocale);
-            userSynchronizationService.synchronizeUser(login);
+            userSynchronizationService.synchronizeUserAfterLdapLogin(login);
         }
     }
 

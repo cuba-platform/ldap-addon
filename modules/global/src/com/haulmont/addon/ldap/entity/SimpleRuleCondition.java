@@ -4,7 +4,9 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.Column;
 import javax.persistence.Lob;
+
 import com.haulmont.cuba.core.entity.StandardEntity;
+
 import java.util.UUID;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
@@ -25,6 +27,7 @@ public class SimpleRuleCondition extends StandardEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "SIMPLE_MATCHING_RULE_ID")
     protected SimpleMatchingRule simpleMatchingRule;
+
     public String getAttribute() {
         return attribute;
     }
@@ -50,5 +53,7 @@ public class SimpleRuleCondition extends StandardEntity {
         return attributeValue;
     }
 
-
+    public String getAttributePair() {
+        return attribute + ":" + attributeValue;
+    }
 }

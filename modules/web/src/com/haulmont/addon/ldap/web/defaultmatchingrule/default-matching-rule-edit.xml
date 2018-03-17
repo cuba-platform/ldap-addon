@@ -30,7 +30,8 @@
                 <field caption="msg://isOverrideExistingAccessGroupFieldCaption"
                        property="isOverrideExistingAccessGroup"/>
                 <field caption="msg://descriptionFieldCaption"
-                       property="description"/>
+                       property="description"
+                       required="true"/>
             </column>
         </fieldGroup>
         <groupBox id="rolesBox"

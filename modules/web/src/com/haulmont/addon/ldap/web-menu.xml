@@ -4,5 +4,6 @@
           insertBefore="administration">
         <item screen="ldap$settings"/>
         <item screen="ldap$matchingRuleScreen"/>
+        <item screen="ldap$UserSynchronizationLog.browse"/>
     </menu>
 </menu-config>
