@@ -26,9 +26,7 @@ import javax.inject.Named;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.haulmont.addon.ldap.entity.MatchingRuleType.DEFAULT;
-import static com.haulmont.addon.ldap.entity.MatchingRuleType.CUSTOM;
-import static com.haulmont.addon.ldap.entity.MatchingRuleType.SIMPLE;
+import static com.haulmont.addon.ldap.entity.MatchingRuleType.*;
 import static com.haulmont.cuba.gui.components.Frame.NotificationType.HUMANIZED;
 
 public class MatchingRuleScreen extends AbstractWindow {
@@ -136,9 +134,10 @@ public class MatchingRuleScreen extends AbstractWindow {
                 AbstractCommonMatchingRule rule = matchingRuleTable.getSingleSelected();
                 if (DEFAULT.equals(rule.getRuleType())) {
                     return ("ldap$DefaultMatchingRule.edit");
-                }
-                if (SIMPLE.equals(rule.getRuleType())) {
+                } else if (SIMPLE.equals(rule.getRuleType())) {
                     return ("ldap$SimpleMatchingRule.edit");
+                } else if (SCRIPTING.equals(rule.getRuleType())) {
+                    return ("ldap$ScriptingMatchingRule.edit");
                 } else {
                     return "";
                 }
@@ -210,6 +209,11 @@ public class MatchingRuleScreen extends AbstractWindow {
     public void onSimpleRuleCreateButtonClick() {
         SimpleMatchingRule simpleMatchingRule = metadata.create(SimpleMatchingRule.class);
         openCreateRuleWindow(simpleMatchingRule, "ldap$SimpleMatchingRule.edit");
+    }
+
+    public void onScriptingRuleCreateButtonClick() {
+        ScriptingMatchingRule scriptingMatchingRule = metadata.create(ScriptingMatchingRule.class);
+        openCreateRuleWindow(scriptingMatchingRule, "ldap$ScriptingMatchingRule.edit");
     }
 
     private void openCreateRuleWindow(AbstractCommonMatchingRule abstractMatchingRule, String screenName) {
@@ -381,4 +385,5 @@ public class MatchingRuleScreen extends AbstractWindow {
             i++;
         }
     }
+
 }

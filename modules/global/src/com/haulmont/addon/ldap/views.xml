@@ -18,7 +18,9 @@
         <property name="accessGroup"
                   view="_minimal"/>
         <property name="roles"
-                  view="_minimal"/>
+                  view="_minimal">
+            <property name="description"/>
+        </property>
         <property name="conditions"
                   view="_local">
             <property name="simpleMatchingRule"
@@ -45,5 +47,19 @@
         <property fetch="JOIN"
                   name="userRoles"
                   view="user-role-view-with-role"/>
+    </view>
+    <view class="com.haulmont.addon.ldap.entity.ScriptingMatchingRule"
+          extends="_local"
+          name="scriptingMatchingRule-view-status-order-group-roles">
+        <property name="status"
+                  view="_minimal"/>
+        <property name="order"
+                  view="_minimal"/>
+        <property name="accessGroup"
+                  view="_minimal"/>
+        <property name="roles"
+                  view="_minimal">
+            <property name="description"/>
+        </property>
     </view>
 </views>

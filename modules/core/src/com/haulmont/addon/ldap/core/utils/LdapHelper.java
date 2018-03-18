@@ -98,7 +98,8 @@ public class LdapHelper {
             if (!ldapObjectAttributeNames.contains(attributeName)) continue;
             NamingEnumeration values = attributes.get(attributeName).getAll();
             while (values.hasMore()) {
-                attributesResult.add(values.next().toString());
+                Object val = values.next();
+                attributesResult.add(val == null ? StringUtils.EMPTY : val.toString());
             }
         }
         return attributesResult;

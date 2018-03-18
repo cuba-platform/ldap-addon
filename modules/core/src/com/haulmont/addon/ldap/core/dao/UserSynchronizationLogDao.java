@@ -36,6 +36,7 @@ import static com.haulmont.addon.ldap.entity.MatchingRuleType.*;
 import static com.haulmont.addon.ldap.entity.UserSynchronizationResultEnum.*;
 import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
+import static java.util.stream.Collectors.toList;
 
 @Service(NAME)
 public class UserSynchronizationLogDao {
@@ -200,27 +201,19 @@ public class UserSynchronizationLogDao {
         return sb.toString();
     }
 
-    private String getLdapAttributes(Attributes ldapAttributes) {
+    private String getLdapAttributes(Map<String, Object> ldapAttributes) {
         StringBuilder sb = new StringBuilder();
-        try {
-            NamingEnumeration<String> attrs = ldapAttributes.getIDs();
-            while (attrs.hasMore()) {
-                String attrName = attrs.next();
-                NamingEnumeration values = ldapAttributes.get(attrName).getAll();
-                sb.append(attrName);
-                sb.append(":");
-                List<String> attrValues = new ArrayList<>();
-                while (values.hasMore()) {
-                    Object attr = values.next();
-                    if (attr != null) {
-                        attrValues.add(attr.toString());
-                    }
-                }
-                sb.append(attrValues.stream().collect(Collectors.joining(",")));
-                sb.append("\n");
+        for (Map.Entry<String, Object> me : ldapAttributes.entrySet()) {
+            String attrName = me.getKey();
+            sb.append(attrName);
+            sb.append(":");
+            if (me.getValue() instanceof List) {
+                List<String> list = ((List<Object>) me.getValue()).stream().map(v -> v == null ? "null" : v.toString()).collect(toList());
+                sb.append(list.stream().collect(Collectors.joining(",")));
+            } else {
+                sb.append(me.getValue().toString());
             }
-        } catch (NamingException e) {
-            throw new RuntimeException(e);
+            sb.append("\n");
         }
         return sb.toString();
     }

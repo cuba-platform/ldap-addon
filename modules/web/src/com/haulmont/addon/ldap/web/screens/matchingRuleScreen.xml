@@ -64,6 +64,9 @@
                             <button id="simpleRuleCreateButton"
                                     caption="msg://simpleRuleCreateButton"
                                     invoke="onSimpleRuleCreateButtonClick"/>
+                            <button id="scriptingRuleCreateButton"
+                                    caption="msg://scriptingRuleCreateButton"
+                                    invoke="onScriptingRuleCreateButtonClick"/>
                             <button id="ruleEditButton"
                                     action="matchingRuleTable.edit"
                                     caption="msg://ruleEditButton"/>
