@@ -40,6 +40,9 @@
                             <column id="matchingRuleTableOrderColumn"
                                     caption="msg://matchingRuleTableOrderColumn"
                                     generator="generateMatchingRuleTableOrderColumnCell"/>
+                            <column id="matchingRuleTableTerminalColumn"
+                                    caption="msg://matchingRuleTableTerminalColumn"
+                                    generator="generateMatchingRuleTableTerminalColumnCell"/>
                             <column id="description"
                                     caption="msg://matchingRuleTableDescriptionColumn"
                                     generator="generateMatchingRuleTableDescriptionColumnCell"/>

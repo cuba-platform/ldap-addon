@@ -74,6 +74,8 @@ public class MatchingRuleScreen extends AbstractWindow {
     public void init(Map<String, Object> params) {
         super.init(params);
 
+        matchingRuleTable.setSortable(false);
+
         CollectionDatasource.CollectionChangeListener sortListener = new CollectionDatasource.CollectionChangeListener() {
             @Override
             public void collectionChanged(CollectionDatasource.CollectionChangeEvent e) {
@@ -386,4 +388,25 @@ public class MatchingRuleScreen extends AbstractWindow {
         }
     }
 
+
+    public Component generateMatchingRuleTableTerminalColumnCell(AbstractCommonMatchingRule entity) {
+        CheckBox checkBox = componentsFactory.createComponent(CheckBox.class);
+        if ((!CUSTOM.equals(entity.getRuleType()))) {
+            AbstractDbStoredMatchingRule dbRule = (AbstractDbStoredMatchingRule) entity;
+            checkBox.setValue(dbRule.getIsTerminalRule());
+            checkBox.addValueChangeListener(new ValueChangeListener() {
+                @Override
+                public void valueChanged(ValueChangeEvent e) {
+                    AbstractDbStoredMatchingRule mr = (AbstractDbStoredMatchingRule) matchingRuleTable.getSingleSelected();
+                    Boolean value = (Boolean) e.getValue();
+                    mr.setIsTerminalRule(value);
+                }
+            });
+        } else {
+            checkBox.setEditable(false);
+            checkBox.setEnabled(false);
+        }
+
+        return checkBox;
+    }
 }
