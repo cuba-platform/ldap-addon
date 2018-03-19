@@ -1,14 +1,11 @@
 package com.haulmont.addon.ldap.core.dao;
 
 import com.haulmont.addon.ldap.core.rule.ApplyMatchingRuleContext;
-import com.haulmont.addon.ldap.core.rule.appliers.DbStoredMatchingRuleProcessor;
-import com.haulmont.addon.ldap.core.utils.LdapHelper;
 import com.haulmont.addon.ldap.entity.*;
 import com.haulmont.cuba.core.EntityManager;
 import com.haulmont.cuba.core.Persistence;
 import com.haulmont.cuba.core.global.Metadata;
 import com.haulmont.cuba.core.global.PersistenceHelper;
-import com.haulmont.cuba.security.entity.Group;
 import com.haulmont.cuba.security.entity.Role;
 import com.haulmont.cuba.security.entity.User;
 import com.haulmont.cuba.security.entity.UserRole;
@@ -18,14 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
-import javax.naming.NamingEnumeration;
-import javax.naming.NamingException;
-import javax.naming.directory.Attributes;
-import javax.naming.directory.SearchResult;
-import javax.print.attribute.Attribute;
-import javax.print.attribute.standard.MediaSize;
-
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -43,7 +32,7 @@ public class UserSynchronizationLogDao {
 
     public final static String NAME = "ldap_UserSynchronizationLogDao";
 
-    public final String INDENT = "   ";
+    public final static String INDENT = "   ";
 
     @Inject
     private Persistence persistence;

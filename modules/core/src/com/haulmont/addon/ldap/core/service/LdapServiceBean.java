@@ -7,7 +7,6 @@ import com.haulmont.addon.ldap.core.dto.LdapUserWrapper;
 import com.haulmont.addon.ldap.core.rule.ApplyMatchingRuleContext;
 import com.haulmont.addon.ldap.core.spring.AnonymousLdapContextSource;
 import com.haulmont.addon.ldap.core.utils.LdapHelper;
-import com.haulmont.addon.ldap.dto.GroovyScriptTestResult;
 import com.haulmont.addon.ldap.dto.GroovyScriptTestResultDto;
 import com.haulmont.addon.ldap.service.LdapService;
 import com.haulmont.cuba.core.global.Messages;
@@ -16,7 +15,6 @@ import com.haulmont.cuba.security.entity.User;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.codehaus.groovy.control.CompilationFailedException;
-import org.codehaus.groovy.runtime.MethodClosure;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -30,7 +28,6 @@ import javax.naming.directory.Attributes;
 import javax.naming.directory.DirContext;
 import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -42,7 +39,7 @@ import static javax.naming.directory.SearchControls.SUBTREE_SCOPE;
 @Service(LdapService.NAME)
 public class LdapServiceBean implements LdapService {
 
-    private final String DUMMY_FILTER = "ou=system";
+    private final static String DUMMY_FILTER = "ou=system";
 
     private final Logger logger = LoggerFactory.getLogger(LdapServiceBean.class);
 

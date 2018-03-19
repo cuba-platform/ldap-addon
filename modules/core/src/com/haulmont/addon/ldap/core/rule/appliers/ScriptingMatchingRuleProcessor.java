@@ -3,7 +3,6 @@ package com.haulmont.addon.ldap.core.rule.appliers;
 import com.haulmont.addon.ldap.core.rule.ApplyMatchingRuleContext;
 import com.haulmont.addon.ldap.core.service.LdapServiceBean;
 import com.haulmont.addon.ldap.entity.AbstractDbStoredMatchingRule;
-import com.haulmont.addon.ldap.entity.CommonMatchingRule;
 import com.haulmont.addon.ldap.entity.MatchingRuleType;
 import com.haulmont.addon.ldap.entity.ScriptingMatchingRule;
 import com.haulmont.cuba.core.global.Messages;
@@ -13,7 +12,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
-
 import java.util.HashMap;
 import java.util.Map;
 

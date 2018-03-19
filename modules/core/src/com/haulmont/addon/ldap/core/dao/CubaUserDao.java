@@ -6,15 +6,11 @@ import com.haulmont.cuba.core.Persistence;
 import com.haulmont.cuba.core.TypedQuery;
 import com.haulmont.cuba.core.global.Metadata;
 import com.haulmont.cuba.core.global.PersistenceHelper;
-import com.haulmont.cuba.security.entity.Role;
 import com.haulmont.cuba.security.entity.User;
-import com.haulmont.cuba.security.entity.UserRole;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
-
 import java.util.ArrayList;
 import java.util.List;
 

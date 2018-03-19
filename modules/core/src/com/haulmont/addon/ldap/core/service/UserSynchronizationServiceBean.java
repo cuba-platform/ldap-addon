@@ -7,7 +7,6 @@ import com.haulmont.addon.ldap.core.dao.UserSynchronizationLogDao;
 import com.haulmont.addon.ldap.core.dto.LdapUserWrapper;
 import com.haulmont.addon.ldap.core.rule.ApplyMatchingRuleContext;
 import com.haulmont.addon.ldap.core.rule.appliers.MatchingRuleApplier;
-import com.haulmont.addon.ldap.core.rule.programmatic.CustomLdapMatchingRule;
 import com.haulmont.addon.ldap.core.rule.programmatic.CustomLdapMatchingRuleWrapper;
 import com.haulmont.addon.ldap.core.spring.events.*;
 import com.haulmont.addon.ldap.dto.TestUserSynchronizationDto;
@@ -18,10 +17,8 @@ import com.haulmont.addon.ldap.service.UserSynchronizationService;
 import com.haulmont.cuba.core.global.Messages;
 import com.haulmont.cuba.core.global.MetadataTools;
 import com.haulmont.cuba.core.global.PersistenceHelper;
-import com.haulmont.cuba.security.entity.Group;
 import com.haulmont.cuba.security.entity.User;
 import com.haulmont.cuba.security.entity.UserRole;
-import com.haulmont.cuba.security.global.LoginException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -30,7 +27,6 @@ import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 

@@ -4,7 +4,6 @@ import com.haulmont.addon.ldap.core.dao.LdapUserDao;
 import com.haulmont.addon.ldap.core.dto.LdapUser;
 import com.haulmont.addon.ldap.core.rule.ApplyMatchingRuleContext;
 import com.haulmont.addon.ldap.entity.AbstractDbStoredMatchingRule;
-import com.haulmont.addon.ldap.entity.CommonMatchingRule;
 import com.haulmont.addon.ldap.entity.MatchingRuleType;
 import com.haulmont.addon.ldap.entity.SimpleMatchingRule;
 import org.springframework.stereotype.Component;

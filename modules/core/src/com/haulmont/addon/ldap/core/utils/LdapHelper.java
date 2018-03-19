@@ -4,12 +4,14 @@ import com.haulmont.addon.ldap.config.LdapConfig;
 import com.haulmont.addon.ldap.core.dto.LdapUser;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.ldap.core.DirContextAdapter;
-import org.springframework.ldap.filter.*;
+import org.springframework.ldap.filter.AndFilter;
+import org.springframework.ldap.filter.EqualsFilter;
+import org.springframework.ldap.filter.Filter;
+import org.springframework.ldap.filter.OrFilter;
 
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 import javax.naming.directory.Attributes;
-import javax.naming.directory.BasicAttribute;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
