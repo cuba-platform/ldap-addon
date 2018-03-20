@@ -71,14 +71,14 @@ Single Sign-On.
 Once you have successfully installed the component, check that all configured property values are displayed properly 
 on the LDAP Config screen (Menu: LDAP Component → LDAP Config).
 
-! [LDAP-Config-menu](img/ldap-component-menu.png)
+![LDAP-Config-menu](img/ldap-component-menu.png)
 
 ### LDAP Connection
 
 The 'Connection' tab of LDAP Config Screen allows amending and testing LDAP connection properties right from the
 application UI.
 
-! [LDAP-Config-Connection](img/ldap-config-connection.png)
+![LDAP-Config-Connection](img/ldap-config-connection.png)
 
 Clicking the 'Test' button launches connection testing. If the connection is successfully established, the corresponding
 message is displayed.
@@ -88,7 +88,7 @@ message is displayed.
 Using the 'Basic Attributes' tab of Load Config Screen enables to match LDAP basic attributes and fields of the User
 entity in your application.
 
-! [LDAP-Config-Basic-Attributes](img/ldap-config-basic-attributes.png)
+![LDAP-Config-Basic-Attributes](img/ldap-config-basic-attributes.png)
 
 
 
