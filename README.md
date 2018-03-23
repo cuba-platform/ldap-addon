@@ -20,7 +20,7 @@ frameworks or libraries to be installed.
 The component comprises the following functionalities:
 
 * Storing user credentials in the LDAP database;
-* Using Single Sign-On without having to specify user credentials;
+* Using a single set of credentials in all applications having LDAP enabled;
 * Configuring LDAP parameters and the directory server schema;
 * Setting up rules for assigning roles and access groups to users.
 
@@ -85,16 +85,20 @@ message is displayed.
 
 ### Basic Attributes
 
-Using the 'Basic Attributes' tab of Load Config Screen enables to match LDAP basic attributes and fields of the User
-entity in your application.
+When a user logs in using LDAP credentials for the first time, a new user entity is created in the application.
+All details about the user are taken from the LDAP database (configuring these details is a part of preparation 
+activities). In order to match LDAP attributes and the fields of the User entity, use the 'Basic Attributes' tab of 
+Load Config Screen.
 
 ![LDAP-Config-Basic-Attributes](img/ldap-config-basic-attributes.png)
 
-
-
 ### LDAP Schema
 
+//to do
+
 ## LDAP Matching Rules
+
+
 
 ### Programmatic Rule
 
