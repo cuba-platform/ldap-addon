@@ -60,20 +60,10 @@ public class LdapServiceBean implements LdapService {
     @Inject
     private Messages messages;
 
-    private Map<String, Object> getAdditionalEnvProperties(String url) {
-        Map<String, Object> map = new HashMap<>();
-        if (StringUtils.isNotEmpty(url) && url.toUpperCase().startsWith("LDAPS")) {
-            map.put("java.naming.ldap.factory.socket", "com.haulmont.addon.ldap.core.spring.ssl.CertCheckIgnoreSSLSocketFactory");
-        }
-        return map;
-    }
-
-
     private LdapContextSource createAuthenticatedContext(String url, String base) {
         LdapContextSource ldapContextSource = new LdapContextSource();
         ldapContextSource.setUrl(url);
         ldapContextSource.setBase(base);
-        ldapContextSource.setBaseEnvironmentProperties(getAdditionalEnvProperties(url));
         ldapContextSource.afterPropertiesSet();
         return ldapContextSource;
     }
@@ -83,7 +73,6 @@ public class LdapServiceBean implements LdapService {
         ldapContextSource.setUrl(url);
         ldapContextSource.setBase(base);
         ldapContextSource.setAnonymousReadOnly(true);
-        ldapContextSource.setBaseEnvironmentProperties(getAdditionalEnvProperties(url));
         ldapContextSource.afterPropertiesSet();
         return ldapContextSource;
     }
