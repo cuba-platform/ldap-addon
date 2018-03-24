@@ -1,4 +1,4 @@
-package com.haulmont.addon.ldap.core.rule.programmatic;
+package com.haulmont.addon.ldap.core.rule.custom;
 
 import com.haulmont.addon.ldap.core.rule.ApplyMatchingRuleContext;
 

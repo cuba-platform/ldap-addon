@@ -1,14 +1,16 @@
-package com.haulmont.addon.ldap.core.rule.programmatic;
+package com.haulmont.addon.ldap.core.rule.custom;
 
 import com.haulmont.addon.ldap.config.LdapConfig;
 import com.haulmont.addon.ldap.core.dao.CubaUserDao;
 import com.haulmont.addon.ldap.core.dao.LdapUserDao;
 import com.haulmont.addon.ldap.core.rule.ApplyMatchingRuleContext;
 import com.haulmont.cuba.security.entity.User;
+import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
 
-@LdapMatchingRule(description = "Test programmatic Rule")
+@Component
+@LdapMatchingRule(description = "Test custom Rule")
 public class TestCustomLdapRule implements CustomLdapMatchingRule {
 
     @Inject

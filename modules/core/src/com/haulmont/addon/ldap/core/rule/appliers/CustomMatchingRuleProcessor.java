@@ -1,7 +1,7 @@
 package com.haulmont.addon.ldap.core.rule.appliers;
 
 import com.haulmont.addon.ldap.core.rule.ApplyMatchingRuleContext;
-import com.haulmont.addon.ldap.core.rule.programmatic.CustomLdapMatchingRule;
+import com.haulmont.addon.ldap.core.rule.custom.CustomLdapMatchingRule;
 import com.haulmont.addon.ldap.entity.CommonMatchingRule;
 import com.haulmont.addon.ldap.entity.MatchingRuleType;
 import org.springframework.stereotype.Component;

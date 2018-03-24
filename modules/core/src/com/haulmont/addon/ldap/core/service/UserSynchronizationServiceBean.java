@@ -7,7 +7,7 @@ import com.haulmont.addon.ldap.core.dao.UserSynchronizationLogDao;
 import com.haulmont.addon.ldap.core.dto.LdapUserWrapper;
 import com.haulmont.addon.ldap.core.rule.ApplyMatchingRuleContext;
 import com.haulmont.addon.ldap.core.rule.appliers.MatchingRuleApplier;
-import com.haulmont.addon.ldap.core.rule.programmatic.CustomLdapMatchingRuleWrapper;
+import com.haulmont.addon.ldap.core.rule.custom.CustomLdapMatchingRuleWrapper;
 import com.haulmont.addon.ldap.core.spring.events.*;
 import com.haulmont.addon.ldap.dto.TestUserSynchronizationDto;
 import com.haulmont.addon.ldap.entity.AbstractCommonMatchingRule;

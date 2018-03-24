@@ -1,4 +1,4 @@
-package com.haulmont.addon.ldap.core.rule.programmatic;
+package com.haulmont.addon.ldap.core.rule.custom;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

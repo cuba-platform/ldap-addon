@@ -1,7 +1,7 @@
 package com.haulmont.addon.ldap.core.dao;
 
-import com.haulmont.addon.ldap.core.rule.programmatic.CustomLdapMatchingRule;
-import com.haulmont.addon.ldap.core.rule.programmatic.CustomLdapMatchingRuleWrapper;
+import com.haulmont.addon.ldap.core.rule.custom.CustomLdapMatchingRule;
+import com.haulmont.addon.ldap.core.rule.custom.CustomLdapMatchingRuleWrapper;
 import com.haulmont.addon.ldap.dto.CustomLdapMatchingRuleDto;
 import com.haulmont.addon.ldap.entity.*;
 import com.haulmont.cuba.core.EntityManager;
