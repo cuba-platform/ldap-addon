@@ -29,10 +29,8 @@ public class LdapComponentAuthProvider implements CubaAuthProvider {
     public void authenticate(String login, String password, Locale messagesLocale) throws LoginException {
         //TODO: Для POC поддерживается аутентификация только по лдап
         //TODO: механизм принудительного обновления пользователей из лдап (с кубы в лдап, из лдап в кубу)
-        if (!"admin".equalsIgnoreCase(login)) {//TODO:временно
-            authUserService.ldapAuth(login, password, messagesLocale);
-            userSynchronizationService.synchronizeUserAfterLdapLogin(login);
-        }
+        authUserService.ldapAuth(login, password, messagesLocale);
+        userSynchronizationService.synchronizeUserAfterLdapLogin(login);
     }
 
     @Override
