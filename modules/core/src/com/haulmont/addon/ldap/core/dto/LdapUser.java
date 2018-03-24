@@ -15,6 +15,22 @@ public class LdapUser {
     private String language;
     private String ou;
 
+    public LdapUser() {
+    }
+
+    public LdapUser(LdapUser source) {
+        this.login = source.login;
+        this.cn = source.cn;
+        this.sn = source.cn;
+        this.email = source.email;
+        this.memberOf = source.memberOf;
+        this.accessGroups = source.accessGroups;
+        this.isDisabled = source.isDisabled;
+        this.position = source.position;
+        this.language = source.language;
+        this.ou = source.ou;
+    }
+
 
     public String getEmail() {
         return email;
