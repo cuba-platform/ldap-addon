@@ -8,7 +8,7 @@
     <dsContext>
         <groupDatasource id="userSynchronizationLogsDs"
                          class="com.haulmont.addon.ldap.entity.UserSynchronizationLog"
-                         view="_local">
+                         view="userSynchronizationLog-view-with-sys-prop">
             <query>
                 <![CDATA[select e from ldap$UserSynchronizationLog e]]>
             </query>
@@ -31,10 +31,36 @@
             </actions>
             <columns>
                 <column id="login"/>
+                <column id="createTs"
+                        caption="msg://createDate"/>
                 <column id="result"/>
                 <column id="errorText"/>
                 <column id="isNewUser"/>
                 <column id="isDeactivated"/>
+                <column id="ldapAttributes"
+                        maxTextLength="10"
+                        sortable="false"/>
+                <column id="appliedRules"
+                        maxTextLength="10"
+                        sortable="false"/>
+                <column id="rolesBefore"
+                        maxTextLength="10"
+                        sortable="false"/>
+                <column id="rolesAfter"
+                        maxTextLength="10"
+                        sortable="false"/>
+                <column id="accessGroupBefore"
+                        maxTextLength="10"
+                        sortable="false"/>
+                <column id="accessGroupAfter"
+                        maxTextLength="10"
+                        sortable="false"/>
+                <column id="userInfoBefore"
+                        maxTextLength="10"
+                        sortable="false"/>
+                <column id="userInfoAfter"
+                        maxTextLength="10"
+                        sortable="false"/>
             </columns>
             <rows datasource="userSynchronizationLogsDs"/>
             <rowsCount/>

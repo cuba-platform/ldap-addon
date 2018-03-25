@@ -62,4 +62,8 @@
             <property name="description"/>
         </property>
     </view>
+    <view class="com.haulmont.addon.ldap.entity.UserSynchronizationLog"
+          extends="_local"
+          name="userSynchronizationLog-view-with-sys-prop"
+          systemProperties="true"/>
 </views>
