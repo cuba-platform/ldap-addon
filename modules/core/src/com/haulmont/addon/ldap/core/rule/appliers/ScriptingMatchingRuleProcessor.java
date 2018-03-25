@@ -64,7 +64,7 @@ public class ScriptingMatchingRuleProcessor extends DbStoredMatchingRuleProcesso
         ApplyMatchingRuleContext tempContext = new ApplyMatchingRuleContext(new LdapUser(source.getLdapUser()), source.getLdapUserAttributes(),
                 metadataTools.deepCopy(source.getCubaUser()));
         tempContext.getRoles().addAll(source.getRoles().stream().map(cmr -> metadataTools.deepCopy(cmr)).collect(toList()));
-        tempContext.setGroup(metadataTools.deepCopy(source.getGroup()));
+        tempContext.setGroup(source.getGroup() == null ? null : metadataTools.deepCopy(source.getGroup()));
 
         List<CommonMatchingRule> customRules = source.getAppliedRules().stream().filter(mr -> CUSTOM.equals(mr.getRuleType())).collect(toList());
         List<AbstractDbStoredMatchingRule> dbRules = new ArrayList<>();
