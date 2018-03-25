@@ -18,6 +18,6 @@ public class DefaultMatchingRuleProcessor extends DbStoredMatchingRuleProcessor 
 
     @Override
     public boolean checkMatchingRule(AbstractDbStoredMatchingRule matchingRule, ApplyMatchingRuleContext applyMatchingRuleContext) {
-        return !applyMatchingRuleContext.isAnyRuleApply();
+        return applyMatchingRuleContext.getAppliedRules().isEmpty();
     }
 }

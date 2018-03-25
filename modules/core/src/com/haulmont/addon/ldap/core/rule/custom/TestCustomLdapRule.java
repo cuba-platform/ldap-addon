@@ -27,9 +27,8 @@ public class TestCustomLdapRule implements CustomLdapMatchingRule {
     public boolean applyCustomMatchingRule(ApplyMatchingRuleContext applyMatchingRuleContext) {
         if (applyMatchingRuleContext.getLdapUser().getLogin().equalsIgnoreCase("barts")) {
             User admin = cubaUserDao.getCubaUserByLogin("admin");
-            applyMatchingRuleContext.getCurrentRoles().add(admin.getUserRoles().get(0).getRole());
-            applyMatchingRuleContext.setCurrentGroup(admin.getGroup());
-            applyMatchingRuleContext.getAppliedRules().add(new CustomLdapMatchingRuleWrapper(this));
+            applyMatchingRuleContext.getRoles().add(admin.getUserRoles().get(0).getRole());
+            applyMatchingRuleContext.setGroup(admin.getGroup());
         }
         return true;
     }

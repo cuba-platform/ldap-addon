@@ -21,6 +21,10 @@ public class CustomMatchingRuleProcessor extends MatchingRuleProcessor {
     @Override
     public boolean applyMatchingRule(CommonMatchingRule matchingRule, ApplyMatchingRuleContext applyMatchingRuleContext) {
         CustomLdapMatchingRule programmaticMatchingRule = (CustomLdapMatchingRule) matchingRule;
-        return programmaticMatchingRule.applyCustomMatchingRule(applyMatchingRuleContext);
+        boolean isCustomRuleApplied = programmaticMatchingRule.applyCustomMatchingRule(applyMatchingRuleContext);
+        if (isCustomRuleApplied) {
+            applyMatchingRuleContext.getAppliedRules().add(matchingRule);
+        }
+        return isCustomRuleApplied;
     }
 }

@@ -2,7 +2,6 @@ package com.haulmont.addon.ldap.core.rule.appliers;
 
 import com.haulmont.addon.ldap.core.dto.LdapUser;
 import com.haulmont.addon.ldap.core.rule.ApplyMatchingRuleContext;
-import com.haulmont.addon.ldap.core.rule.custom.CustomLdapMatchingRule;
 import com.haulmont.addon.ldap.core.service.LdapServiceBean;
 import com.haulmont.addon.ldap.entity.AbstractDbStoredMatchingRule;
 import com.haulmont.addon.ldap.entity.CommonMatchingRule;
@@ -64,8 +63,8 @@ public class ScriptingMatchingRuleProcessor extends DbStoredMatchingRuleProcesso
     private ApplyMatchingRuleContext getContextCopy(ApplyMatchingRuleContext source) {
         ApplyMatchingRuleContext tempContext = new ApplyMatchingRuleContext(new LdapUser(source.getLdapUser()), source.getLdapUserAttributes(),
                 metadataTools.deepCopy(source.getCubaUser()));
-        tempContext.getCurrentRoles().addAll(source.getCurrentRoles().stream().map(cmr -> metadataTools.deepCopy(cmr)).collect(toList()));
-        tempContext.setCurrentGroup(metadataTools.deepCopy(source.getCurrentGroup()));
+        tempContext.getRoles().addAll(source.getRoles().stream().map(cmr -> metadataTools.deepCopy(cmr)).collect(toList()));
+        tempContext.setGroup(metadataTools.deepCopy(source.getGroup()));
 
         List<CommonMatchingRule> customRules = source.getAppliedRules().stream().filter(mr -> CUSTOM.equals(mr.getRuleType())).collect(toList());
         List<AbstractDbStoredMatchingRule> dbRules = new ArrayList<>();

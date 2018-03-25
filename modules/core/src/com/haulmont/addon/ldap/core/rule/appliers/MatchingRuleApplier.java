@@ -37,10 +37,7 @@ public class MatchingRuleApplier {
                 .collect(Collectors.toList());
 
         for (CommonMatchingRule commonMatchingRule : activeMatchingRules) {
-            boolean isRuleApplied = matchingRuleProcessors.get(commonMatchingRule.getRuleType()).applyMatchingRule(commonMatchingRule, applyMatchingRuleContext);
-            if (isRuleApplied) {
-                applyMatchingRuleContext.setAnyRuleApply(true);
-            }
+            matchingRuleProcessors.get(commonMatchingRule.getRuleType()).applyMatchingRule(commonMatchingRule, applyMatchingRuleContext);
             if (applyMatchingRuleContext.isTerminalRuleApply()) {
                 break;
             }
@@ -51,9 +48,9 @@ public class MatchingRuleApplier {
 
     private void applyContextToUser(ApplyMatchingRuleContext applyMatchingRuleContext) {
         User cubaUser = applyMatchingRuleContext.getCubaUser();
-        cubaUser.setGroup(applyMatchingRuleContext.getCurrentGroup());
+        cubaUser.setGroup(applyMatchingRuleContext.getGroup());
 
-        for (Role role : applyMatchingRuleContext.getCurrentRoles()) {
+        for (Role role : applyMatchingRuleContext.getRoles()) {
             UserRole userRole = metadata.create(UserRole.class);
             userRole.setUser(cubaUser);
             userRole.setRole(role);

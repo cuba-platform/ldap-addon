@@ -16,10 +16,9 @@ public class ApplyMatchingRuleContext {
     private final LdapUser ldapUser;
     private final Map<String, Object> ldapUserAttributesMap;
     private final Set<CommonMatchingRule> appliedRules = new LinkedHashSet<>();
-    private final Set<Role> currentRoles = new LinkedHashSet<>();
-    private Group currentGroup;
+    private final Set<Role> roles = new LinkedHashSet<>();
+    private Group group;
     private final User cubaUser;
-    private boolean isAnyRuleApply = false;
     private boolean isTerminalRuleApply = false;
 
     public ApplyMatchingRuleContext(LdapUser ldapUser, Attributes ldapUserAttributes, User cubaUser) {
@@ -42,14 +41,6 @@ public class ApplyMatchingRuleContext {
         return ldapUserAttributesMap;
     }
 
-    public boolean isAnyRuleApply() {
-        return isAnyRuleApply;
-    }
-
-    public void setAnyRuleApply(boolean anyRuleApply) {
-        isAnyRuleApply = anyRuleApply;
-    }
-
     public Set<CommonMatchingRule> getAppliedRules() {
         return appliedRules;
     }
@@ -66,16 +57,16 @@ public class ApplyMatchingRuleContext {
         this.isTerminalRuleApply = terminalRuleApply;
     }
 
-    public Set<Role> getCurrentRoles() {
-        return currentRoles;
+    public Set<Role> getRoles() {
+        return roles;
     }
 
-    public Group getCurrentGroup() {
-        return currentGroup;
+    public Group getGroup() {
+        return group;
     }
 
-    public void setCurrentGroup(Group currentGroup) {
-        this.currentGroup = currentGroup;
+    public void setGroup(Group group) {
+        this.group = group;
     }
 
     private Map<String, Object> setLdapAttributesMap(Attributes ldapUserAttributes) {

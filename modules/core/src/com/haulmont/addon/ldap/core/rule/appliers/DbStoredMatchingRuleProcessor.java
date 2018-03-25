@@ -27,12 +27,12 @@ public abstract class DbStoredMatchingRuleProcessor extends MatchingRuleProcesso
     }
 
     private void changeGroupAndRolesInMatchingRuleContext(AbstractDbStoredMatchingRule abstractDbStoredMatchingRule, ApplyMatchingRuleContext applyMatchingRuleContext) {
-        if (abstractDbStoredMatchingRule.getIsOverrideExistingAccessGroup() || applyMatchingRuleContext.getCurrentGroup() == null) {
-            applyMatchingRuleContext.setCurrentGroup(abstractDbStoredMatchingRule.getAccessGroup());
+        if (abstractDbStoredMatchingRule.getIsOverrideExistingAccessGroup() || applyMatchingRuleContext.getGroup() == null) {
+            applyMatchingRuleContext.setGroup(abstractDbStoredMatchingRule.getAccessGroup());
         }
         if (abstractDbStoredMatchingRule.getIsOverrideExistingRoles()) {
-            applyMatchingRuleContext.getCurrentRoles().clear();
+            applyMatchingRuleContext.getRoles().clear();
         }
-        applyMatchingRuleContext.getCurrentRoles().addAll(abstractDbStoredMatchingRule.getRoles());
+        applyMatchingRuleContext.getRoles().addAll(abstractDbStoredMatchingRule.getRoles());
     }
 }
