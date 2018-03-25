@@ -30,7 +30,6 @@
             </actions>
             <columns>
                 <column id="login"/>
-                <column id="updateTs"/>
                 <column id="result"/>
                 <column id="errorText"/>
                 <column id="isNewUser"/>
