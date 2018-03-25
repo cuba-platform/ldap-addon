@@ -32,6 +32,7 @@
                 <field caption="msg://isOverrideExistingAccessGroupFieldCaption"
                        property="isOverrideExistingAccessGroup"/>
                 <field caption="msg://groovyConditionCaption"
+                       generator="generateScriptingConditionField"
                        property="scriptingCondition"
                        rows="5"/>
             </column>

@@ -17,7 +17,7 @@ public class ScriptingMatchingRule extends AbstractDbStoredMatchingRule {
 
     @Lob
     @Column(name = "STRING_CONDITION")
-    private String scriptingCondition;
+    private String scriptingCondition = "{ldapContext}.ldapUser.login==\"admin\"";
 
     public void setScriptingCondition(String scriptingCondition) {
         this.scriptingCondition = scriptingCondition;

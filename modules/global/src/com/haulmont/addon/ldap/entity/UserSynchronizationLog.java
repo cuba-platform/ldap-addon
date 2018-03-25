@@ -8,6 +8,7 @@ import com.haulmont.cuba.core.entity.BaseUuidEntity;
 import com.haulmont.cuba.core.entity.SoftDelete;
 import com.haulmont.cuba.core.entity.Creatable;
 import javax.persistence.Lob;
+import com.haulmont.cuba.core.entity.Updatable;
 
 @Table(name = "LDAP_USER_SYNCHRONIZATION_LOG")
 @Entity(name = "ldap$UserSynchronizationLog")
@@ -71,6 +72,7 @@ public class UserSynchronizationLog extends BaseUuidEntity implements SoftDelete
 
     @Column(name = "IS_DEACTIVATED")
     private Boolean isDeactivated = false;
+
 
     public void setIsNewUser(Boolean isNewUser) {
         this.isNewUser = isNewUser;

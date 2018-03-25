@@ -1,11 +1,11 @@
 package com.haulmont.addon.ldap.core.dao;
 
-import com.haulmont.addon.ldap.config.LdapConfig;
 import com.haulmont.addon.ldap.core.dto.LdapUser;
 import com.haulmont.addon.ldap.core.dto.LdapUserWrapper;
 import com.haulmont.addon.ldap.core.utils.LdapConstants;
 import com.haulmont.addon.ldap.core.utils.LdapUserMapper;
 import com.haulmont.addon.ldap.core.utils.LdapUserWrapperMapper;
+import com.haulmont.addon.ldap.entity.LdapConfig;
 import com.haulmont.addon.ldap.entity.SimpleRuleCondition;
 import com.haulmont.cuba.core.global.Messages;
 import com.haulmont.cuba.security.global.LoginException;
@@ -42,15 +42,13 @@ public class LdapUserDao {
     private LdapTemplate ldapTemplate;
 
     @Inject
-    private LdapConfig ldapConfig;
-
-    @Inject
     private Messages messages;
 
     @Inject
-    private UserSynchronizationLogDao userSynchronizationLogDao;
+    private LdapConfigDao ldapConfigDao;
 
     public LdapUserWrapper getLdapUserWrapper(String login) {
+        LdapConfig ldapConfig = ldapConfigDao.getLdapConfig();
         LdapQuery query = LdapQueryBuilder.query()
                 .searchScope(SearchScope.SUBTREE)
                 .timeLimit(10_000)
@@ -66,6 +64,7 @@ public class LdapUserDao {
     }
 
     public LdapUser findLdapUserByFilter(List<SimpleRuleCondition> conditions, String login) {
+        LdapConfig ldapConfig = ldapConfigDao.getLdapConfig();
         Filter filter = parseSimpleRuleConditions(conditions);
         if (filter == null) {
             return null;
@@ -94,6 +93,7 @@ public class LdapUserDao {
 
     //TODO: ldap injection
     private Filter createUserBaseAndLoginFilter(String login) {
+        LdapConfig ldapConfig = ldapConfigDao.getLdapConfig();
         Filter ef = new EqualsFilter(ldapConfig.getLoginAttribute(), login);
         if (StringUtils.isEmpty(ldapConfig.getUserBase())) {
             return ef;
@@ -106,6 +106,7 @@ public class LdapUserDao {
     }
 
     private Filter addUserBaseAndLoginFilter(String login, Filter filter) {
+        LdapConfig ldapConfig = ldapConfigDao.getLdapConfig();
         Filter resultFilter = null;
         Filter ef = new EqualsFilter(ldapConfig.getLoginAttribute(), login);
         resultFilter = ef;

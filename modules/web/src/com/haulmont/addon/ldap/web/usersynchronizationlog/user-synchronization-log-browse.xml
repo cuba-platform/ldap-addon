@@ -30,15 +30,8 @@
             </actions>
             <columns>
                 <column id="login"/>
-                <column id="ldapAttributes"/>
+                <column id="updateTs"/>
                 <column id="result"/>
-                <column id="appliedRules"/>
-                <column id="rolesBefore"/>
-                <column id="rolesAfter"/>
-                <column id="accessGroupBefore"/>
-                <column id="accessGroupAfter"/>
-                <column id="userInfoBefore"/>
-                <column id="userInfoAfter"/>
                 <column id="errorText"/>
                 <column id="isNewUser"/>
                 <column id="isDeactivated"/>

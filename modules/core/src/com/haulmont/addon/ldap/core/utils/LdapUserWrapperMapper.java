@@ -1,8 +1,9 @@
 package com.haulmont.addon.ldap.core.utils;
 
-import com.haulmont.addon.ldap.config.LdapConfig;
+import com.haulmont.addon.ldap.config.LdapContextConfig;
 import com.haulmont.addon.ldap.core.dto.LdapUser;
 import com.haulmont.addon.ldap.core.dto.LdapUserWrapper;
+import com.haulmont.addon.ldap.entity.LdapConfig;
 import org.springframework.ldap.core.ContextMapper;
 import org.springframework.ldap.core.DirContextAdapter;
 

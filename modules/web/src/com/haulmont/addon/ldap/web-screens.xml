@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <screen-config xmlns="http://schemas.haulmont.com/cuba/screens.xsd">
     <include file="/com/haulmont/addon/ldap/screens.xml"/>
-    <screen id="ldap$settings"
-            template="com/haulmont/addon/ldap/web/screens/ldap-settings.xml"/>
     <screen id="ldap$DefaultMatchingRule.edit"
             template="com/haulmont/addon/ldap/web/defaultmatchingrule/default-matching-rule-edit.xml"/>
     <screen id="ldap$SimpleMatchingRule.edit"
@@ -19,4 +17,6 @@
             template="com/haulmont/addon/ldap/web/usersynchronizationlog/user-synchronization-log-edit.xml"/>
     <screen id="ldap$ScriptingMatchingRule.edit"
             template="com/haulmont/addon/ldap/web/scriptingmatchingrule/scripting-matching-rule-edit.xml"/>
+    <screen id="ldap$LdapContextConfig.edit"
+            template="com/haulmont/addon/ldap/web/ldapconfig/ldap-config-edit.xml"/>
 </screen-config>

@@ -49,7 +49,7 @@ public class ScriptingMatchingRuleProcessor extends DbStoredMatchingRuleProcesso
         Map<String, Object> context = new HashMap<>();
         context.put("__context__", getContextCopy(applyMatchingRuleContext));
         try {
-            scriptExecutionResult = scripting.evaluateGroovy(groovyScript.replace("{E}", "__context__"), context);
+            scriptExecutionResult = scripting.evaluateGroovy(groovyScript.replace("{ldapContext}", "__context__"), context);
         } catch (Exception e) {
             throw new RuntimeException(messages.formatMessage(LdapServiceBean.class, "errorDuringGroovyScriptEvaluation", applyMatchingRuleContext.getLdapUser().getLogin()), e);
         }

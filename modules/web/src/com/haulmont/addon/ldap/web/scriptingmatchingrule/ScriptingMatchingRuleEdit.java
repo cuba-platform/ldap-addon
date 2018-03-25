@@ -5,10 +5,15 @@ import com.haulmont.addon.ldap.dto.GroovyScriptTestResultDto;
 import com.haulmont.addon.ldap.service.LdapService;
 import com.haulmont.cuba.gui.components.AbstractEditor;
 import com.haulmont.addon.ldap.entity.ScriptingMatchingRule;
+import com.haulmont.cuba.gui.components.SourceCodeEditor;
 import com.haulmont.cuba.gui.components.TextField;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+
+import com.haulmont.cuba.gui.components.Component;
+import com.haulmont.cuba.gui.data.Datasource;
+import com.haulmont.cuba.gui.xml.layout.ComponentsFactory;
 
 import static com.haulmont.addon.ldap.dto.GroovyScriptTestResult.*;
 import static com.haulmont.cuba.gui.components.Frame.NotificationType.WARNING;
@@ -21,6 +26,9 @@ public class ScriptingMatchingRuleEdit extends AbstractEditor<ScriptingMatchingR
 
     @Inject
     private LdapService ldapService;
+
+    @Inject
+    private ComponentsFactory componentsFactory;
 
     public void onTestConstraintButtonClick() {
         String login = userLoginTextField.getValue();
@@ -41,5 +49,13 @@ public class ScriptingMatchingRuleEdit extends AbstractEditor<ScriptingMatchingR
                 showNotification(getMessage("notificationSuccess"), formatMessage("testGroovyScriptResultTrue"), WARNING);
             }
         }
+    }
+
+    public Component generateScriptingConditionField(Datasource datasource, String fieldId) {
+        SourceCodeEditor sourceCodeEditor = componentsFactory.createComponent(SourceCodeEditor.class);
+        sourceCodeEditor.setDatasource(datasource, fieldId);
+        sourceCodeEditor.setRequired(true);
+        sourceCodeEditor.setMode(SourceCodeEditor.Mode.Groovy);
+        return sourceCodeEditor;
     }
 }

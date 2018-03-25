@@ -22,9 +22,11 @@
                         width="100%">
                 <column width="100%">
                     <field property="login"/>
+                    <field property="result"/>
+                    <field property="isNewUser"/>
+                    <field property="isDeactivated"/>
                     <field property="ldapAttributes"
                            rows="5"/>
-                    <field property="result"/>
                     <field property="appliedRules"
                            rows="5"/>
                     <field property="rolesBefore"
@@ -39,8 +41,6 @@
                            rows="5"/>
                     <field property="errorText"
                            rows="5"/>
-                    <field property="isNewUser"/>
-                    <field property="isDeactivated"/>
                 </column>
             </fieldGroup>
         </scrollBox>

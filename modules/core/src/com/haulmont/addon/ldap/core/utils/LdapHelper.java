@@ -1,7 +1,8 @@
 package com.haulmont.addon.ldap.core.utils;
 
-import com.haulmont.addon.ldap.config.LdapConfig;
+import com.haulmont.addon.ldap.config.LdapContextConfig;
 import com.haulmont.addon.ldap.core.dto.LdapUser;
+import com.haulmont.addon.ldap.entity.LdapConfig;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.ldap.core.DirContextAdapter;
 import org.springframework.ldap.filter.AndFilter;
@@ -74,18 +75,14 @@ public class LdapHelper {
 
     }
 
-    public static String createSchemaFilter(String objectClasses, String metaObjectClassName, String objectClassName) {
-        EqualsFilter objectClassFilter = new EqualsFilter("objectclass", metaObjectClassName);
-        AndFilter linkFilter = new AndFilter();
+    public static String createSchemaFilter(String objectClasses, String objectClassName) {
         OrFilter orFilter = new OrFilter();
         String[] objectClassesArray = objectClasses.split(";");
         for (String objectClass : objectClassesArray) {
             Filter equalFilter = new EqualsFilter(objectClassName, objectClass);
             orFilter.or(equalFilter);
         }
-        linkFilter.and(objectClassFilter);
-        linkFilter.and(orFilter);
-        return linkFilter.encode();
+        return orFilter.encode();
     }
 
     public static List<String> getSchemaAttributes(Attributes attributes, String[] attributesName) throws NamingException {

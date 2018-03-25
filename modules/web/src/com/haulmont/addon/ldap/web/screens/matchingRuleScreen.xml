@@ -19,99 +19,101 @@
     <dialogMode height="600"
                 width="800"/>
     <layout>
-        <split height="100%"
-               orientation="vertical"
-               pos="30"
-               width="100%">
-            <vbox>
-                <vbox spacing="true">
-                    <table id="matchingRuleTable"
-                           editable="true"
+        <groupBox height="355px"
+                  spacing="true">
+            <table id="matchingRuleTable"
+                   editable="true"
+                   height="100%"
+                   width="100%">
+                <actions>
+                    <action id="edit"/>
+                    <action id="remove"/>
+                </actions>
+                <columns>
+                    <column id="matchingRuleTableStateColumn"
+                            caption="msg://matchingRuleTableStateColumn"
+                            generator="generateMatchingRuleTableStatusColumnCell"/>
+                    <column id="matchingRuleTableOrderColumn"
+                            caption="msg://matchingRuleTableOrderColumn"
+                            generator="generateMatchingRuleTableOrderColumnCell"/>
+                    <column id="matchingRuleTableTerminalColumn"
+                            caption="msg://matchingRuleTableTerminalColumn"
+                            generator="generateMatchingRuleTableTerminalColumnCell"/>
+                    <column id="description"
+                            caption="msg://matchingRuleTableDescriptionColumn"
+                            generator="generateMatchingRuleTableDescriptionColumnCell"/>
+                    <column id="matchingRuleTableTypeColumn"
+                            caption="msg://matchingRuleTableTypeColumn"
+                            generator="generateMatchingRuleTableTypeColumnCell"/>
+                    <column id="matchingRuleTableCubaColumn"
+                            caption="msg://matchingRuleTableCubaColumn"
+                            generator="generateMatchingRuleTableCubaColumnCell"/>
+                    <column id="matchingRuleTableOptionsColumn"
+                            caption="msg://matchingRuleTableOptionsColumn"
+                            generator="generateMatchingRuleTableOptionsColumnCell"/>
+                    <column id="matchingRuleTableConditionColumn"
+                            caption="msg://matchingRuleTableConditionColumn"
+                            generator="generateMatchingRuleTableConditionColumnCell"/>
+                </columns>
+                <rows datasource="abstractMatchingRulesDs"/>
+                <buttonsPanel height="29px">
+                    <button id="defaultRuleCreateButton"
+                            caption="msg://defaultRuleCreateButton"
+                            invoke="onDefaultRuleCreateButtonClick"/>
+                    <button id="simpleRuleCreateButton"
+                            caption="msg://simpleRuleCreateButton"
+                            invoke="onSimpleRuleCreateButtonClick"/>
+                    <button id="scriptingRuleCreateButton"
+                            caption="msg://scriptingRuleCreateButton"
+                            invoke="onScriptingRuleCreateButtonClick"/>
+                    <button id="ruleEditButton"
+                            action="matchingRuleTable.edit"
+                            caption="msg://ruleEditButton"/>
+                    <button id="ruleRemoveButton"
+                            action="matchingRuleTable.remove"
+                            caption="msg://ruleRemoveButton"/>
+                    <button id="up"
+                            icon="icons/up.png"
+                            invoke="onUpClick"/>
+                    <button id="down"
+                            icon="icons/down.png"
+                            invoke="onDownClick"/>
+                </buttonsPanel>
+            </table>
+        </groupBox>
+        <groupBox spacing="true">
+            <flowBox spacing="true"
+                     width="100%">
+                <label height="20px"
+                       value="msg://testRuleScreenUserName"/>
+                <textField id="testRuleScreenLogin"/>
+                <button id="testRuleScreenTestButton"
+                        caption="msg://testRuleScreenTestButton"
+                        invoke="onTestRuleScreenTestButtonClick"/>
+            </flowBox>
+            <flowBox spacing="true">
+                <label value="msg://testRuleScreenAppliedGroup"
+                       width="67px"/>
+                <textField id="testRuleScreenAppliedGroup"
+                           editable="false"
+                           enable="false"/>
+            </flowBox>
+            <hbox spacing="true"
+                  width="100%">
+                <groupBox spacing="true">
+                    <table id="testRuleScreenRoleTable"
+                           caption="msg://testRuleScreenRoleTable"
                            height="200px"
                            width="100%">
-                        <actions>
-                            <action id="edit"/>
-                            <action id="remove"/>
-                        </actions>
                         <columns>
-                            <column id="matchingRuleTableStateColumn"
-                                    caption="msg://matchingRuleTableStateColumn"
-                                    generator="generateMatchingRuleTableStatusColumnCell"/>
-                            <column id="matchingRuleTableOrderColumn"
-                                    caption="msg://matchingRuleTableOrderColumn"
-                                    generator="generateMatchingRuleTableOrderColumnCell"/>
-                            <column id="matchingRuleTableTerminalColumn"
-                                    caption="msg://matchingRuleTableTerminalColumn"
-                                    generator="generateMatchingRuleTableTerminalColumnCell"/>
+                            <column id="name"
+                                    caption="msg://appliedRolesName"/>
                             <column id="description"
-                                    caption="msg://matchingRuleTableDescriptionColumn"
-                                    generator="generateMatchingRuleTableDescriptionColumnCell"/>
-                            <column id="matchingRuleTableTypeColumn"
-                                    caption="msg://matchingRuleTableTypeColumn"
-                                    generator="generateMatchingRuleTableTypeColumnCell"/>
-                            <column id="matchingRuleTableCubaColumn"
-                                    caption="msg://matchingRuleTableCubaColumn"
-                                    generator="generateMatchingRuleTableCubaColumnCell"/>
-                            <column id="matchingRuleTableOptionsColumn"
-                                    caption="msg://matchingRuleTableOptionsColumn"
-                                    generator="generateMatchingRuleTableOptionsColumnCell"/>
-                            <column id="matchingRuleTableConditionColumn"
-                                    caption="msg://matchingRuleTableConditionColumn"
-                                    generator="generateMatchingRuleTableConditionColumnCell"/>
+                                    caption="msg://appliedRolesDescription"/>
                         </columns>
-                        <rows datasource="abstractMatchingRulesDs"/>
-                        <buttonsPanel height="29px">
-                            <button id="defaultRuleCreateButton"
-                                    caption="msg://defaultRuleCreateButton"
-                                    invoke="onDefaultRuleCreateButtonClick"/>
-                            <button id="simpleRuleCreateButton"
-                                    caption="msg://simpleRuleCreateButton"
-                                    invoke="onSimpleRuleCreateButtonClick"/>
-                            <button id="scriptingRuleCreateButton"
-                                    caption="msg://scriptingRuleCreateButton"
-                                    invoke="onScriptingRuleCreateButtonClick"/>
-                            <button id="ruleEditButton"
-                                    action="matchingRuleTable.edit"
-                                    caption="msg://ruleEditButton"/>
-                            <button id="ruleRemoveButton"
-                                    action="matchingRuleTable.remove"
-                                    caption="msg://ruleRemoveButton"/>
-                            <button id="commitButton"
-                                    caption="msg://matchingRuleScreenCommitButton"
-                                    invoke="onCommitButtonClick"/>
-                            <button id="cancelButton"
-                                    caption="msg://matchingRuleScreenCancelButton"
-                                    invoke="onCancelButtonClick"/>
-                        </buttonsPanel>
+                        <rows datasource="appliedRolesDs"/>
                     </table>
-                    <buttonsPanel>
-                        <button id="up"
-                                caption="msg://matchingRuleTableUp"
-                                height="27px"
-                                invoke="onUpClick"/>
-                        <button id="down"
-                                caption="msg://matchingRuleTableDown"
-                                invoke="onDownClick"/>
-                    </buttonsPanel>
-                </vbox>
-            </vbox>
-            <vbox margin="true">
-                <flowBox spacing="true"
-                         width="100%">
-                    <label height="20px"
-                           value="msg://testRuleScreenUserName"/>
-                    <textField id="testRuleScreenLogin"/>
-                    <button id="testRuleScreenTestButton"
-                            caption="msg://testRuleScreenTestButton"
-                            invoke="onTestRuleScreenTestButtonClick"/>
-                </flowBox>
-                <flowBox spacing="true">
-                    <label value="msg://testRuleScreenAppliedGroup"
-                           width="67px"/>
-                    <textField id="testRuleScreenAppliedGroup"
-                               editable="false"
-                               enable="false"/>
-                </flowBox>
+                </groupBox>
                 <groupBox spacing="true">
                     <table id="testRuleScreenRuleTable"
                            caption="msg://testRuleScreenRuleTable"
@@ -124,35 +126,22 @@
                             <column id="testMatchingRuleTableTypeColumn"
                                     caption="msg://testMatchingRuleTableTypeColumn"
                                     generator="generateTestMatchingRuleTableTypeColumnCell"/>
-                            <column id="testMatchingRuleTableResultColumn"
-                                    caption="msg://testMatchingRuleTableResultColumn"
-                                    generator="generateTestMatchingRuleTableResultColumnCell"/>
                             <column id="testMatchingRuleTableOptionsColumn"
                                     caption="msg://testMatchingRuleTableOptionsColumn"
                                     generator="generateTestMatchingRuleTableOptionsColumnCell"/>
-                            <column id="testMatchingRuleTableConditionColumn"
-                                    caption="msg://testMatchingRuleTableConditionColumn"
-                                    generator="generateTestMatchingRuleTableConditionColumnCell"/>
                         </columns>
                         <rows datasource="appliedMatchingRulesDs"/>
                     </table>
                 </groupBox>
-                <groupBox spacing="true">
-                    <table id="testRuleScreenRoleTable"
-                           caption="msg://testRuleScreenRoleTable"
-                           height="200px"
-                           width="100%">
-                        <columns>
-                            <column id="name"/>
-                            <column id="locName"/>
-                            <column id="description"/>
-                            <column id="type"/>
-                            <column id="defaultRole"/>
-                        </columns>
-                        <rows datasource="appliedRolesDs"/>
-                    </table>
-                </groupBox>
-            </vbox>
-        </split>
+            </hbox>
+            <buttonsPanel>
+                <button id="commitButton"
+                        caption="msg://matchingRuleScreenCommitButton"
+                        invoke="onCommitButtonClick"/>
+                <button id="cancelButton"
+                        caption="msg://matchingRuleScreenCancelButton"
+                        invoke="onCancelButtonClick"/>
+            </buttonsPanel>
+        </groupBox>
     </layout>
 </window>

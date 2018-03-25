@@ -1,15 +1,11 @@
 package com.haulmont.addon.ldap.utils;
 
-import com.haulmont.addon.ldap.config.LdapConfig;
 import com.haulmont.addon.ldap.entity.*;
 import com.haulmont.cuba.security.entity.Role;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Component;
 
-import javax.inject.Inject;
-
-import java.text.ParseException;
 import java.util.List;
 
 import static com.haulmont.addon.ldap.entity.MatchingRuleType.CUSTOM;

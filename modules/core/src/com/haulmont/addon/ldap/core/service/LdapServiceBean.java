@@ -1,6 +1,8 @@
 package com.haulmont.addon.ldap.core.service;
 
+import com.haulmont.addon.ldap.config.LdapContextConfig;
 import com.haulmont.addon.ldap.core.dao.CubaUserDao;
+import com.haulmont.addon.ldap.core.dao.LdapConfigDao;
 import com.haulmont.addon.ldap.core.dao.LdapUserAttributeDao;
 import com.haulmont.addon.ldap.core.dao.LdapUserDao;
 import com.haulmont.addon.ldap.core.dto.LdapUserWrapper;
@@ -8,6 +10,8 @@ import com.haulmont.addon.ldap.core.rule.ApplyMatchingRuleContext;
 import com.haulmont.addon.ldap.core.spring.AnonymousLdapContextSource;
 import com.haulmont.addon.ldap.core.utils.LdapHelper;
 import com.haulmont.addon.ldap.dto.GroovyScriptTestResultDto;
+import com.haulmont.addon.ldap.dto.LdapContextDto;
+import com.haulmont.addon.ldap.entity.LdapConfig;
 import com.haulmont.addon.ldap.service.LdapService;
 import com.haulmont.cuba.core.global.Messages;
 import com.haulmont.cuba.core.global.Scripting;
@@ -47,18 +51,22 @@ public class LdapServiceBean implements LdapService {
     private LdapUserAttributeDao ldapUserAttributeDao;
 
     @Inject
-    @Qualifier(LdapUserDao.NAME)
     private LdapUserDao ldapUserDao;
 
     @Inject
-    @Qualifier(CubaUserDao.NAME)
     private CubaUserDao cubaUserDao;
+
+    @Inject
+    private LdapConfigDao ldapConfigDao;
 
     @Inject
     private Scripting scripting;
 
     @Inject
     private Messages messages;
+
+    @Inject
+    private LdapContextConfig ldapContextConfig;
 
     private LdapContextSource createAuthenticatedContext(String url, String base) {
         LdapContextSource ldapContextSource = new LdapContextSource();
@@ -78,7 +86,13 @@ public class LdapServiceBean implements LdapService {
     }
 
     @Override
-    public String testConnection(String url, String base, String userDn, String password) {
+    public String testConnection() {
+
+        String url = ldapContextConfig.getContextSourceUrl();
+        String base = ldapContextConfig.getContextSourceBase();
+        String userDn = ldapContextConfig.getContextSourceUserName();
+        String password = ldapContextConfig.getContextSourcePassword();
+
         LdapContextSource ldapContextSource = null;
         DirContext dirContext = null;
         try {
@@ -101,17 +115,20 @@ public class LdapServiceBean implements LdapService {
     }
 
     @Override
-    public void fillLdapUserAttributes(String schemaBase, String objectClasses, String metaObjectClassName, String objectClassName, String attributeClassName, String url, String user, String password) {
+    public void fillLdapUserAttributes(String schemaBase, String objectClasses, String objectClassName, String attributeClassName) {
         LdapContextSource ldapContextSource = null;
         DirContext dirContext = null;
         List<String> schemaAttributes = new ArrayList<>();
+        String url = ldapContextConfig.getContextSourceUrl();
+        String userDn = ldapContextConfig.getContextSourceUserName();
+        String password = ldapContextConfig.getContextSourcePassword();
         try {
             ldapContextSource = createAuthenticatedContext(url, schemaBase);
-            dirContext = ldapContextSource.getContext(user, password);
+            dirContext = ldapContextSource.getContext(userDn, password);
             SearchControls searchControls = new SearchControls();
             searchControls.setSearchScope(SUBTREE_SCOPE);
             searchControls.setTimeLimit(30_000);
-            String filter = LdapHelper.createSchemaFilter(objectClasses, metaObjectClassName, objectClassName);
+            String filter = LdapHelper.createSchemaFilter(objectClasses, objectClassName);
             NamingEnumeration objectClassesResult = dirContext.search(StringUtils.EMPTY, filter, searchControls);
             while (objectClassesResult.hasMore()) {
                 SearchResult searchResult = (SearchResult) objectClassesResult.next();
@@ -144,7 +161,7 @@ public class LdapServiceBean implements LdapService {
         context.put("__context__", applyMatchingRuleContext);
         Object scriptExecutionResult = null;
         try {
-            scriptExecutionResult = scripting.evaluateGroovy(groovyScript.replace("{E}", "__context__"), context);
+            scriptExecutionResult = scripting.evaluateGroovy(groovyScript.replace("{ldapContext}", "__context__"), context);
         } catch (CompilationFailedException e) {
             logger.error(messages.formatMessage(LdapServiceBean.class, "errorDuringGroovyScriptEvaluation", login), e);
             return new GroovyScriptTestResultDto(COMPILATION_ERROR, ExceptionUtils.getFullStackTrace(e));
@@ -159,5 +176,15 @@ public class LdapServiceBean implements LdapService {
         } else {
             return new GroovyScriptTestResultDto(NON_BOOLEAN_RESULT, null);
         }
+    }
+
+    @Override
+    public LdapConfig getLdapConfig() {
+        return ldapConfigDao.getLdapConfig();
+    }
+
+    @Override
+    public LdapContextDto getLdapContextConfig() {
+        return new LdapContextDto(ldapContextConfig.getContextSourceUrl(), ldapContextConfig.getContextSourceUserName(), ldapContextConfig.getContextSourceBase());
     }
 }
