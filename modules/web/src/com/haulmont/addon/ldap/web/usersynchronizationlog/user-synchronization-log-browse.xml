@@ -27,6 +27,7 @@
                     width="100%">
             <actions>
                 <action id="edit"/>
+                <action id="excel"/>
             </actions>
             <columns>
                 <column id="login"/>
@@ -37,6 +38,12 @@
             </columns>
             <rows datasource="userSynchronizationLogsDs"/>
             <rowsCount/>
+            <buttonsPanel>
+                <button action="userSynchronizationLogsTable.edit"
+                        caption="msg://userSyncBrowserEdit"/>
+                <button action="userSynchronizationLogsTable.excel"
+                        caption="msg://userSyncBrowserExcel"/>
+            </buttonsPanel>
         </groupTable>
     </layout>
 </window>
