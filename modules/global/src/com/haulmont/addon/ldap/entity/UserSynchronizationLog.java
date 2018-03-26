@@ -1,14 +1,14 @@
 package com.haulmont.addon.ldap.entity;
 
+import com.haulmont.cuba.core.entity.BaseUuidEntity;
+import com.haulmont.cuba.core.entity.Creatable;
+import com.haulmont.cuba.core.entity.SoftDelete;
+
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Lob;
 import javax.persistence.Table;
 import java.util.Date;
-import javax.persistence.Column;
-import com.haulmont.cuba.core.entity.BaseUuidEntity;
-import com.haulmont.cuba.core.entity.SoftDelete;
-import com.haulmont.cuba.core.entity.Creatable;
-import javax.persistence.Lob;
-import com.haulmont.cuba.core.entity.Updatable;
 
 @Table(name = "LDAP_USER_SYNCHRONIZATION_LOG")
 @Entity(name = "ldap$UserSynchronizationLog")

@@ -26,7 +26,8 @@ public abstract class DbStoredMatchingRuleProcessor extends MatchingRuleProcesso
         return isRuleApplied;
     }
 
-    private void changeGroupAndRolesInMatchingRuleContext(AbstractDbStoredMatchingRule abstractDbStoredMatchingRule, ApplyMatchingRuleContext applyMatchingRuleContext) {
+    private void changeGroupAndRolesInMatchingRuleContext(AbstractDbStoredMatchingRule abstractDbStoredMatchingRule,
+                                                          ApplyMatchingRuleContext applyMatchingRuleContext) {
         if (abstractDbStoredMatchingRule.getIsOverrideExistingAccessGroup() || applyMatchingRuleContext.getGroup() == null) {
             applyMatchingRuleContext.setGroup(abstractDbStoredMatchingRule.getAccessGroup());
         }

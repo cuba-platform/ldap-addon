@@ -21,7 +21,6 @@ import org.apache.commons.lang.exception.ExceptionUtils;
 import org.codehaus.groovy.control.CompilationFailedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.ldap.core.support.LdapContextSource;
 import org.springframework.ldap.support.LdapUtils;
 import org.springframework.stereotype.Service;
@@ -155,7 +154,8 @@ public class LdapServiceBean implements LdapService {
             return new GroovyScriptTestResultDto(NO_USER, null);
         }
         User cubaUser = cubaUserDao.getCubaUserByLogin(login);
-        ApplyMatchingRuleContext applyMatchingRuleContext = new ApplyMatchingRuleContext(ldapUserWrapper.getLdapUser(), ldapUserWrapper.getLdapUserAttributes(), cubaUser);
+        ApplyMatchingRuleContext applyMatchingRuleContext =
+                new ApplyMatchingRuleContext(ldapUserWrapper.getLdapUser(), ldapUserWrapper.getLdapUserAttributes(), cubaUser);
 
         Map<String, Object> context = new HashMap<>();
         context.put("__context__", applyMatchingRuleContext);
@@ -185,6 +185,8 @@ public class LdapServiceBean implements LdapService {
 
     @Override
     public LdapContextDto getLdapContextConfig() {
-        return new LdapContextDto(ldapContextConfig.getContextSourceUrl(), ldapContextConfig.getContextSourceUserName(), ldapContextConfig.getContextSourceBase());
+        return new LdapContextDto(ldapContextConfig.getContextSourceUrl(),
+                ldapContextConfig.getContextSourceUserName(),
+                ldapContextConfig.getContextSourceBase());
     }
 }

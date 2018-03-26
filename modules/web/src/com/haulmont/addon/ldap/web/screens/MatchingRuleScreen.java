@@ -7,7 +7,6 @@ import com.haulmont.addon.ldap.service.UserSynchronizationService;
 import com.haulmont.addon.ldap.utils.MatchingRuleUtils;
 import com.haulmont.addon.ldap.web.screens.datasources.MatchingRuleDatasource;
 import com.haulmont.chile.core.datatypes.Datatypes;
-import com.haulmont.chile.core.model.MetaProperty;
 import com.haulmont.chile.core.model.MetaPropertyPath;
 import com.haulmont.cuba.core.entity.Entity;
 import com.haulmont.cuba.core.global.Metadata;
@@ -112,7 +111,9 @@ public class MatchingRuleScreen extends AbstractWindow {
                     matchingRuleDatasource.getItems().forEach(mr -> {
                         if (MatchingRuleType.SIMPLE.equals(mr.getRuleType()) && mr.getId().equals(amr.getId())) {
                             ((SimpleMatchingRule) amr).getConditions().forEach(con -> {
-                                Optional<SimpleRuleCondition> src = ((SimpleMatchingRule) mr).getConditions().stream().filter(c -> c.getId().equals(con.getId())).findFirst();
+                                Optional<SimpleRuleCondition> src = ((SimpleMatchingRule) mr).getConditions().stream()
+                                        .filter(c -> c.getId().equals(con.getId()))
+                                        .findFirst();
                                 if (src.isPresent()) {
                                     src.get().setAttribute(con.getAttribute());
                                     src.get().setAttributeValue(con.getAttributeValue());
@@ -204,7 +205,10 @@ public class MatchingRuleScreen extends AbstractWindow {
     }
 
     public void onDefaultRuleCreateButtonClick() {
-        DefaultMatchingRule defaultMatchingRule = (DefaultMatchingRule) matchingRuleDatasource.getItems().stream().filter(mr -> DEFAULT.equals(mr.getRuleType())).findFirst().get();
+        DefaultMatchingRule defaultMatchingRule = (DefaultMatchingRule) matchingRuleDatasource.getItems().stream()
+                .filter(mr -> DEFAULT.equals(mr.getRuleType()))
+                .findFirst()
+                .get();
         openCreateRuleWindow(defaultMatchingRule, "ldap$DefaultMatchingRule.edit");
     }
 
@@ -284,7 +288,8 @@ public class MatchingRuleScreen extends AbstractWindow {
             appliedRolesDs.clear();
             appliedGroupTextField.setValue(StringUtils.EMPTY);
 
-            TestUserSynchronizationDto dto = userSynchronizationService.testUserSynchronization(login, new ArrayList<>(matchingRuleDatasource.getItems()));
+            TestUserSynchronizationDto dto =
+                    userSynchronizationService.testUserSynchronization(login, new ArrayList<>(matchingRuleDatasource.getItems()));
             if (!dto.isUserExistsInLdap()) {
                 showNotification(getMessage("testRuleScreenUserNotInLdapCaption"), getMessage("testRuleScreenUserNotInLdap"), HUMANIZED);
             } else {
@@ -327,7 +332,9 @@ public class MatchingRuleScreen extends AbstractWindow {
 
     private boolean validateMatchingRulesOrder(List<AbstractCommonMatchingRule> matchingRules) {
         boolean result = true;
-        Optional<AbstractCommonMatchingRule> defaultOrder = matchingRules.stream().filter(mr -> DEFAULT_RULE_ORDER.equals(mr.getOrder().getOrder())).findAny();
+        Optional<AbstractCommonMatchingRule> defaultOrder = matchingRules.stream()
+                .filter(mr -> DEFAULT_RULE_ORDER.equals(mr.getOrder().getOrder()))
+                .findAny();
         if (defaultOrder.isPresent()) {
             result = false;
             showNotification(getMessage("matchingRuleScreenEmptyOrderCaption"), getMessage("matchingRuleScreenEmptyOrder"), HUMANIZED);
@@ -337,7 +344,8 @@ public class MatchingRuleScreen extends AbstractWindow {
         for (Map.Entry<Integer, Long> entry : countMap.entrySet()) {
             if (entry.getValue() > 1) {
                 result = false;
-                showNotification(getMessage("matchingRuleScreenDuplicationOrderCaption"), getMessage("matchingRuleScreenDuplicationOrder"), HUMANIZED);
+                showNotification(getMessage("matchingRuleScreenDuplicationOrderCaption"),
+                        getMessage("matchingRuleScreenDuplicationOrder"), HUMANIZED);
                 break;
             }
         }

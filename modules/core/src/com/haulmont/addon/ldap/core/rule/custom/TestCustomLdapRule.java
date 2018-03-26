@@ -1,6 +1,5 @@
 package com.haulmont.addon.ldap.core.rule.custom;
 
-import com.haulmont.addon.ldap.config.LdapContextConfig;
 import com.haulmont.addon.ldap.core.dao.CubaUserDao;
 import com.haulmont.addon.ldap.core.dao.LdapUserDao;
 import com.haulmont.addon.ldap.core.rule.ApplyMatchingRuleContext;

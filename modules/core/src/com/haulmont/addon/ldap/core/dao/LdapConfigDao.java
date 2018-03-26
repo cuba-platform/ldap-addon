@@ -2,10 +2,8 @@ package com.haulmont.addon.ldap.core.dao;
 
 import com.haulmont.addon.ldap.config.LdapContextConfig;
 import com.haulmont.addon.ldap.entity.LdapConfig;
-import com.haulmont.addon.ldap.entity.MatchingRuleOrder;
 import com.haulmont.cuba.core.Persistence;
 import com.haulmont.cuba.core.TypedQuery;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,7 +24,8 @@ public class LdapConfigDao {
 
     @Transactional(readOnly = true)
     public LdapConfig getLdapConfig() {
-        TypedQuery<LdapConfig> query = persistence.getEntityManager().createQuery("select lc from ldap$LdapContextConfig lc", LdapConfig.class);
+        TypedQuery<LdapConfig> query = persistence.getEntityManager()
+                .createQuery("select lc from ldap$LdapContextConfig lc", LdapConfig.class);
         LdapConfig lc = query.getSingleResult();
 
         lc.setContextSourceUrl(ldapContextConfig.getContextSourceUrl());

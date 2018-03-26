@@ -51,12 +51,14 @@ public class ScriptingMatchingRuleProcessor extends DbStoredMatchingRuleProcesso
         try {
             scriptExecutionResult = scripting.evaluateGroovy(groovyScript.replace("{ldapContext}", "__context__"), context);
         } catch (Exception e) {
-            throw new RuntimeException(messages.formatMessage(LdapServiceBean.class, "errorDuringGroovyScriptEvaluation", applyMatchingRuleContext.getLdapUser().getLogin()), e);
+            throw new RuntimeException(messages.formatMessage(LdapServiceBean.class, "errorDuringGroovyScriptEvaluation",
+                    applyMatchingRuleContext.getLdapUser().getLogin()), e);
         }
         if (scriptExecutionResult instanceof Boolean) {
             return (Boolean) scriptExecutionResult;
         } else {
-            throw new RuntimeException(messages.formatMessage(LdapServiceBean.class, "testGroovyScriptResultNonBoolean", scriptExecutionResult == null ? "null" : scriptExecutionResult.toString()));
+            throw new RuntimeException(messages.formatMessage(LdapServiceBean.class, "testGroovyScriptResultNonBoolean",
+                    scriptExecutionResult == null ? "null" : scriptExecutionResult.toString()));
         }
     }
 

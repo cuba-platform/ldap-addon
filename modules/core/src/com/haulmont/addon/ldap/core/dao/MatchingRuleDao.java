@@ -73,7 +73,8 @@ public class MatchingRuleDao {
     @Transactional
     public List<CommonMatchingRule> getMatchingRules() {
         List<CommonMatchingRule> result = new ArrayList<>();
-        TypedQuery<AbstractDbStoredMatchingRule> query = persistence.getEntityManager().createQuery("select distinct mr from ldap$AbstractDbStoredMatchingRule mr " +
+        TypedQuery<AbstractDbStoredMatchingRule> query = persistence.getEntityManager()
+                .createQuery("select distinct mr from ldap$AbstractDbStoredMatchingRule mr " +
                 "left join fetch mr.roles roles " +
                 "left join fetch mr.order mrOrder " +
                 "left join fetch mr.status mrStatus " +
@@ -98,7 +99,8 @@ public class MatchingRuleDao {
     @Transactional(readOnly = true)
     public List<AbstractCommonMatchingRule> getMatchingRulesGui() {
         List<AbstractCommonMatchingRule> result = getMatchingRules().stream()
-                .map(mr -> MatchingRuleType.CUSTOM.equals(mr.getRuleType()) ? mapCustomRuleToDto((CustomLdapMatchingRuleWrapper) mr) : (AbstractCommonMatchingRule) mr)
+                .map(mr -> MatchingRuleType.CUSTOM.equals(mr.getRuleType())
+                        ? mapCustomRuleToDto((CustomLdapMatchingRuleWrapper) mr) : (AbstractCommonMatchingRule) mr)
                 .collect(Collectors.toList());
         int i = 1;
         for (AbstractCommonMatchingRule acmr : result) {
@@ -123,7 +125,8 @@ public class MatchingRuleDao {
                 matchingRuleOrderDao.saveMatchingRuleOrder(mr.getOrder());
                 matchingRuleStatusDao.saveMatchingRuleStatus(mr.getStatus());
             } else {
-                AbstractDbStoredMatchingRule mergedRule = PersistenceHelper.isNew(mr) ? (AbstractDbStoredMatchingRule) mr : entityManager.merge((AbstractDbStoredMatchingRule) mr);
+                AbstractDbStoredMatchingRule mergedRule = PersistenceHelper.isNew(mr)
+                        ? (AbstractDbStoredMatchingRule) mr : entityManager.merge((AbstractDbStoredMatchingRule) mr);
                 entityManager.persist(mergedRule);
             }
         });

@@ -28,7 +28,8 @@ public class LdapUserAttributeDao {
 
     @Transactional(readOnly = true)
     public List<String> getLdapUserAttributesNames() {
-        TypedQuery<String> query = persistence.getEntityManager().createQuery("select lua.attributeName from ldap$LdapUserAttribute lua", String.class);
+        TypedQuery<String> query = persistence.getEntityManager()
+                .createQuery("select lua.attributeName from ldap$LdapUserAttribute lua", String.class);
         return query.getResultList();
 
     }
@@ -36,7 +37,8 @@ public class LdapUserAttributeDao {
     @Transactional
     public void saveLdapUserAttribute(LdapUserAttribute ldapUserAttribute) {
         EntityManager entityManager = persistence.getEntityManager();
-        LdapUserAttribute mergedLdapUserAttribute = PersistenceHelper.isNew(ldapUserAttribute) ? ldapUserAttribute : entityManager.merge(ldapUserAttribute);
+        LdapUserAttribute mergedLdapUserAttribute = PersistenceHelper.isNew(ldapUserAttribute)
+                ? ldapUserAttribute : entityManager.merge(ldapUserAttribute);
         entityManager.persist(mergedLdapUserAttribute);
     }
 

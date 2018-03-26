@@ -31,7 +31,8 @@ public class CubaUserDao {
 
     @Transactional(readOnly = true)
     public User getCubaUserByLogin(String login) {
-        TypedQuery<User> query = persistence.getEntityManager().createQuery("select distinct cu from sec$User cu where cu.login = :login", User.class);
+        TypedQuery<User> query = persistence.getEntityManager()
+                .createQuery("select distinct cu from sec$User cu where cu.login = :login", User.class);
         query.setParameter("login", login);
         query.setViewName("sec-user-view-with-group-roles");
 
@@ -45,7 +46,8 @@ public class CubaUserDao {
 
     @Transactional(readOnly = true)
     public List<User> getCubaUsers() {
-        TypedQuery<User> query = persistence.getEntityManager().createQuery("select distinct cu from sec$User cu where cu.login = :login", User.class);
+        TypedQuery<User> query = persistence.getEntityManager()
+                .createQuery("select distinct cu from sec$User cu where cu.login = :login", User.class);
         query.setViewName("sec-user-view-with-group-roles");
         return query.getResultList();
     }

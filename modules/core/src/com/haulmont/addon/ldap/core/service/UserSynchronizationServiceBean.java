@@ -74,7 +74,8 @@ public class UserSynchronizationServiceBean implements UserSynchronizationServic
             User originalUser = metadataTools.copy(cubaUser);
             originalUser.setUserRoles(new ArrayList<>(cubaUser.getUserRoles()));
             cubaUser.getUserRoles().clear();//user get roles only from LDAP
-            ApplyMatchingRuleContext applyMatchingRuleContext = new ApplyMatchingRuleContext(ldapUserWrapper.getLdapUser(), ldapUserWrapper.getLdapUserAttributes(), cubaUser);
+            ApplyMatchingRuleContext applyMatchingRuleContext =
+                    new ApplyMatchingRuleContext(ldapUserWrapper.getLdapUser(), ldapUserWrapper.getLdapUserAttributes(), cubaUser);
             setCommonAttributesFromLdapUser(applyMatchingRuleContext, cubaUser, login);
             List<CommonMatchingRule> matchingRules = matchingRuleDao.getMatchingRules();
             applicationEventPublisher.publishEvent(new BeforeUserUpdatedFromLdapEvent(this, applyMatchingRuleContext, cubaUser));
@@ -100,14 +101,20 @@ public class UserSynchronizationServiceBean implements UserSynchronizationServic
 
         List<CommonMatchingRule> result = rulesToApply.stream().filter(r -> !CUSTOM.equals(r.getRuleType())).collect(Collectors.toList());
         List<CustomLdapMatchingRuleWrapper> customRules = matchingRuleDao.getCustomMatchingRules();
-        rulesToApply.stream().filter(r -> CUSTOM.equals(r.getRuleType())).forEach(customRuleDto -> {
-            CustomLdapMatchingRuleWrapper wrapper = customRules.stream().filter(cr -> cr.getMatchingRuleId().equals(customRuleDto.getMatchingRuleId())).findFirst().get();
+        rulesToApply.stream()
+                .filter(r -> CUSTOM.equals(r.getRuleType()))
+                .forEach(customRuleDto -> {
+            CustomLdapMatchingRuleWrapper wrapper = customRules.stream()
+                    .filter(cr -> cr.getMatchingRuleId().equals(customRuleDto.getMatchingRuleId()))
+                    .findFirst()
+                    .get();
             wrapper.getOrder().setOrder(customRuleDto.getOrder().getOrder());
             wrapper.getStatus().setIsActive(customRuleDto.getStatus().getIsActive());
             result.add(wrapper);
         });
 
-        ApplyMatchingRuleContext applyMatchingRuleContext = new ApplyMatchingRuleContext(ldapUserWrapper.getLdapUser(), ldapUserWrapper.getLdapUserAttributes(), cubaUser);
+        ApplyMatchingRuleContext applyMatchingRuleContext =
+                new ApplyMatchingRuleContext(ldapUserWrapper.getLdapUser(), ldapUserWrapper.getLdapUserAttributes(), cubaUser);
         cubaUser.getUserRoles().clear();
 
         matchingRuleApplier.applyMatchingRules(result, applyMatchingRuleContext);

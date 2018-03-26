@@ -1,16 +1,8 @@
 package com.haulmont.addon.ldap.entity;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
-import javax.persistence.Column;
-import javax.persistence.Lob;
-
 import com.haulmont.cuba.core.entity.StandardEntity;
 
-import java.util.UUID;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 
 @Table(name = "LDAP_SIMPLE_RULE_CONDITION")
 @Entity(name = "ldap$SimpleRuleCondition")

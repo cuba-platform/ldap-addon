@@ -3,7 +3,6 @@ package com.haulmont.addon.ldap.web.screens.datasources;
 import com.haulmont.addon.ldap.entity.AbstractCommonMatchingRule;
 import com.haulmont.addon.ldap.service.MatchingRuleService;
 import com.haulmont.cuba.core.global.AppBeans;
-import com.haulmont.cuba.gui.data.CollectionDatasource;
 import com.haulmont.cuba.gui.data.impl.CustomCollectionDatasource;
 
 import java.util.Collection;

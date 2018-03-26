@@ -43,7 +43,8 @@ public class UserSynchronizationLogDao {
 
     public void saveUserSynchronizationLog(UserSynchronizationLog userSynchronizationLog) {
         EntityManager entityManager = persistence.getEntityManager();
-        UserSynchronizationLog mergedUserSynchronizationLog = PersistenceHelper.isNew(userSynchronizationLog) ? userSynchronizationLog : entityManager.merge(userSynchronizationLog);
+        UserSynchronizationLog mergedUserSynchronizationLog = PersistenceHelper.isNew(userSynchronizationLog)
+                ? userSynchronizationLog : entityManager.merge(userSynchronizationLog);
         entityManager.persist(mergedUserSynchronizationLog);
     }
 

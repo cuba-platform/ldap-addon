@@ -1,11 +1,9 @@
 package com.haulmont.addon.ldap.core.utils;
 
-import com.haulmont.addon.ldap.config.LdapContextConfig;
 import com.haulmont.addon.ldap.core.dto.LdapUser;
 import com.haulmont.addon.ldap.entity.LdapConfig;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.ldap.core.DirContextAdapter;
-import org.springframework.ldap.filter.AndFilter;
 import org.springframework.ldap.filter.EqualsFilter;
 import org.springframework.ldap.filter.Filter;
 import org.springframework.ldap.filter.OrFilter;

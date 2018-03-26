@@ -28,7 +28,8 @@ public class MatchingRuleOrderDao {
 
     @Transactional(readOnly = true)
     public MatchingRuleOrder getCustomRuleOrder(String customMatchingRuleId) {
-        TypedQuery<MatchingRuleOrder> query = persistence.getEntityManager().createQuery("select mro from ldap$MatchingRuleOrder mro " +
+        TypedQuery<MatchingRuleOrder> query = persistence.getEntityManager()
+                .createQuery("select mro from ldap$MatchingRuleOrder mro " +
                 "where mro.customMatchingRuleId = :customMatchingRuleId", MatchingRuleOrder.class);
         query.setParameter("customMatchingRuleId", customMatchingRuleId);
         MatchingRuleOrder matchingRuleOrder = query.getFirstResult();
@@ -43,7 +44,8 @@ public class MatchingRuleOrderDao {
     @Transactional
     public void saveMatchingRuleOrder(MatchingRuleOrder matchingRuleOrder) {
         EntityManager entityManager = persistence.getEntityManager();
-        MatchingRuleOrder mergedMatchingRuleOrder = PersistenceHelper.isNew(matchingRuleOrder) ? matchingRuleOrder : entityManager.merge(matchingRuleOrder);
+        MatchingRuleOrder mergedMatchingRuleOrder = PersistenceHelper.isNew(matchingRuleOrder)
+                ? matchingRuleOrder : entityManager.merge(matchingRuleOrder);
         entityManager.persist(mergedMatchingRuleOrder);
     }
 }

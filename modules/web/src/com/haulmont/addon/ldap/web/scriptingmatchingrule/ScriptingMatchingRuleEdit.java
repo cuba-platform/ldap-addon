@@ -2,18 +2,17 @@ package com.haulmont.addon.ldap.web.scriptingmatchingrule;
 
 import com.google.common.base.Strings;
 import com.haulmont.addon.ldap.dto.GroovyScriptTestResultDto;
+import com.haulmont.addon.ldap.entity.ScriptingMatchingRule;
 import com.haulmont.addon.ldap.service.LdapService;
 import com.haulmont.cuba.gui.components.AbstractEditor;
-import com.haulmont.addon.ldap.entity.ScriptingMatchingRule;
+import com.haulmont.cuba.gui.components.Component;
 import com.haulmont.cuba.gui.components.SourceCodeEditor;
 import com.haulmont.cuba.gui.components.TextField;
+import com.haulmont.cuba.gui.data.Datasource;
+import com.haulmont.cuba.gui.xml.layout.ComponentsFactory;
 
 import javax.inject.Inject;
 import javax.inject.Named;
-
-import com.haulmont.cuba.gui.components.Component;
-import com.haulmont.cuba.gui.data.Datasource;
-import com.haulmont.cuba.gui.xml.layout.ComponentsFactory;
 
 import static com.haulmont.addon.ldap.dto.GroovyScriptTestResult.*;
 import static com.haulmont.cuba.gui.components.Frame.NotificationType.WARNING;
@@ -38,9 +37,11 @@ public class ScriptingMatchingRuleEdit extends AbstractEditor<ScriptingMatchingR
             if (NO_USER.equals(result.getResult())) {
                 showNotification(getMessage("notificationError"), formatMessage("testGroovyScriptResultNoUser", login), WARNING);
             } else if (COMPILATION_ERROR.equals(result.getResult())) {
-                showNotification(getMessage("notificationError"), formatMessage("testGroovyScriptResultCompilationError", result.getErrorText()), WARNING_HTML);
+                showNotification(getMessage("notificationError"), formatMessage("testGroovyScriptResultCompilationError",
+                        result.getErrorText()), WARNING_HTML);
             } else if (OTHER_ERROR.equals(result.getResult())) {
-                showNotification(getMessage("notificationError"), formatMessage("testGroovyScriptResultOtherError", result.getErrorText()), WARNING_HTML);
+                showNotification(getMessage("notificationError"), formatMessage("testGroovyScriptResultOtherError",
+                        result.getErrorText()), WARNING_HTML);
             } else if (NON_BOOLEAN_RESULT.equals(result.getResult())) {
                 showNotification(getMessage("notificationError"), formatMessage("testGroovyScriptResultNonBoolean"), WARNING);
             } else if (FALSE.equals(result.getResult())) {
