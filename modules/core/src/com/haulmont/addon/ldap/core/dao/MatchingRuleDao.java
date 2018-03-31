@@ -54,6 +54,7 @@ public class MatchingRuleDao {
         customLdapMatchingRuleDto.setOrder(customLdapMatchingRule.getOrder());
         customLdapMatchingRuleDto.setRuleType(customLdapMatchingRule.getRuleType());
         customLdapMatchingRuleDto.setStatus(customLdapMatchingRule.getStatus());
+        customLdapMatchingRuleDto.setName(customLdapMatchingRule.getName());
         return customLdapMatchingRuleDto;
     }
 

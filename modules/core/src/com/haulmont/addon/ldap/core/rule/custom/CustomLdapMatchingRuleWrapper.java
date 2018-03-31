@@ -23,12 +23,15 @@ public class CustomLdapMatchingRuleWrapper implements CustomLdapMatchingRule, Co
 
     private String matchingRuleId;
 
+    private String name;
+
     public CustomLdapMatchingRuleWrapper(CustomLdapMatchingRule customLdapMatchingRule) {
         this.customLdapMatchingRule = customLdapMatchingRule;
         this.matchingRuleId = customLdapMatchingRule.getClass().getName();
         this.matchingRuleOrder = getOrder(customLdapMatchingRule);
         this.matchingRuleStatus = getStatus(customLdapMatchingRule);
         this.description = getDescription(customLdapMatchingRule);
+        this.name = getName(customLdapMatchingRule);
     }
 
     @Override
@@ -61,6 +64,10 @@ public class CustomLdapMatchingRuleWrapper implements CustomLdapMatchingRule, Co
         return MatchingRuleType.CUSTOM;
     }
 
+    public String getName() {
+        return name;
+    }
+
     private String getDescription(CustomLdapMatchingRule customLdapMatchingRule) {
         Class clazz = customLdapMatchingRule.getClass();
         Annotation annotation = clazz.getAnnotation(LdapMatchingRule.class);
@@ -76,5 +83,12 @@ public class CustomLdapMatchingRuleWrapper implements CustomLdapMatchingRule, Co
     private MatchingRuleStatus getStatus(CustomLdapMatchingRule customLdapMatchingRule) {
         MatchingRuleStatusDao matchingRuleStatusDao = AppBeans.get(MatchingRuleStatusDao.class);
         return matchingRuleStatusDao.getMatchingRuleStatus(customLdapMatchingRule.getClass().getName());
+    }
+
+    private String getName(CustomLdapMatchingRule customLdapMatchingRule) {
+        Class clazz = customLdapMatchingRule.getClass();
+        Annotation annotation = clazz.getAnnotation(LdapMatchingRule.class);
+        LdapMatchingRule ldapMatchingRule = (LdapMatchingRule) annotation;
+        return ldapMatchingRule.name();
     }
 }

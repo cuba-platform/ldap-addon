@@ -1,5 +1,6 @@
 package com.haulmont.addon.ldap.utils;
 
+import com.haulmont.addon.ldap.dto.CustomLdapMatchingRuleDto;
 import com.haulmont.addon.ldap.entity.*;
 import com.haulmont.cuba.security.entity.Role;
 import org.apache.commons.collections4.CollectionUtils;
@@ -78,6 +79,9 @@ public class MatchingRuleUtils {
         } else if (SCRIPTING.equals(entity.getRuleType())) {
             ScriptingMatchingRule scriptingMatchingRule = (ScriptingMatchingRule) entity;
             return scriptingMatchingRule.getScriptingCondition();
+        } else if (CUSTOM.equals(entity.getRuleType())) {
+            CustomLdapMatchingRuleDto customLdapMatchingRule = ((CustomLdapMatchingRuleDto) entity);
+            return customLdapMatchingRule.getDescription();
         } else {
             return StringUtils.EMPTY;
         }
@@ -88,7 +92,12 @@ public class MatchingRuleUtils {
     }
 
     public String generateMatchingRuleTableDescriptionColumn(AbstractCommonMatchingRule entity) {
-        return entity.getDescription();
+        if (CUSTOM.equals(entity.getRuleType())) {
+            CustomLdapMatchingRuleDto customLdapMatchingRule = ((CustomLdapMatchingRuleDto) entity);
+            return customLdapMatchingRule.getName();
+        } else {
+            return entity.getDescription();
+        }
     }
 
     public boolean validateRuleOrder(Integer order) {
