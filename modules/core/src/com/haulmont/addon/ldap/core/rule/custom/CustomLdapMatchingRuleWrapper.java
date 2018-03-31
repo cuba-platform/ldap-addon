@@ -2,7 +2,7 @@ package com.haulmont.addon.ldap.core.rule.custom;
 
 import com.haulmont.addon.ldap.core.dao.MatchingRuleStatusDao;
 import com.haulmont.addon.ldap.core.dao.MatchingRuleOrderDao;
-import com.haulmont.addon.ldap.core.rule.ApplyMatchingRuleContext;
+import com.haulmont.addon.ldap.core.rule.LdapMatchingRuleContext;
 import com.haulmont.addon.ldap.entity.CommonMatchingRule;
 import com.haulmont.addon.ldap.entity.MatchingRuleOrder;
 import com.haulmont.addon.ldap.entity.MatchingRuleStatus;
@@ -32,8 +32,8 @@ public class CustomLdapMatchingRuleWrapper implements CustomLdapMatchingRule, Co
     }
 
     @Override
-    public boolean applyCustomMatchingRule(ApplyMatchingRuleContext applyMatchingRuleContext) {
-        return customLdapMatchingRule.applyCustomMatchingRule(applyMatchingRuleContext);
+    public boolean applyCustomMatchingRule(LdapMatchingRuleContext ldapMatchingRuleContext) {
+        return customLdapMatchingRule.applyCustomMatchingRule(ldapMatchingRuleContext);
     }
 
     @Override

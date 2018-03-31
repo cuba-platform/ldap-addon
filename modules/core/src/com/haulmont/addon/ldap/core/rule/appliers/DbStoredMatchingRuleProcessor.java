@@ -1,6 +1,6 @@
 package com.haulmont.addon.ldap.core.rule.appliers;
 
-import com.haulmont.addon.ldap.core.rule.ApplyMatchingRuleContext;
+import com.haulmont.addon.ldap.core.rule.LdapMatchingRuleContext;
 import com.haulmont.addon.ldap.entity.AbstractDbStoredMatchingRule;
 import com.haulmont.addon.ldap.entity.CommonMatchingRule;
 import com.haulmont.addon.ldap.entity.MatchingRuleType;
@@ -11,29 +11,29 @@ public abstract class DbStoredMatchingRuleProcessor extends MatchingRuleProcesso
         super(matchingRuleType);
     }
 
-    public abstract boolean checkMatchingRule(AbstractDbStoredMatchingRule matchingRule, ApplyMatchingRuleContext applyMatchingRuleContext);
+    public abstract boolean checkMatchingRule(AbstractDbStoredMatchingRule matchingRule, LdapMatchingRuleContext ldapMatchingRuleContext);
 
     @Override
-    boolean applyMatchingRule(CommonMatchingRule matchingRule, ApplyMatchingRuleContext applyMatchingRuleContext) {
+    boolean applyMatchingRule(CommonMatchingRule matchingRule, LdapMatchingRuleContext ldapMatchingRuleContext) {
         AbstractDbStoredMatchingRule abstractDbStoredMatchingRule = (AbstractDbStoredMatchingRule) matchingRule;
-        boolean isRuleApplied = checkMatchingRule(abstractDbStoredMatchingRule, applyMatchingRuleContext);
+        boolean isRuleApplied = checkMatchingRule(abstractDbStoredMatchingRule, ldapMatchingRuleContext);
 
         if (isRuleApplied) {
-            changeGroupAndRolesInMatchingRuleContext(abstractDbStoredMatchingRule, applyMatchingRuleContext);
-            applyMatchingRuleContext.getAppliedRules().add(abstractDbStoredMatchingRule);
-            applyMatchingRuleContext.setTerminalRuleApply(abstractDbStoredMatchingRule.getIsTerminalRule());
+            changeGroupAndRolesInMatchingRuleContext(abstractDbStoredMatchingRule, ldapMatchingRuleContext);
+            ldapMatchingRuleContext.getAppliedRules().add(abstractDbStoredMatchingRule);
+            ldapMatchingRuleContext.setTerminalRuleApply(abstractDbStoredMatchingRule.getIsTerminalRule());
         }
         return isRuleApplied;
     }
 
     private void changeGroupAndRolesInMatchingRuleContext(AbstractDbStoredMatchingRule abstractDbStoredMatchingRule,
-                                                          ApplyMatchingRuleContext applyMatchingRuleContext) {
-        if (abstractDbStoredMatchingRule.getIsOverrideExistingAccessGroup() || applyMatchingRuleContext.getGroup() == null) {
-            applyMatchingRuleContext.setGroup(abstractDbStoredMatchingRule.getAccessGroup());
+                                                          LdapMatchingRuleContext ldapMatchingRuleContext) {
+        if (abstractDbStoredMatchingRule.getIsOverrideExistingAccessGroup() || ldapMatchingRuleContext.getGroup() == null) {
+            ldapMatchingRuleContext.setGroup(abstractDbStoredMatchingRule.getAccessGroup());
         }
         if (abstractDbStoredMatchingRule.getIsOverrideExistingRoles()) {
-            applyMatchingRuleContext.getRoles().clear();
+            ldapMatchingRuleContext.getRoles().clear();
         }
-        applyMatchingRuleContext.getRoles().addAll(abstractDbStoredMatchingRule.getRoles());
+        ldapMatchingRuleContext.getRoles().addAll(abstractDbStoredMatchingRule.getRoles());
     }
 }

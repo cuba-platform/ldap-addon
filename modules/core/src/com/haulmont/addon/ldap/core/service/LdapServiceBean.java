@@ -6,7 +6,7 @@ import com.haulmont.addon.ldap.core.dao.LdapConfigDao;
 import com.haulmont.addon.ldap.core.dao.LdapUserAttributeDao;
 import com.haulmont.addon.ldap.core.dao.LdapUserDao;
 import com.haulmont.addon.ldap.core.dto.LdapUserWrapper;
-import com.haulmont.addon.ldap.core.rule.ApplyMatchingRuleContext;
+import com.haulmont.addon.ldap.core.rule.LdapMatchingRuleContext;
 import com.haulmont.addon.ldap.core.spring.AnonymousLdapContextSource;
 import com.haulmont.addon.ldap.core.utils.LdapHelper;
 import com.haulmont.addon.ldap.dto.GroovyScriptTestResultDto;
@@ -154,11 +154,11 @@ public class LdapServiceBean implements LdapService {
             return new GroovyScriptTestResultDto(NO_USER, null);
         }
         User cubaUser = cubaUserDao.getCubaUserByLogin(login);
-        ApplyMatchingRuleContext applyMatchingRuleContext =
-                new ApplyMatchingRuleContext(ldapUserWrapper.getLdapUser(), ldapUserWrapper.getLdapUserAttributes(), cubaUser);
+        LdapMatchingRuleContext ldapMatchingRuleContext =
+                new LdapMatchingRuleContext(ldapUserWrapper.getLdapUser(), ldapUserWrapper.getLdapUserAttributes(), cubaUser);
 
         Map<String, Object> context = new HashMap<>();
-        context.put("__context__", applyMatchingRuleContext);
+        context.put("__context__", ldapMatchingRuleContext);
         Object scriptExecutionResult = null;
         try {
             scriptExecutionResult = scripting.evaluateGroovy(groovyScript.replace("{ldapContext}", "__context__"), context);

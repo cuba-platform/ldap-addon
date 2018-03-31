@@ -1,7 +1,7 @@
 package com.haulmont.addon.ldap.core.rule.appliers;
 
 import com.haulmont.addon.ldap.core.dto.LdapUser;
-import com.haulmont.addon.ldap.core.rule.ApplyMatchingRuleContext;
+import com.haulmont.addon.ldap.core.rule.LdapMatchingRuleContext;
 import com.haulmont.addon.ldap.core.service.LdapServiceBean;
 import com.haulmont.addon.ldap.entity.AbstractDbStoredMatchingRule;
 import com.haulmont.addon.ldap.entity.CommonMatchingRule;
@@ -42,17 +42,17 @@ public class ScriptingMatchingRuleProcessor extends DbStoredMatchingRuleProcesso
     }
 
     @Override
-    public boolean checkMatchingRule(AbstractDbStoredMatchingRule matchingRule, ApplyMatchingRuleContext applyMatchingRuleContext) {
+    public boolean checkMatchingRule(AbstractDbStoredMatchingRule matchingRule, LdapMatchingRuleContext ldapMatchingRuleContext) {
         Object scriptExecutionResult = null;
         String groovyScript = ((ScriptingMatchingRule) matchingRule).getScriptingCondition();
 
         Map<String, Object> context = new HashMap<>();
-        context.put("__context__", getContextCopy(applyMatchingRuleContext));
+        context.put("__context__", getContextCopy(ldapMatchingRuleContext));
         try {
             scriptExecutionResult = scripting.evaluateGroovy(groovyScript.replace("{ldapContext}", "__context__"), context);
         } catch (Exception e) {
             throw new RuntimeException(messages.formatMessage(LdapServiceBean.class, "errorDuringGroovyScriptEvaluation",
-                    applyMatchingRuleContext.getLdapUser().getLogin()), e);
+                    ldapMatchingRuleContext.getLdapUser().getLogin()), e);
         }
         if (scriptExecutionResult instanceof Boolean) {
             return (Boolean) scriptExecutionResult;
@@ -62,8 +62,8 @@ public class ScriptingMatchingRuleProcessor extends DbStoredMatchingRuleProcesso
         }
     }
 
-    private ApplyMatchingRuleContext getContextCopy(ApplyMatchingRuleContext source) {
-        ApplyMatchingRuleContext tempContext = new ApplyMatchingRuleContext(new LdapUser(source.getLdapUser()), source.getLdapUserAttributes(),
+    private LdapMatchingRuleContext getContextCopy(LdapMatchingRuleContext source) {
+        LdapMatchingRuleContext tempContext = new LdapMatchingRuleContext(new LdapUser(source.getLdapUser()), source.getLdapUserAttributes(),
                 metadataTools.deepCopy(source.getCubaUser()));
         tempContext.getRoles().addAll(source.getRoles().stream().map(cmr -> metadataTools.deepCopy(cmr)).collect(toList()));
         tempContext.setGroup(source.getGroup() == null ? null : metadataTools.deepCopy(source.getGroup()));

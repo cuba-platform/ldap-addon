@@ -1,6 +1,6 @@
 package com.haulmont.addon.ldap.core.dao;
 
-import com.haulmont.addon.ldap.core.rule.ApplyMatchingRuleContext;
+import com.haulmont.addon.ldap.core.rule.LdapMatchingRuleContext;
 import com.haulmont.cuba.core.EntityManager;
 import com.haulmont.cuba.core.Persistence;
 import com.haulmont.cuba.core.TypedQuery;
@@ -53,12 +53,12 @@ public class CubaUserDao {
     }
 
     @Transactional
-    public void saveCubaUser(User cubaUser, User originalUser, ApplyMatchingRuleContext applyMatchingRuleContext) {
+    public void saveCubaUser(User cubaUser, User originalUser, LdapMatchingRuleContext ldapMatchingRuleContext) {
         EntityManager entityManager = persistence.getEntityManager();
         User mergedUser = PersistenceHelper.isNew(cubaUser) ? cubaUser : entityManager.merge(cubaUser);
         originalUser.getUserRoles().forEach(entityManager::remove);
         mergedUser.getUserRoles().forEach(entityManager::persist);
         entityManager.persist(mergedUser);
-        userSynchronizationLogDao.logUserSynchronization(applyMatchingRuleContext, originalUser);
+        userSynchronizationLogDao.logUserSynchronization(ldapMatchingRuleContext, originalUser);
     }
 }

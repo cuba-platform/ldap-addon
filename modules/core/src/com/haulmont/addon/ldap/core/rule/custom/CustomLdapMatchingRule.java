@@ -1,9 +1,9 @@
 package com.haulmont.addon.ldap.core.rule.custom;
 
-import com.haulmont.addon.ldap.core.rule.ApplyMatchingRuleContext;
+import com.haulmont.addon.ldap.core.rule.LdapMatchingRuleContext;
 
 public interface CustomLdapMatchingRule {
 
-    boolean applyCustomMatchingRule(ApplyMatchingRuleContext applyMatchingRuleContext);
+    boolean applyCustomMatchingRule(LdapMatchingRuleContext ldapMatchingRuleContext);
 
 }

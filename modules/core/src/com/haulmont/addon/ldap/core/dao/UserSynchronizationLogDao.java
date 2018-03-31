@@ -1,6 +1,6 @@
 package com.haulmont.addon.ldap.core.dao;
 
-import com.haulmont.addon.ldap.core.rule.ApplyMatchingRuleContext;
+import com.haulmont.addon.ldap.core.rule.LdapMatchingRuleContext;
 import com.haulmont.addon.ldap.entity.*;
 import com.haulmont.cuba.core.EntityManager;
 import com.haulmont.cuba.core.Persistence;
@@ -49,19 +49,19 @@ public class UserSynchronizationLogDao {
     }
 
     @Transactional
-    public void logUserSynchronization(ApplyMatchingRuleContext applyMatchingRuleContext, User originalUser) {
-        User cubaUser = applyMatchingRuleContext.getCubaUser();
+    public void logUserSynchronization(LdapMatchingRuleContext ldapMatchingRuleContext, User originalUser) {
+        User cubaUser = ldapMatchingRuleContext.getCubaUser();
         UserSynchronizationLog userSynchronizationLog = metadata.create(UserSynchronizationLog.class);
         userSynchronizationLog.setLogin(cubaUser.getLogin());
         userSynchronizationLog.setResult(SuccessSync);
-        userSynchronizationLog.setLdapAttributes(getLdapAttributes(applyMatchingRuleContext.getLdapUserAttributes()));
+        userSynchronizationLog.setLdapAttributes(getLdapAttributes(ldapMatchingRuleContext.getLdapUserAttributes()));
         userSynchronizationLog.setAccessGroupBefore(originalUser.getGroup() == null ? null : originalUser.getGroup().getName());
         userSynchronizationLog.setAccessGroupAfter(cubaUser.getGroup() == null ? null : cubaUser.getGroup().getName());
         userSynchronizationLog.setRolesBefore(getRolesField(originalUser.getUserRoles()));
         userSynchronizationLog.setRolesAfter(getRolesField(cubaUser.getUserRoles()));
         userSynchronizationLog.setUserInfoBefore(getUserInfoField(originalUser));
         userSynchronizationLog.setUserInfoAfter(getUserInfoField(cubaUser));
-        userSynchronizationLog.setAppliedRules(getAppliedRulesField(applyMatchingRuleContext.getAppliedRules()));
+        userSynchronizationLog.setAppliedRules(getAppliedRulesField(ldapMatchingRuleContext.getAppliedRules()));
         userSynchronizationLog.setIsNewUser(PersistenceHelper.isNew(cubaUser));
         if (FALSE.equals(cubaUser.getActive()) && TRUE.equals(originalUser.getActive())) {
             userSynchronizationLog.setIsDeactivated(TRUE);

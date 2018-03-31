@@ -11,7 +11,7 @@ import javax.naming.NamingException;
 import javax.naming.directory.Attributes;
 import java.util.*;
 
-public class ApplyMatchingRuleContext {
+public class LdapMatchingRuleContext {
 
     private final LdapUser ldapUser;
     private final Map<String, Object> ldapUserAttributesMap;
@@ -21,13 +21,13 @@ public class ApplyMatchingRuleContext {
     private final User cubaUser;
     private boolean isTerminalRuleApply = false;
 
-    public ApplyMatchingRuleContext(LdapUser ldapUser, Attributes ldapUserAttributes, User cubaUser) {
+    public LdapMatchingRuleContext(LdapUser ldapUser, Attributes ldapUserAttributes, User cubaUser) {
         this.ldapUser = ldapUser;
         ldapUserAttributesMap = Collections.unmodifiableMap(setLdapAttributesMap(ldapUserAttributes));
         this.cubaUser = cubaUser;
     }
 
-    public ApplyMatchingRuleContext(LdapUser ldapUser, Map<String, Object> ldapUserAttributesMap, User cubaUser) {
+    public LdapMatchingRuleContext(LdapUser ldapUser, Map<String, Object> ldapUserAttributesMap, User cubaUser) {
         this.ldapUser = ldapUser;
         this.ldapUserAttributesMap = Collections.unmodifiableMap(ldapUserAttributesMap);
         this.cubaUser = cubaUser;

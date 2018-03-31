@@ -2,7 +2,7 @@ package com.haulmont.addon.ldap.core.rule.appliers;
 
 import com.haulmont.addon.ldap.core.dao.LdapUserDao;
 import com.haulmont.addon.ldap.core.dto.LdapUser;
-import com.haulmont.addon.ldap.core.rule.ApplyMatchingRuleContext;
+import com.haulmont.addon.ldap.core.rule.LdapMatchingRuleContext;
 import com.haulmont.addon.ldap.entity.AbstractDbStoredMatchingRule;
 import com.haulmont.addon.ldap.entity.MatchingRuleType;
 import com.haulmont.addon.ldap.entity.SimpleMatchingRule;
@@ -25,9 +25,9 @@ public class SimpleMatchingRuleProcessor extends DbStoredMatchingRuleProcessor {
     }
 
     @Override
-    public boolean checkMatchingRule(AbstractDbStoredMatchingRule matchingRule, ApplyMatchingRuleContext applyMatchingRuleContext) {
+    public boolean checkMatchingRule(AbstractDbStoredMatchingRule matchingRule, LdapMatchingRuleContext ldapMatchingRuleContext) {
         SimpleMatchingRule simpleMatchingRule = (SimpleMatchingRule) matchingRule;
-        LdapUser ldapUser = ldapUserDao.findLdapUserByFilter(simpleMatchingRule.getConditions(), applyMatchingRuleContext.getLdapUser().getLogin());
+        LdapUser ldapUser = ldapUserDao.findLdapUserByFilter(simpleMatchingRule.getConditions(), ldapMatchingRuleContext.getLdapUser().getLogin());
         return ldapUser != null;
     }
 }

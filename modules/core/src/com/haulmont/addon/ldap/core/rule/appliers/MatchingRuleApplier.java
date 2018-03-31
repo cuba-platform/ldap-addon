@@ -1,6 +1,6 @@
 package com.haulmont.addon.ldap.core.rule.appliers;
 
-import com.haulmont.addon.ldap.core.rule.ApplyMatchingRuleContext;
+import com.haulmont.addon.ldap.core.rule.LdapMatchingRuleContext;
 import com.haulmont.addon.ldap.entity.CommonMatchingRule;
 import com.haulmont.addon.ldap.entity.MatchingRuleType;
 import com.haulmont.cuba.core.global.Metadata;
@@ -31,26 +31,26 @@ public class MatchingRuleApplier {
     @Inject
     private Metadata metadata;
 
-    public void applyMatchingRules(List<CommonMatchingRule> matchingRules, ApplyMatchingRuleContext applyMatchingRuleContext) {
+    public void applyMatchingRules(List<CommonMatchingRule> matchingRules, LdapMatchingRuleContext ldapMatchingRuleContext) {
         List<CommonMatchingRule> activeMatchingRules = matchingRules.stream().filter(cmr -> cmr.getStatus().getIsActive())
                 .sorted(Comparator.comparing(mr -> mr.getOrder().getOrder()))
                 .collect(Collectors.toList());
 
         for (CommonMatchingRule commonMatchingRule : activeMatchingRules) {
-            matchingRuleProcessors.get(commonMatchingRule.getRuleType()).applyMatchingRule(commonMatchingRule, applyMatchingRuleContext);
-            if (applyMatchingRuleContext.isTerminalRuleApply()) {
+            matchingRuleProcessors.get(commonMatchingRule.getRuleType()).applyMatchingRule(commonMatchingRule, ldapMatchingRuleContext);
+            if (ldapMatchingRuleContext.isTerminalRuleApply()) {
                 break;
             }
         }
-        applyContextToUser(applyMatchingRuleContext);
+        applyContextToUser(ldapMatchingRuleContext);
     }
 
 
-    private void applyContextToUser(ApplyMatchingRuleContext applyMatchingRuleContext) {
-        User cubaUser = applyMatchingRuleContext.getCubaUser();
-        cubaUser.setGroup(applyMatchingRuleContext.getGroup());
+    private void applyContextToUser(LdapMatchingRuleContext ldapMatchingRuleContext) {
+        User cubaUser = ldapMatchingRuleContext.getCubaUser();
+        cubaUser.setGroup(ldapMatchingRuleContext.getGroup());
 
-        for (Role role : applyMatchingRuleContext.getRoles()) {
+        for (Role role : ldapMatchingRuleContext.getRoles()) {
             UserRole userRole = metadata.create(UserRole.class);
             userRole.setUser(cubaUser);
             userRole.setRole(role);

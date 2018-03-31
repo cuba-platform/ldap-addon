@@ -1,6 +1,6 @@
 package com.haulmont.addon.ldap.core.rule.appliers;
 
-import com.haulmont.addon.ldap.core.rule.ApplyMatchingRuleContext;
+import com.haulmont.addon.ldap.core.rule.LdapMatchingRuleContext;
 import com.haulmont.addon.ldap.entity.AbstractDbStoredMatchingRule;
 import com.haulmont.addon.ldap.entity.MatchingRuleType;
 import org.springframework.stereotype.Component;
@@ -17,7 +17,7 @@ public class DefaultMatchingRuleProcessor extends DbStoredMatchingRuleProcessor 
     }
 
     @Override
-    public boolean checkMatchingRule(AbstractDbStoredMatchingRule matchingRule, ApplyMatchingRuleContext applyMatchingRuleContext) {
-        return applyMatchingRuleContext.getAppliedRules().isEmpty();
+    public boolean checkMatchingRule(AbstractDbStoredMatchingRule matchingRule, LdapMatchingRuleContext ldapMatchingRuleContext) {
+        return ldapMatchingRuleContext.getAppliedRules().isEmpty();
     }
 }

@@ -1,6 +1,6 @@
 package com.haulmont.addon.ldap.core.rule.appliers;
 
-import com.haulmont.addon.ldap.core.rule.ApplyMatchingRuleContext;
+import com.haulmont.addon.ldap.core.rule.LdapMatchingRuleContext;
 import com.haulmont.addon.ldap.core.rule.custom.CustomLdapMatchingRule;
 import com.haulmont.addon.ldap.entity.CommonMatchingRule;
 import com.haulmont.addon.ldap.entity.MatchingRuleType;
@@ -19,11 +19,11 @@ public class CustomMatchingRuleProcessor extends MatchingRuleProcessor {
     }
 
     @Override
-    public boolean applyMatchingRule(CommonMatchingRule matchingRule, ApplyMatchingRuleContext applyMatchingRuleContext) {
+    public boolean applyMatchingRule(CommonMatchingRule matchingRule, LdapMatchingRuleContext ldapMatchingRuleContext) {
         CustomLdapMatchingRule programmaticMatchingRule = (CustomLdapMatchingRule) matchingRule;
-        boolean isCustomRuleApplied = programmaticMatchingRule.applyCustomMatchingRule(applyMatchingRuleContext);
+        boolean isCustomRuleApplied = programmaticMatchingRule.applyCustomMatchingRule(ldapMatchingRuleContext);
         if (isCustomRuleApplied) {
-            applyMatchingRuleContext.getAppliedRules().add(matchingRule);
+            ldapMatchingRuleContext.getAppliedRules().add(matchingRule);
         }
         return isCustomRuleApplied;
     }
