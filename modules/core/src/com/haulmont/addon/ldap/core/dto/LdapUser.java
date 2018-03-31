@@ -1,9 +1,13 @@
 package com.haulmont.addon.ldap.core.dto;
 
-import java.util.List;
+import com.haulmont.addon.ldap.core.utils.LdapHelper;
+
+import javax.naming.directory.Attributes;
+import java.util.*;
 
 public class LdapUser {
 
+    private final Map<String, Object> ldapUserAttributesMap;
     private String login;
     private String cn;
     private String sn;
@@ -15,7 +19,8 @@ public class LdapUser {
     private String language;
     private String ou;
 
-    public LdapUser() {
+    public LdapUser(Attributes ldapUserAttributes) {
+        this.ldapUserAttributesMap = LdapHelper.setLdapAttributesMap(ldapUserAttributes);
     }
 
     public LdapUser(LdapUser source) {
@@ -29,6 +34,7 @@ public class LdapUser {
         this.position = source.position;
         this.language = source.language;
         this.ou = source.ou;
+        this.ldapUserAttributesMap = new HashMap<>(source.ldapUserAttributesMap);
     }
 
 
@@ -111,4 +117,17 @@ public class LdapUser {
     public void setOu(String ou) {
         this.ou = ou;
     }
+
+    public Object getLdapAttribute(String attributeName) {
+        return ldapUserAttributesMap.get(attributeName);
+    }
+
+    public Set<String> getLdapAttributeNames() {
+        return ldapUserAttributesMap.keySet();
+    }
+
+    public Map<String, Object> getUnmodifiableLdapAttributeMap() {
+        return Collections.unmodifiableMap(ldapUserAttributesMap);
+    }
+
 }

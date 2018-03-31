@@ -63,8 +63,7 @@ public class ScriptingMatchingRuleProcessor extends DbStoredMatchingRuleProcesso
     }
 
     private LdapMatchingRuleContext getContextCopy(LdapMatchingRuleContext source) {
-        LdapMatchingRuleContext tempContext = new LdapMatchingRuleContext(new LdapUser(source.getLdapUser()), source.getLdapUserAttributes(),
-                metadataTools.deepCopy(source.getCubaUser()));
+        LdapMatchingRuleContext tempContext = new LdapMatchingRuleContext(new LdapUser(source.getLdapUser()), metadataTools.deepCopy(source.getCubaUser()));
         tempContext.getRoles().addAll(source.getRoles().stream().map(cmr -> metadataTools.deepCopy(cmr)).collect(toList()));
         tempContext.setGroup(source.getGroup() == null ? null : metadataTools.deepCopy(source.getGroup()));
 

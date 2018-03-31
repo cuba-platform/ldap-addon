@@ -11,15 +11,13 @@ import org.springframework.ldap.filter.OrFilter;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 import javax.naming.directory.Attributes;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 
 public class LdapHelper {
 
     public static LdapUser mapLdapUser(DirContextAdapter context, LdapConfig ldapConfig) {
-        LdapUser ldapUser = new LdapUser();
+        LdapUser ldapUser = new LdapUser(context.getAttributes());
         if (StringUtils.isNotEmpty(ldapConfig.getLoginAttribute())) {
             ldapUser.setLogin(context.getStringAttribute(ldapConfig.getLoginAttribute()));
         }
@@ -100,6 +98,35 @@ public class LdapHelper {
             }
         }
         return attributesResult;
+    }
+
+    public static Map<String, Object> setLdapAttributesMap(Attributes ldapUserAttributes) {
+        Map<String, Object> resultMap = new HashMap<>();
+        try {
+            NamingEnumeration<String> attrs = ldapUserAttributes.getIDs();
+            while (attrs.hasMore()) {
+                String attrName = attrs.next();
+                NamingEnumeration values = ldapUserAttributes.get(attrName).getAll();
+                List<Object> attrValues = new ArrayList<>();
+                while (values.hasMore()) {
+                    Object attr = values.next();
+                    if (attr != null) {
+                        attrValues.add(attr);
+                    }
+                }
+                if (attrValues.size() == 1) {
+                    resultMap.put(attrName, attrValues.get(0));
+                } else if (attrValues.size() == 0) {
+                    resultMap.put(attrName, null);
+                } else {
+                    resultMap.put(attrName, attrValues);
+                }
+
+            }
+        } catch (NamingException e) {
+            throw new RuntimeException(e);
+        }
+        return resultMap;
     }
 
 

@@ -54,7 +54,7 @@ public class UserSynchronizationLogDao {
         UserSynchronizationLog userSynchronizationLog = metadata.create(UserSynchronizationLog.class);
         userSynchronizationLog.setLogin(cubaUser.getLogin());
         userSynchronizationLog.setResult(SuccessSync);
-        userSynchronizationLog.setLdapAttributes(getLdapAttributes(ldapMatchingRuleContext.getLdapUserAttributes()));
+        userSynchronizationLog.setLdapAttributes(getLdapAttributes(ldapMatchingRuleContext.getLdapUser().getUnmodifiableLdapAttributeMap()));
         userSynchronizationLog.setAccessGroupBefore(originalUser.getGroup() == null ? null : originalUser.getGroup().getName());
         userSynchronizationLog.setAccessGroupAfter(cubaUser.getGroup() == null ? null : cubaUser.getGroup().getName());
         userSynchronizationLog.setRolesBefore(getRolesField(originalUser.getUserRoles()));

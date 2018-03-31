@@ -1,10 +1,8 @@
 package com.haulmont.addon.ldap.core.dao;
 
 import com.haulmont.addon.ldap.core.dto.LdapUser;
-import com.haulmont.addon.ldap.core.dto.LdapUserWrapper;
 import com.haulmont.addon.ldap.core.utils.LdapConstants;
 import com.haulmont.addon.ldap.core.utils.LdapUserMapper;
-import com.haulmont.addon.ldap.core.utils.LdapUserWrapperMapper;
 import com.haulmont.addon.ldap.entity.LdapConfig;
 import com.haulmont.addon.ldap.entity.SimpleRuleCondition;
 import com.haulmont.cuba.core.global.Messages;
@@ -47,14 +45,14 @@ public class LdapUserDao {
     @Inject
     private LdapConfigDao ldapConfigDao;
 
-    public LdapUserWrapper getLdapUserWrapper(String login) {
+    public LdapUser getLdapUser(String login) {
         LdapConfig ldapConfig = ldapConfigDao.getLdapConfig();
         LdapQuery query = LdapQueryBuilder.query()
                 .searchScope(SearchScope.SUBTREE)
                 .timeLimit(10_000)
                 .countLimit(1)
                 .filter(createUserBaseAndLoginFilter(login));
-        List<LdapUserWrapper> list = ldapTemplate.search(query, new LdapUserWrapperMapper(ldapConfig));
+        List<LdapUser> list = ldapTemplate.search(query, new LdapUserMapper(ldapConfig));
         if (list.size() == 1) {
             return list.get(0);
         } else {

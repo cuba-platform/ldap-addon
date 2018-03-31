@@ -4,7 +4,7 @@ import com.haulmont.addon.ldap.core.dao.CubaUserDao;
 import com.haulmont.addon.ldap.core.dao.LdapUserDao;
 import com.haulmont.addon.ldap.core.dao.MatchingRuleDao;
 import com.haulmont.addon.ldap.core.dao.UserSynchronizationLogDao;
-import com.haulmont.addon.ldap.core.dto.LdapUserWrapper;
+import com.haulmont.addon.ldap.core.dto.LdapUser;
 import com.haulmont.addon.ldap.core.rule.LdapMatchingRuleContext;
 import com.haulmont.addon.ldap.core.rule.appliers.MatchingRuleApplier;
 import com.haulmont.addon.ldap.core.rule.custom.CustomLdapMatchingRuleWrapper;
@@ -69,13 +69,13 @@ public class UserSynchronizationServiceBean implements UserSynchronizationServic
     public void synchronizeUserAfterLdapLogin(String login) {
         try {
             logger.info(messages.formatMessage(UserSynchronizationServiceBean.class, "userSyncStart", login));
-            LdapUserWrapper ldapUserWrapper = ldapUserDao.getLdapUserWrapper(login);
+            LdapUser ldapUser = ldapUserDao.getLdapUser(login);
             User cubaUser = cubaUserDao.getCubaUserByLogin(login);
             User originalUser = metadataTools.copy(cubaUser);
             originalUser.setUserRoles(new ArrayList<>(cubaUser.getUserRoles()));
             cubaUser.getUserRoles().clear();//user get roles only from LDAP
             LdapMatchingRuleContext ldapMatchingRuleContext =
-                    new LdapMatchingRuleContext(ldapUserWrapper.getLdapUser(), ldapUserWrapper.getLdapUserAttributes(), cubaUser);
+                    new LdapMatchingRuleContext(ldapUser, cubaUser);
             setCommonAttributesFromLdapUser(ldapMatchingRuleContext, cubaUser, login);
             List<CommonMatchingRule> matchingRules = matchingRuleDao.getMatchingRules();
             applicationEventPublisher.publishEvent(new BeforeUserUpdatedFromLdapEvent(this, ldapMatchingRuleContext, cubaUser));
@@ -93,8 +93,8 @@ public class UserSynchronizationServiceBean implements UserSynchronizationServic
     //TODO: объединить synchronizeUserAfterLdapLogin и testUserSynchronization
     public TestUserSynchronizationDto testUserSynchronization(String login, List<AbstractCommonMatchingRule> rulesToApply) {
         TestUserSynchronizationDto testUserSynchronizationDto = new TestUserSynchronizationDto();
-        LdapUserWrapper ldapUserWrapper = ldapUserDao.getLdapUserWrapper(login);
-        if (ldapUserWrapper == null) return testUserSynchronizationDto;
+        LdapUser ldapUser = ldapUserDao.getLdapUser(login);
+        if (ldapUser == null) return testUserSynchronizationDto;
 
         testUserSynchronizationDto.setUserExistsInLdap(true);
         User cubaUser = cubaUserDao.getCubaUserByLogin(login);
@@ -104,17 +104,17 @@ public class UserSynchronizationServiceBean implements UserSynchronizationServic
         rulesToApply.stream()
                 .filter(r -> CUSTOM.equals(r.getRuleType()))
                 .forEach(customRuleDto -> {
-            CustomLdapMatchingRuleWrapper wrapper = customRules.stream()
-                    .filter(cr -> cr.getMatchingRuleId().equals(customRuleDto.getMatchingRuleId()))
-                    .findFirst()
-                    .get();
-            wrapper.getOrder().setOrder(customRuleDto.getOrder().getOrder());
-            wrapper.getStatus().setIsActive(customRuleDto.getStatus().getIsActive());
-            result.add(wrapper);
-        });
+                    CustomLdapMatchingRuleWrapper wrapper = customRules.stream()
+                            .filter(cr -> cr.getMatchingRuleId().equals(customRuleDto.getMatchingRuleId()))
+                            .findFirst()
+                            .get();
+                    wrapper.getOrder().setOrder(customRuleDto.getOrder().getOrder());
+                    wrapper.getStatus().setIsActive(customRuleDto.getStatus().getIsActive());
+                    result.add(wrapper);
+                });
 
         LdapMatchingRuleContext ldapMatchingRuleContext =
-                new LdapMatchingRuleContext(ldapUserWrapper.getLdapUser(), ldapUserWrapper.getLdapUserAttributes(), cubaUser);
+                new LdapMatchingRuleContext(ldapUser, cubaUser);
         cubaUser.getUserRoles().clear();
 
         matchingRuleApplier.applyMatchingRules(result, ldapMatchingRuleContext);
