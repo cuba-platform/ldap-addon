@@ -32,7 +32,9 @@ public class UserSynchronizationLogDao {
 
     public final static String NAME = "ldap_UserSynchronizationLogDao";
 
-    public final static String INDENT = "   ";
+    private final String INDENT = "   ";
+    private final String PASSWORD = "PASSWORD";
+    private final String PASSWORD_VALUE = "*****";
 
     @Inject
     private Persistence persistence;
@@ -201,7 +203,8 @@ public class UserSynchronizationLogDao {
                 List<String> list = ((List<Object>) me.getValue()).stream().map(v -> v == null ? "null" : v.toString()).collect(toList());
                 sb.append(list.stream().collect(Collectors.joining(",")));
             } else {
-                sb.append(me.getValue().toString());
+                String attrValue = attrName.toUpperCase().contains(PASSWORD) ? PASSWORD_VALUE : me.getValue().toString();
+                sb.append(attrValue);
             }
             sb.append("\n");
         }
