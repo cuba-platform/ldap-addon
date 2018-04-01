@@ -4,6 +4,9 @@ import com.haulmont.addon.ldap.entity.LdapConfig;
 import com.haulmont.addon.ldap.entity.LdapUserAttribute;
 import com.haulmont.addon.ldap.service.LdapService;
 import com.haulmont.cuba.gui.components.AbstractEditor;
+import com.haulmont.cuba.gui.components.Action;
+import com.haulmont.cuba.gui.components.Component;
+import com.haulmont.cuba.gui.components.DialogAction;
 import com.haulmont.cuba.gui.data.CollectionDatasource;
 import com.haulmont.cuba.gui.data.Datasource;
 
@@ -36,10 +39,23 @@ public class LdapConfigEdit extends AbstractEditor<LdapConfig> {
     }
 
     public void onUpdateLdapSchemaUserAttributesButtonClick() {
-        LdapConfig lc = getItem();
-        ldapService.fillLdapUserAttributes(lc.getSchemaBase(), lc.getLdapUserObjectClasses(),
-                lc.getObjectClassPropertyName(), lc.getAttributePropertyNames());
-        ldapUserAttributesDs.refresh();
+
+        showOptionDialog(
+                getMessage("refreshAttributesFromLdapTitle"),
+                getMessage("refreshAttributesFromLdap"),
+                MessageType.CONFIRMATION,
+                new Action[]{
+                        new DialogAction(DialogAction.Type.YES) {
+                            public void actionPerform(Component component) {
+                                LdapConfig lc = getItem();
+                                ldapService.fillLdapUserAttributes(lc.getSchemaBase(), lc.getLdapUserObjectClasses(),
+                                        lc.getObjectClassPropertyName(), lc.getAttributePropertyNames());
+                                ldapUserAttributesDs.refresh();
+                            }
+                        },
+                        new DialogAction(DialogAction.Type.NO)
+                }
+        );
     }
 
 

@@ -127,6 +127,7 @@
                            columnControlVisible="false"
                            contextMenuEnabled="false"
                            height="300px"
+                           multiselect="true"
                            reorderingAllowed="false"
                            settingsEnabled="false"
                            sortable="false"
@@ -146,6 +147,9 @@
                                     caption="msg://ldapAttributesTableCreate"/>
                             <button action="schemaTabLdapAttributeTable.remove"
                                     caption="msg://ldapAttributesTableRemove"/>
+                            <button id="updateLdapSchemaUserAttributesButton"
+                                    caption="msg://refreshLdapAttributesButtonCaption"
+                                    invoke="onUpdateLdapSchemaUserAttributesButtonClick"/>
                         </buttonsPanel>
                     </table>
                     <buttonsPanel>
@@ -154,9 +158,6 @@
                         <button id="testConnection"
                                 caption="msg://testConnectionButtonCaption"
                                 invoke="onTestConnectionClick"/>
-                        <button id="updateLdapSchemaUserAttributesButton"
-                                caption="msg://refreshLdapAttributesButtonCaption"
-                                invoke="onUpdateLdapSchemaUserAttributesButtonClick"/>
                     </buttonsPanel>
                 </vbox>
             </groupBox>

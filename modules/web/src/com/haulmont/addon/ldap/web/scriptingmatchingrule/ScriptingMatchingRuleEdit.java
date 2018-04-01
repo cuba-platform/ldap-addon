@@ -4,10 +4,7 @@ import com.google.common.base.Strings;
 import com.haulmont.addon.ldap.dto.GroovyScriptTestResultDto;
 import com.haulmont.addon.ldap.entity.ScriptingMatchingRule;
 import com.haulmont.addon.ldap.service.LdapService;
-import com.haulmont.cuba.gui.components.AbstractEditor;
-import com.haulmont.cuba.gui.components.Component;
-import com.haulmont.cuba.gui.components.SourceCodeEditor;
-import com.haulmont.cuba.gui.components.TextField;
+import com.haulmont.cuba.gui.components.*;
 import com.haulmont.cuba.gui.data.Datasource;
 import com.haulmont.cuba.gui.xml.layout.ComponentsFactory;
 
@@ -53,10 +50,25 @@ public class ScriptingMatchingRuleEdit extends AbstractEditor<ScriptingMatchingR
     }
 
     public Component generateScriptingConditionField(Datasource datasource, String fieldId) {
+        FlowBoxLayout fb = componentsFactory.createComponent(FlowBoxLayout.class);
+        LinkButton lb = componentsFactory.createComponent(LinkButton.class);
+        Action action = new EmptyGroovyScriptHelpAction() {
+            @Override
+            public void actionPerform(Component component) {
+                showMessageDialog(getMessage("groovyScriptConditionTitle"), getMessage("groovyScriptCondition"),
+                        MessageType.CONFIRMATION_HTML
+                                .modal(false)
+                                .width("600px"));
+            }
+        };
+        lb.setAction(action);
         SourceCodeEditor sourceCodeEditor = componentsFactory.createComponent(SourceCodeEditor.class);
         sourceCodeEditor.setDatasource(datasource, fieldId);
         sourceCodeEditor.setRequired(true);
         sourceCodeEditor.setMode(SourceCodeEditor.Mode.Groovy);
-        return sourceCodeEditor;
+        sourceCodeEditor.setWidth("97%");
+        fb.add(sourceCodeEditor);
+        fb.add(lb);
+        return fb;
     }
 }

@@ -73,6 +73,26 @@ public class MatchingRuleScreen extends AbstractWindow {
     public void init(Map<String, Object> params) {
         super.init(params);
 
+        addBeforeCloseWithCloseButtonListener(new BeforeCloseWithCloseButtonListener() {
+            @Override
+            public void beforeCloseWithCloseButton(BeforeCloseWithCloseButtonEvent event) {
+                event.preventWindowClose();
+                showOptionDialog(
+                        getMessage("closeWindowTitle"),
+                        getMessage("closeWindow"),
+                        MessageType.CONFIRMATION,
+                        new Action[]{
+                                new DialogAction(DialogAction.Type.YES) {
+                                    public void actionPerform(Component component) {
+                                        close("");
+                                    }
+                                },
+                                new DialogAction(DialogAction.Type.NO)
+                        }
+                );
+            }
+        });
+
         matchingRuleTable.setSortable(false);
 
         CollectionDatasource.CollectionChangeListener sortListener = new CollectionDatasource.CollectionChangeListener() {
@@ -204,13 +224,6 @@ public class MatchingRuleScreen extends AbstractWindow {
         return checkBox;
     }
 
-    public void onDefaultRuleCreateButtonClick() {
-        DefaultMatchingRule defaultMatchingRule = (DefaultMatchingRule) matchingRuleDatasource.getItems().stream()
-                .filter(mr -> DEFAULT.equals(mr.getRuleType()))
-                .findFirst()
-                .get();
-        openCreateRuleWindow(defaultMatchingRule, "ldap$DefaultMatchingRule.edit");
-    }
 
     public void onSimpleRuleCreateButtonClick() {
         SimpleMatchingRule simpleMatchingRule = metadata.create(SimpleMatchingRule.class);
@@ -249,7 +262,7 @@ public class MatchingRuleScreen extends AbstractWindow {
 
     }
 
-    public void onCancelButtonClick() {
+    public void onRollbackButtonClick() {
         showOptionDialog(
                 getMessage("matchingRuleScreenCancelDialogTitle"),
                 getMessage("matchingRuleScreenCancelDialogMsg"),
@@ -416,5 +429,22 @@ public class MatchingRuleScreen extends AbstractWindow {
         }
 
         return checkBox;
+    }
+
+
+    public void onCancelButtonClick() {
+        showOptionDialog(
+                getMessage("closeWindowTitle"),
+                getMessage("closeWindow"),
+                MessageType.CONFIRMATION,
+                new Action[]{
+                        new DialogAction(DialogAction.Type.YES) {
+                            public void actionPerform(Component component) {
+                                close("");
+                            }
+                        },
+                        new DialogAction(DialogAction.Type.NO)
+                }
+        );
     }
 }
