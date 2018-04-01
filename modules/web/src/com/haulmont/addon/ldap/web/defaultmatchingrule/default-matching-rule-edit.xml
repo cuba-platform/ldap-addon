@@ -21,17 +21,18 @@
         <fieldGroup id="fieldGroup"
                     datasource="defaultMatchingRuleDs">
             <column width="250px">
-                <field caption="msg://accessGroupFieldCaption"
-                       property="accessGroup"/>
-                <field caption="msg://isTerminalRuleFieldCaption"
-                       property="isTerminalRule"/>
-                <field caption="msg://isOverrideExistingRolesFieldCaption"
-                       property="isOverrideExistingRoles"/>
-                <field caption="msg://isOverrideExistingAccessGroupFieldCaption"
-                       property="isOverrideExistingAccessGroup"/>
                 <field caption="msg://descriptionFieldCaption"
                        property="description"
-                       required="true"/>
+                       required="true"
+                       requiredMessage="msg://validationEmptyDescription"/>
+                <field caption="msg://isTerminalRuleFieldCaption"
+                       property="isTerminalRule"/>
+                <field caption="msg://accessGroupFieldCaption"
+                       property="accessGroup"
+                       required="true"
+                       requiredMessage="msg://validationEmptyAccessGroup"/>
+                <field caption="msg://isOverrideExistingAccessGroupFieldCaption"
+                       property="isOverrideExistingAccessGroup"/>
             </column>
         </fieldGroup>
         <groupBox id="rolesBox"
@@ -52,6 +53,9 @@
                 <buttonsPanel>
                     <button action="rolesTable.add"/>
                     <button action="rolesTable.remove"/>
+                    <label value="msg://isOverrideExistingRolesFieldCaption"/>
+                    <checkBox datasource="defaultMatchingRuleDs"
+                              property="isOverrideExistingRoles"/>
                 </buttonsPanel>
             </table>
         </groupBox>

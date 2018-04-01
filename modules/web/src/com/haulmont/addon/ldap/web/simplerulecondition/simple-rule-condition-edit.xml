@@ -18,8 +18,12 @@
                     datasource="simpleRuleConditionDs">
             <column width="250px">
                 <field custom="true"
-                       property="attribute"/>
+                       property="attribute"
+                       required="true"
+                       requiredMessage="msg://validationEmptyLdapAttribute"/>
                 <field property="attributeValue"
+                       required="true"
+                       requiredMessage="msg://validationEmptyLdapAttributeValue"
                        rows="5"/>
             </column>
         </fieldGroup>
