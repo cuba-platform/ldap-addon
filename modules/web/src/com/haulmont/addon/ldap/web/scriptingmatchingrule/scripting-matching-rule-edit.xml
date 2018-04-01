@@ -22,13 +22,16 @@
                     width="100%">
             <column width="100%">
                 <field caption="msg://descriptionFieldCaption"
-                       property="description"/>
+                       property="description"
+                       required="true"
+                       requiredMessage="msg://validationEmptyDescription"/>
                 <field caption="msg://isTerminalRuleFieldCaption"
                        property="isTerminalRule"/>
                 <field caption="msg://groovyConditionCaption"
-                       description="msg://groovyConditionCaption"
                        generator="generateScriptingConditionField"
                        property="scriptingCondition"
+                       required="true"
+                       requiredMessage="msg://validationEmptyScript"
                        rows="5"/>
             </column>
         </fieldGroup>
@@ -45,15 +48,15 @@
             <column width="250px">
                 <field caption="msg://accessGroupFieldCaption"
                        property="accessGroup"
-                       required="true"/>
+                       required="true"
+                       requiredMessage="msg://validationEmptyGroup"/>
                 <field caption="msg://isOverrideExistingAccessGroupFieldCaption"
                        property="isOverrideExistingAccessGroup"/>
             </column>
         </fieldGroup>
         <groupBox id="rolesBox"
-                  caption="msg://com.haulmont.addon.ldap.entity/ScriptingMatchingRule.roles">
+                  caption="msg://rolesTableCaption">
             <table id="rolesTable"
-                   caption="msg://rolesTableCaption"
                    height="200px"
                    width="100%">
                 <actions>

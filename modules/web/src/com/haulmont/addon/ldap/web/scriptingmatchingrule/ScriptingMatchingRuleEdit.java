@@ -3,10 +3,12 @@ package com.haulmont.addon.ldap.web.scriptingmatchingrule;
 import com.google.common.base.Strings;
 import com.haulmont.addon.ldap.dto.GroovyScriptTestResultDto;
 import com.haulmont.addon.ldap.entity.ScriptingMatchingRule;
+import com.haulmont.addon.ldap.entity.SimpleRuleCondition;
 import com.haulmont.addon.ldap.service.LdapService;
 import com.haulmont.cuba.gui.components.*;
 import com.haulmont.cuba.gui.data.Datasource;
 import com.haulmont.cuba.gui.xml.layout.ComponentsFactory;
+import com.haulmont.cuba.security.entity.Role;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -25,6 +27,17 @@ public class ScriptingMatchingRuleEdit extends AbstractEditor<ScriptingMatchingR
 
     @Inject
     private ComponentsFactory componentsFactory;
+
+    @Named("rolesTable")
+    private Table<Role> roleTable;
+
+    @Override
+    protected void postValidate(ValidationErrors errors) {
+        super.postValidate(errors);
+        if (roleTable.getDatasource().getItems().isEmpty()) {
+            errors.add(roleTable, getMessage("validationEmptyRoles"));
+        }
+    }
 
     public void onTestConstraintButtonClick() {
         String login = userLoginTextField.getValue();

@@ -26,7 +26,8 @@
             <column width="250px">
                 <field caption="msg://descriptionFieldCaption"
                        property="description"
-                       required="true"/>
+                       required="true"
+                       requiredMessage="msg://validationEmptyDescription"/>
                 <field caption="msg://isTerminalRuleFieldCaption"
                        property="isTerminalRule"/>
             </column>
@@ -57,7 +58,8 @@
             <column width="250px">
                 <field caption="msg://accessGroupFieldCaption"
                        property="accessGroup"
-                       required="true"/>
+                       required="true"
+                       requiredMessage="msg://validationEmptyGroup"/>
                 <field caption="msg://isOverrideExistingAccessGroupFieldCaption"
                        property="isOverrideExistingAccessGroup"/>
             </column>
