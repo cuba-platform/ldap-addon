@@ -24,17 +24,11 @@
         <fieldGroup id="fieldGroup"
                     datasource="simpleMatchingRuleDs">
             <column width="250px">
-                <field caption="msg://accessGroupFieldCaption"
-                       property="accessGroup"/>
-                <field caption="msg://isTerminalRuleFieldCaption"
-                       property="isTerminalRule"/>
-                <field caption="msg://isOverrideExistingRolesFieldCaption"
-                       property="isOverrideExistingRoles"/>
-                <field caption="msg://isOverrideExistingAccessGroupFieldCaption"
-                       property="isOverrideExistingAccessGroup"/>
                 <field caption="msg://descriptionFieldCaption"
                        property="description"
                        required="true"/>
+                <field caption="msg://isTerminalRuleFieldCaption"
+                       property="isTerminalRule"/>
             </column>
         </fieldGroup>
         <groupBox id="conditionsBox"
@@ -59,6 +53,15 @@
                 </buttonsPanel>
             </table>
         </groupBox>
+        <fieldGroup datasource="simpleMatchingRuleDs">
+            <column width="250px">
+                <field caption="msg://accessGroupFieldCaption"
+                       property="accessGroup"
+                       required="true"/>
+                <field caption="msg://isOverrideExistingAccessGroupFieldCaption"
+                       property="isOverrideExistingAccessGroup"/>
+            </column>
+        </fieldGroup>
         <groupBox id="rolesBox"
                   caption="msg://rolesTableCaption">
             <table id="rolesTable"
@@ -77,6 +80,9 @@
                 <buttonsPanel>
                     <button action="rolesTable.add"/>
                     <button action="rolesTable.remove"/>
+                    <label value="msg://isOverrideExistingRolesFieldCaption"/>
+                    <checkBox datasource="simpleMatchingRuleDs"
+                              property="isOverrideExistingRoles"/>
                 </buttonsPanel>
             </table>
         </groupBox>

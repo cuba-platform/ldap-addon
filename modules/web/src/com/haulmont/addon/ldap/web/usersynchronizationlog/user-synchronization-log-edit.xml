@@ -3,7 +3,6 @@
         caption="msg://editorCaption"
         class="com.haulmont.addon.ldap.web.usersynchronizationlog.UserSynchronizationLogEdit"
         datasource="userSynchronizationLogDs"
-        focusComponent="fieldGroup"
         messagesPack="com.haulmont.addon.ldap.web.usersynchronizationlog">
     <dsContext>
         <datasource id="userSynchronizationLogDs"
@@ -16,33 +15,204 @@
             spacing="true">
         <scrollBox id="scrollBox"
                    spacing="true">
-            <fieldGroup id="fieldGroup"
-                        datasource="userSynchronizationLogDs"
-                        editable="false"
-                        width="100%">
-                <column width="100%">
-                    <field property="login"/>
-                    <field property="result"/>
-                    <field property="isNewUser"/>
-                    <field property="isDeactivated"/>
-                    <field property="ldapAttributes"
-                           rows="5"/>
-                    <field property="appliedRules"
-                           rows="5"/>
-                    <field property="rolesBefore"
-                           rows="5"/>
-                    <field property="rolesAfter"
-                           rows="5"/>
-                    <field property="accessGroupBefore"/>
-                    <field property="accessGroupAfter"/>
-                    <field property="userInfoBefore"
-                           rows="5"/>
-                    <field property="userInfoAfter"
-                           rows="5"/>
-                    <field property="errorText"
-                           rows="5"/>
-                </column>
-            </fieldGroup>
+            <grid spacing="true"
+                  width="100%">
+                <columns>
+                    <column flex="1.0"/>
+                    <column flex="9.0"/>
+                </columns>
+                <rows>
+                    <row>
+                        <label value="msg://login"
+                               width="100%"/>
+                        <textField datasource="userSynchronizationLogDs"
+                                   editable="false"
+                                   property="login"
+                                   width="100%"/>
+                    </row>
+                    <row>
+                        <label value="msg://result"
+                               width="100%"/>
+                        <textField datasource="userSynchronizationLogDs"
+                                   editable="false"
+                                   property="result"
+                                   width="100%"/>
+                    </row>
+                    <row>
+                        <label value="msg://newUser"
+                               width="100%"/>
+                        <checkBox datasource="userSynchronizationLogDs"
+                                  editable="false"
+                                  property="isNewUser"
+                                  width="100%"/>
+                    </row>
+                    <row>
+                        <label value="msg://deactivated"
+                               width="100%"/>
+                        <checkBox datasource="userSynchronizationLogDs"
+                                  editable="false"
+                                  property="isDeactivated"
+                                  width="100%"/>
+                    </row>
+                    <row>
+                        <label value="msg://ldapAttributes"
+                               width="100%"/>
+                        <textArea datasource="userSynchronizationLogDs"
+                                  editable="false"
+                                  property="ldapAttributes"
+                                  rows="4"
+                                  width="100%"/>
+                    </row>
+                    <row>
+                        <label value="msg://appliedRules"
+                               width="100%"/>
+                        <textArea datasource="userSynchronizationLogDs"
+                                  editable="false"
+                                  property="appliedRules"
+                                  rows="4"
+                                  width="100%"/>
+                    </row>
+                </rows>
+            </grid>
+            <grid spacing="true"
+                  width="100%">
+                <columns>
+                    <column flex="0.0"/>
+                    <column flex="0.0"/>
+                </columns>
+                <rows>
+                    <row>
+                        <grid spacing="true"
+                              width="100%">
+                            <columns>
+                                <column flex="1.0"/>
+                                <column flex="4.0"/>
+                            </columns>
+                            <rows>
+                                <row>
+                                    <label value="msg://userInfoBefore"
+                                           width="100%"/>
+                                    <textArea datasource="userSynchronizationLogDs"
+                                              editable="false"
+                                              property="userInfoBefore"
+                                              rows="4"
+                                              width="100%"/>
+                                </row>
+                            </rows>
+                        </grid>
+                        <grid spacing="true"
+                              width="100%">
+                            <columns>
+                                <column flex="1.0"/>
+                                <column flex="4.0"/>
+                            </columns>
+                            <rows>
+                                <row>
+                                    <label value="msg://userInfoAfter"
+                                           width="100%"/>
+                                    <textArea datasource="userSynchronizationLogDs"
+                                              editable="false"
+                                              property="userInfoAfter"
+                                              rows="4"
+                                              width="100%"/>
+                                </row>
+                            </rows>
+                        </grid>
+                    </row>
+                    <row>
+                        <grid spacing="true"
+                              width="100%">
+                            <columns>
+                                <column flex="1.0"/>
+                                <column flex="4.0"/>
+                            </columns>
+                            <rows>
+                                <row>
+                                    <label value="msg://groupBefore"
+                                           width="100%"/>
+                                    <textField datasource="userSynchronizationLogDs"
+                                               editable="false"
+                                               property="accessGroupBefore"
+                                               width="100%"/>
+                                </row>
+                            </rows>
+                        </grid>
+                        <grid spacing="true"
+                              width="100%">
+                            <columns>
+                                <column flex="1.0"/>
+                                <column flex="4.0"/>
+                            </columns>
+                            <rows>
+                                <row>
+                                    <label value="msg://groupAfter"
+                                           width="100%"/>
+                                    <textField datasource="userSynchronizationLogDs"
+                                               editable="false"
+                                               property="accessGroupAfter"
+                                               width="100%"/>
+                                </row>
+                            </rows>
+                        </grid>
+                    </row>
+                    <row>
+                        <grid spacing="true"
+                              width="100%">
+                            <columns>
+                                <column flex="1.0"/>
+                                <column flex="4.0"/>
+                            </columns>
+                            <rows>
+                                <row>
+                                    <label value="msg://rolesBefore"
+                                           width="100%"/>
+                                    <textArea datasource="userSynchronizationLogDs"
+                                              editable="false"
+                                              property="rolesBefore"
+                                              rows="4"
+                                              width="100%"/>
+                                </row>
+                            </rows>
+                        </grid>
+                        <grid spacing="true"
+                              width="100%">
+                            <columns>
+                                <column flex="1.0"/>
+                                <column flex="4.0"/>
+                            </columns>
+                            <rows>
+                                <row>
+                                    <label value="msg://rolesAfter"
+                                           width="100%"/>
+                                    <textArea datasource="userSynchronizationLogDs"
+                                              editable="false"
+                                              property="rolesAfter"
+                                              rows="4"
+                                              width="100%"/>
+                                </row>
+                            </rows>
+                        </grid>
+                    </row>
+                </rows>
+            </grid>
+            <grid spacing="true"
+                  width="100%">
+                <columns>
+                    <column flex="1.0"/>
+                    <column flex="9.0"/>
+                </columns>
+                <rows>
+                    <row>
+                        <label value="msg://errorText"
+                               width="100%"/>
+                        <textArea datasource="userSynchronizationLogDs"
+                                  editable="false"
+                                  property="errorText"
+                                  rows="4"
+                                  width="100%"/>
+                    </row>
+                </rows>
+            </grid>
         </scrollBox>
         <frame id="windowActions"
                screen="editWindowActions"/>

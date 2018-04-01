@@ -23,15 +23,10 @@
             <column width="100%">
                 <field caption="msg://descriptionFieldCaption"
                        property="description"/>
-                <field caption="msg://accessGroupFieldCaption"
-                       property="accessGroup"/>
                 <field caption="msg://isTerminalRuleFieldCaption"
                        property="isTerminalRule"/>
-                <field caption="msg://isOverrideExistingRolesFieldCaption"
-                       property="isOverrideExistingRoles"/>
-                <field caption="msg://isOverrideExistingAccessGroupFieldCaption"
-                       property="isOverrideExistingAccessGroup"/>
                 <field caption="msg://groovyConditionCaption"
+                       description="msg://groovyConditionCaption"
                        generator="generateScriptingConditionField"
                        property="scriptingCondition"
                        rows="5"/>
@@ -46,6 +41,15 @@
             <label value="msg://userLogin"/>
             <textField id="userLoginTextField"/>
         </flowBox>
+        <fieldGroup datasource="scriptingMatchingRuleDs">
+            <column width="250px">
+                <field caption="msg://accessGroupFieldCaption"
+                       property="accessGroup"
+                       required="true"/>
+                <field caption="msg://isOverrideExistingAccessGroupFieldCaption"
+                       property="isOverrideExistingAccessGroup"/>
+            </column>
+        </fieldGroup>
         <groupBox id="rolesBox"
                   caption="msg://com.haulmont.addon.ldap.entity/ScriptingMatchingRule.roles">
             <table id="rolesTable"
@@ -65,6 +69,9 @@
                 <buttonsPanel>
                     <button action="rolesTable.add"/>
                     <button action="rolesTable.remove"/>
+                    <label value="msg://isOverrideExistingRolesFieldCaption"/>
+                    <checkBox datasource="scriptingMatchingRuleDs"
+                              property="isOverrideExistingRoles"/>
                 </buttonsPanel>
             </table>
         </groupBox>

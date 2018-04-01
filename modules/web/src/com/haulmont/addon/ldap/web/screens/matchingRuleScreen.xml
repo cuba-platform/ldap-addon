@@ -57,15 +57,16 @@
                 </columns>
                 <rows datasource="abstractMatchingRulesDs"/>
                 <buttonsPanel height="29px">
-                    <button id="defaultRuleCreateButton"
-                            caption="msg://defaultRuleCreateButton"
-                            invoke="onDefaultRuleCreateButtonClick"/>
-                    <button id="simpleRuleCreateButton"
-                            caption="msg://simpleRuleCreateButton"
-                            invoke="onSimpleRuleCreateButtonClick"/>
-                    <button id="scriptingRuleCreateButton"
-                            caption="msg://scriptingRuleCreateButton"
-                            invoke="onScriptingRuleCreateButtonClick"/>
+                    <popupButton caption="msg://createMatchingRule">
+                        <actions>
+                            <action id="createSimpleRule"
+                                    caption="msg://createSimpleRuleAction"
+                                    invoke="onSimpleRuleCreateButtonClick"/>
+                            <action id="createScriptingRule"
+                                    caption="msg://createScriptingRuleActon"
+                                    invoke="onScriptingRuleCreateButtonClick"/>
+                        </actions>
+                    </popupButton>
                     <button id="ruleEditButton"
                             action="matchingRuleTable.edit"
                             caption="msg://ruleEditButton"/>
@@ -95,7 +96,6 @@
                 <label value="msg://testRuleScreenAppliedGroup"
                        width="67px"/>
                 <textField id="testRuleScreenAppliedGroup"
-                           editable="false"
                            enable="false"/>
             </flowBox>
             <hbox spacing="true"
@@ -138,8 +138,11 @@
                 <button id="commitButton"
                         caption="msg://matchingRuleScreenCommitButton"
                         invoke="onCommitButtonClick"/>
-                <button id="cancelButton"
+                <button id="rollbackButton"
                         caption="msg://matchingRuleScreenCancelButton"
+                        invoke="onRollbackButtonClick"/>
+                <button id="cancelButton"
+                        caption="msg://cancel"
                         invoke="onCancelButtonClick"/>
             </buttonsPanel>
         </groupBox>
