@@ -145,7 +145,7 @@ The LDAP component provides means to process custom rules defined programmatical
 adding new classes to the source code of your application. Custom rules can be viewed from the application UI, however,
 they cannot be configured or amended there.
 
-One of the advantages of custom rules is that they allow specifying additional conditions not related to LDAP attributes.
+One of the advantages of custom rules is that they allow specifying additional conditions not related to LDAP attributes or schema.
 The example of a custom rule is provided below.
 
 ```java
@@ -179,7 +179,7 @@ public class TestCustomLdapRule implements CustomLdapMatchingRule {
 When launching your application with the component installed for the first time, the default rule is automatically 
 created in the system.
 
-The default rule is used if none of other rules were applied, e.g. conditions for applying existing rules were not met.
+It is used if none of other rules were applied, e.g. conditions for applying existing rules were not met.
 That is why it contains the 'LAST' value in the 'Order' field.
 
 The default rule can be amended by clicking the 'Edit Default Rule' button. All fields and settings present in Default
@@ -189,29 +189,29 @@ Matching Rule Editor are described in the section below.
 
 ![Default Rule Editor](img/default-rule-editor.png)
 
-* *Access group*: defines an access group to be assigned to a user, if the default rule is applied.
+* *Description*: a short description of the default rule.
 * *Terminal rule*: if checked, then other rules cannot be applied, if the default rule was used.
-* *Override existing roles*: if checked, then all roles that were previously assigned to a user are removed and the ones
-specified in the 'Roles' section are used instead.
+* *Access group*: defines an access group to be assigned to a user, if the default rule is applied.
 * *Override existing access group*: if checked, then an access group that was previously assigned to a user is removed
 and the group specified in the 'Access group' field is used instead.
-* *Description*: a short description of the default rule.
+* *Override existing roles*: if checked, then all roles that were previously assigned to a user are removed and the ones
+specified in the 'Roles' section are used instead.
 
-The 'Roles' table allows creating a set of roles, which are to be assigned to a user, if the default rule is used.
+The 'Roles' table allows creating a set of roles, which are assigned to a user, if the default rule is used.
 
 ### Simple Rule
 
-Simple rules allow granting access rights (an access group and CUBA roles) to users, if particular conditions are met.
-To create a simple rule, click the 'Create simple rule' button. 
+Simple rules allow granting access rights (by assigning an access group and CUBA roles) to users, if particular conditions are met.
+To create a simple rule, select the 'Create simple rule' option from the menu of the 'Create matching rule' button. 
 All fields and settings present in Simple Matching Rule Editor are described in the section below.
 
 #### Simple Matching Rule Editor
 
 ![Simple Rule Editor](img/simple-rule-editor.png)
 
-Simple Matching Rule Editor comprises three sections for configuring a simple matching rule:
+Simple Matching Rule Editor comprises settings and tables for configuring a simple matching rule:
 
-1. __General details and settings__. The fields included in the section are similar to the ones described in [Default Matching
+1. __General details and settings__. The fields are similar to the ones described in [Default Matching
 Rule Editor](#default-matching-rule-editor).
 2. __Conditions__. The section enables to add conditions, which have to be met for successful rule application. Clicking
 the 'Create' button opens Simple Rule Condition Editor.
@@ -233,12 +233,38 @@ have the specified value of the selected attribute.
 ### Scripting Rule
 
 Using scripting rules it is possible to specify a Groovy script with a set of conditions to be met to grant a user
-access rights. You can create a new scripting rule by clicking the 'Create Scripting Rule' button.
+access rights. You can create a new scripting rule by selecting the 'Create Scripting Rule' option from 
+the menu of the 'Create matching rule' button.
 
 #### Scripting Matching Rule Editor
 
+Scripting Matching Rule Editor comprises a set of general fields (these fields are similar to the ones described in 
+[Default Matching Rule Editor](#default-matching-rule-editor)), a section for specifying and testing Groovy scripts,
+and a table of roles.
 
+![Scripting Matching Rule Editor](img/scripting-matching-rule-editor.png)
+
+An entered condition is evaluated using LDAP matching rule context. Note that the `{ldapContext}` placeholder should
+be used as an alias of the LDAP matching rule context. The `{ldapContext}` provides the following fields:
+
+* *ldapUser*: defines the main LDAP person properties (login, cn, sn, email, memberOf, accessGroups, isDisabled, position,
+language, ou).
+* *appliedRules*: matching rules, which were previously applied to the context.
+* *roles*: roles, which were previously assigned to a user.
+* *group*: a current access group that a user belongs to.
+* *cubaUser*: a cuba user, to whom a current matching rule is applied.
+* *isTerminalRuleApply*: signals that a current rule is a terminal one, i.e. once it is used, no other rules can be applied.
 
 ## Testing LDAP Matching Rules
 
+After creating all required matching rules, it is possible to test them right from LDAP Matching Rule Screen. For this 
+purpose, enter a user login in the corresponding field and click 'Test rules'.
+
+After that, applied matching rules and roles are displayed in the corresponding tables. This functionality is useful if it
+is required to find out whether a rule is applied correctly.
+
 ## LDAP Log
+
+LDAP Log Screen can be used to view all activities related to LDAP connection from the application UI,
+including user authentication checks, rule application, updates of user properties and errors that occur while the component
+features are used.
