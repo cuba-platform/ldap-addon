@@ -19,7 +19,6 @@ public class TestCustomLdapRule implements CustomLdapMatchingRule {
     private CubaUserDao cubaUserDao;
 
     @Override
-    //TODO: легко забыть добавить нужные значения в контекст
     public boolean applyCustomMatchingRule(LdapMatchingRuleContext ldapMatchingRuleContext) {
         if (ldapMatchingRuleContext.getLdapUser().getLogin().equalsIgnoreCase("barts")) {
             User admin = cubaUserDao.getCubaUserByLogin("admin");

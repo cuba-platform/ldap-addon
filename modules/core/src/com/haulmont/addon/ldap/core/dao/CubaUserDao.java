@@ -6,13 +6,16 @@ import com.haulmont.cuba.core.Persistence;
 import com.haulmont.cuba.core.TypedQuery;
 import com.haulmont.cuba.core.global.Metadata;
 import com.haulmont.cuba.core.global.PersistenceHelper;
+import com.haulmont.cuba.security.entity.Role;
 import com.haulmont.cuba.security.entity.User;
+import com.haulmont.cuba.security.entity.UserRole;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.haulmont.addon.ldap.core.dao.CubaUserDao.NAME;
 
@@ -40,6 +43,7 @@ public class CubaUserDao {
         if (cubaUser == null) {
             cubaUser = metadata.create(User.class);
             cubaUser.setUserRoles(new ArrayList<>());
+            cubaUser.setLogin(login);
         }
         return cubaUser;
     }
@@ -53,12 +57,12 @@ public class CubaUserDao {
     }
 
     @Transactional
-    public void saveCubaUser(User cubaUser, User originalUser, LdapMatchingRuleContext ldapMatchingRuleContext) {
+    public void saveCubaUser(User cubaUser, User beforeRulesApplyUserState, LdapMatchingRuleContext ldapMatchingRuleContext) {
         EntityManager entityManager = persistence.getEntityManager();
         User mergedUser = PersistenceHelper.isNew(cubaUser) ? cubaUser : entityManager.merge(cubaUser);
-        originalUser.getUserRoles().forEach(entityManager::remove);
-        mergedUser.getUserRoles().forEach(entityManager::persist);
+        List<Role> newRoles = mergedUser.getUserRoles().stream().map(UserRole::getRole).collect(Collectors.toList());
+        beforeRulesApplyUserState.getUserRoles().stream().filter(ur -> !newRoles.contains(ur.getRole())).forEach(entityManager::remove);
         entityManager.persist(mergedUser);
-        userSynchronizationLogDao.logUserSynchronization(ldapMatchingRuleContext, originalUser);
+        userSynchronizationLogDao.logUserSynchronization(ldapMatchingRuleContext, beforeRulesApplyUserState);
     }
 }

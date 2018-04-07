@@ -13,7 +13,6 @@ import java.util.Locale;
 public class AuthUserServiceBean implements AuthUserService {
 
     @Inject
-    @Qualifier(LdapUserDao.NAME)
     private LdapUserDao ldapUserDao;
 
     @Override

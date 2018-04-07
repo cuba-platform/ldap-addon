@@ -149,7 +149,7 @@ public class LdapServiceBean implements LdapService {
 
     @Override
     public GroovyScriptTestResultDto testGroovyScript(String groovyScript, String login) {
-        LdapUser ldapUser = ldapUserDao.getLdapUser(login);
+        LdapUser ldapUser = ldapUserDao.getExistedLdapUser(login, false);
         if (ldapUser == null) {
             return new GroovyScriptTestResultDto(NO_USER, null);
         }

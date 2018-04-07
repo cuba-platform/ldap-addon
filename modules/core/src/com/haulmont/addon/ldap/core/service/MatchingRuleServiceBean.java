@@ -14,7 +14,6 @@ import java.util.List;
 public class MatchingRuleServiceBean implements MatchingRuleService {
 
     @Inject
-    @Qualifier(MatchingRuleDao.NAME)
     private MatchingRuleDao matchingRuleDao;
 
     @Override

@@ -1,6 +1,9 @@
 package com.haulmont.addon.ldap.entity;
 
+import com.haulmont.chile.core.annotations.Composition;
 import com.haulmont.cuba.core.entity.StandardEntity;
+import com.haulmont.cuba.core.entity.annotation.OnDelete;
+import com.haulmont.cuba.core.global.DeletePolicy;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -13,12 +16,15 @@ public abstract class AbstractCommonMatchingRule extends StandardEntity implemen
     @Enumerated(EnumType.STRING)
     private MatchingRuleType ruleType;
 
-
+    @Composition
+    @OnDelete(DeletePolicy.CASCADE)
     @OneToOne(fetch = FetchType.LAZY, optional = false, cascade = CascadeType.ALL)
     @JoinColumn(name = "MATCHING_RULE_STATUS_ID")
     @NotNull
     private MatchingRuleStatus status = new MatchingRuleStatus();
 
+    @Composition
+    @OnDelete(DeletePolicy.CASCADE)
     @OneToOne(fetch = FetchType.LAZY, optional = false, cascade = CascadeType.ALL)
     @JoinColumn(name = "MATCHING_RULE_ORDER_ID")
     @NotNull

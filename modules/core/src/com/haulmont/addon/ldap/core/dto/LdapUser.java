@@ -14,7 +14,7 @@ public class LdapUser {
     private String email;
     private List<String> memberOf;
     private List<String> accessGroups;
-    private Boolean isDisabled;
+    private Boolean isDisabled = false;
     private String position;
     private String language;
     private String ou;

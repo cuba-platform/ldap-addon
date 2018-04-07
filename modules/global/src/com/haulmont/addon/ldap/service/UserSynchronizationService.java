@@ -8,7 +8,7 @@ import java.util.List;
 public interface UserSynchronizationService {
     String NAME = "ldap_UserSynchronizationService";
 
-    void synchronizeUserAfterLdapLogin(String login);
+    void synchronizeUser(String login);
 
     TestUserSynchronizationDto testUserSynchronization(String login, List<AbstractCommonMatchingRule> rulesToApply);
 

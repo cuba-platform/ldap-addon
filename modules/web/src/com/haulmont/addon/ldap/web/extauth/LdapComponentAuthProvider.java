@@ -5,7 +5,6 @@ import com.haulmont.addon.ldap.service.UserSynchronizationService;
 import com.haulmont.cuba.core.global.Messages;
 import com.haulmont.cuba.security.global.LoginException;
 import com.haulmont.cuba.web.auth.CubaAuthProvider;
-import org.springframework.beans.factory.annotation.Qualifier;
 
 import javax.inject.Inject;
 import javax.servlet.*;
@@ -15,23 +14,18 @@ import java.util.Locale;
 public class LdapComponentAuthProvider implements CubaAuthProvider {
 
     @Inject
-    protected Messages messages;
+    private Messages messages;
 
     @Inject
-    @Qualifier(UserSynchronizationService.NAME)
     private UserSynchronizationService userSynchronizationService;
 
     @Inject
-    @Qualifier(AuthUserService.NAME)
     private AuthUserService authUserService;
 
     @Override
     public void authenticate(String login, String password, Locale messagesLocale) throws LoginException {
-        //TODO: Для POC поддерживается аутентификация только по лдап
-        //TODO: механизм принудительного обновления
-        // пользователей из лдап (с кубы в лдап, из лдап в кубу)
         authUserService.ldapAuth(login, password, messagesLocale);
-        userSynchronizationService.synchronizeUserAfterLdapLogin(login);
+        userSynchronizationService.synchronizeUser(login);
     }
 
     @Override

@@ -19,7 +19,7 @@ public class MatchingRuleStatus extends StandardEntity {
 
     @NotNull
     @Column(name = "IS_ACTIVE", nullable = false)
-    protected Boolean isActive = true;
+    private Boolean isActive = true;
 
     public void setIsActive(Boolean isActive) {
         this.isActive = isActive;

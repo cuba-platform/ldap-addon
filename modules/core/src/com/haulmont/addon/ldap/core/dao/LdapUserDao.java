@@ -45,7 +45,7 @@ public class LdapUserDao {
     @Inject
     private LdapConfigDao ldapConfigDao;
 
-    public LdapUser getLdapUser(String login) {
+    public LdapUser getExistedLdapUser(String login, boolean throwException) {
         LdapConfig ldapConfig = ldapConfigDao.getLdapConfig();
         LdapQuery query = LdapQueryBuilder.query()
                 .searchScope(SearchScope.SUBTREE)
@@ -56,7 +56,12 @@ public class LdapUserDao {
         if (list.size() == 1) {
             return list.get(0);
         } else {
-            return null;
+            if (throwException) {
+                String message = messages.formatMessage(LdapUserDao.class, "userMustExistsInLdap", login);
+                throw new RuntimeException(message);
+            } else {
+                return null;
+            }
         }
 
     }
@@ -89,7 +94,6 @@ public class LdapUserDao {
     }
 
 
-    //TODO: ldap injection
     private Filter createUserBaseAndLoginFilter(String login) {
         LdapConfig ldapConfig = ldapConfigDao.getLdapConfig();
         Filter ef = new EqualsFilter(ldapConfig.getLoginAttribute(), login);
