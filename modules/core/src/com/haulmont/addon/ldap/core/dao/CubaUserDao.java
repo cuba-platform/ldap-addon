@@ -62,6 +62,7 @@ public class CubaUserDao {
         User mergedUser = PersistenceHelper.isNew(cubaUser) ? cubaUser : entityManager.merge(cubaUser);
         List<Role> newRoles = mergedUser.getUserRoles().stream().map(UserRole::getRole).collect(Collectors.toList());
         beforeRulesApplyUserState.getUserRoles().stream().filter(ur -> !newRoles.contains(ur.getRole())).forEach(entityManager::remove);
+        mergedUser.getUserRoles().forEach(entityManager::persist);
         entityManager.persist(mergedUser);
         userSynchronizationLogDao.logUserSynchronization(ldapMatchingRuleContext, beforeRulesApplyUserState);
     }
