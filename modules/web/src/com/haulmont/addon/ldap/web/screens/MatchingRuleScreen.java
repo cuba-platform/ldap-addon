@@ -398,9 +398,9 @@ public class MatchingRuleScreen extends AbstractWindow {
         int i = 0;
         for (AbstractCommonMatchingRule acmr : items) {
             if (acmr == selected) {
-                if (i == 0 && direction.equals(UP)) return;
+                if ((i == 0 && direction.equals(UP)) || DEFAULT.equals(selected.getRuleType())) return;
                 AbstractCommonMatchingRule neighbourElement = items.get(i + neighbourElementPosition);
-                if (DEFAULT.equals(selected.getRuleType()) || DEFAULT.equals(neighbourElement.getRuleType())) return;
+                if (DEFAULT.equals(neighbourElement.getRuleType())) return;
                 selected.getOrder().setOrder(neighbourElement.getOrder().getOrder());
                 neighbourElement.getOrder().setOrder(selectedOrder);
                 sortDsByOrder();
