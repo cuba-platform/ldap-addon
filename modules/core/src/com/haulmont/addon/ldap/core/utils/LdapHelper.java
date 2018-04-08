@@ -16,6 +16,11 @@ import java.util.*;
 
 public class LdapHelper {
 
+    private final static String AD_ENABLED = "512";
+    private final static String AD_DISABLED = "514";
+    private final static String AD_ENABLED_PASSWORD_NEVER_EXPIRE = "66048";
+    private final static String AD_DISABLED_PASSWORD_NEVER_EXPIRE = "66050";
+
     public static LdapUser mapLdapUser(DirContextAdapter context, LdapConfig ldapConfig) {
         LdapUser ldapUser = new LdapUser(context.getAttributes());
         if (StringUtils.isNotEmpty(ldapConfig.getLoginAttribute())) {
@@ -60,14 +65,16 @@ public class LdapHelper {
         }
         if (disabled instanceof String) {
             String stringDisabled = (String) disabled;
-            if ("0".equalsIgnoreCase(stringDisabled) || "false".equalsIgnoreCase(stringDisabled)) {
+            if ("0".equalsIgnoreCase(stringDisabled) || "false".equalsIgnoreCase(stringDisabled) ||
+                    AD_DISABLED.equalsIgnoreCase(stringDisabled) || AD_DISABLED_PASSWORD_NEVER_EXPIRE.equalsIgnoreCase(stringDisabled)) {
                 return Boolean.FALSE;
             }
-            if ("1".equalsIgnoreCase(stringDisabled) || "true".equalsIgnoreCase(stringDisabled)) {
+            if ("1".equalsIgnoreCase(stringDisabled) || "true".equalsIgnoreCase(stringDisabled) ||
+                    AD_ENABLED.equalsIgnoreCase(stringDisabled) || AD_ENABLED_PASSWORD_NEVER_EXPIRE.equalsIgnoreCase(stringDisabled)) {
                 return Boolean.TRUE;
             }
         }
-        throw new RuntimeException("Can't map idDisabled attribute from ldap. isDisabled class: " + disabled.getClass().getName());
+        throw new RuntimeException("Can't map isDisabled attribute from ldap. Attribute value: " + disabled.toString());
 
     }
 
