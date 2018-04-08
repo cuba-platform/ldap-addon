@@ -66,11 +66,11 @@ public class LdapHelper {
         if (disabled instanceof String) {
             String stringDisabled = (String) disabled;
             if ("0".equalsIgnoreCase(stringDisabled) || "false".equalsIgnoreCase(stringDisabled) ||
-                    AD_DISABLED.equalsIgnoreCase(stringDisabled) || AD_DISABLED_PASSWORD_NEVER_EXPIRE.equalsIgnoreCase(stringDisabled)) {
+                    AD_ENABLED.equalsIgnoreCase(stringDisabled) || AD_ENABLED_PASSWORD_NEVER_EXPIRE.equalsIgnoreCase(stringDisabled)) {
                 return Boolean.FALSE;
             }
             if ("1".equalsIgnoreCase(stringDisabled) || "true".equalsIgnoreCase(stringDisabled) ||
-                    AD_ENABLED.equalsIgnoreCase(stringDisabled) || AD_ENABLED_PASSWORD_NEVER_EXPIRE.equalsIgnoreCase(stringDisabled)) {
+                    AD_DISABLED.equalsIgnoreCase(stringDisabled) || AD_DISABLED_PASSWORD_NEVER_EXPIRE.equalsIgnoreCase(stringDisabled)) {
                 return Boolean.TRUE;
             }
         }
