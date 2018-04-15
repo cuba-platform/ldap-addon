@@ -12,14 +12,11 @@ import javax.validation.constraints.NotNull;
 public abstract class AbstractCommonMatchingRule extends StandardEntity implements CommonMatchingRule {
     private static final long serialVersionUID = 1956446424046023194L;
 
-    @Column(name = "RULE_TYPE")
-    @Enumerated(EnumType.STRING)
-    private MatchingRuleType ruleType;
+    @NotNull
+    @Column(name = "RULE_TYPE", nullable = false)
+    private String ruleType;
 
-    @Composition
-    @OnDelete(DeletePolicy.CASCADE)
-    @OneToOne(fetch = FetchType.LAZY, optional = false, cascade = CascadeType.ALL)
-    @JoinColumn(name = "MATCHING_RULE_STATUS_ID")
+    @Column(name = "MATCHING_RULE_STATUS_ID", nullable = false)
     @NotNull
     private MatchingRuleStatus status = new MatchingRuleStatus();
 
@@ -54,11 +51,11 @@ public abstract class AbstractCommonMatchingRule extends StandardEntity implemen
 
     @Override
     public MatchingRuleType getRuleType() {
-        return ruleType;
+        return ruleType == null ? null : MatchingRuleType.fromId(ruleType);
     }
 
     public void setRuleType(MatchingRuleType ruleType) {
-        this.ruleType = ruleType;
+        this.ruleType = ruleType == null ? null : ruleType.getId();
     }
 
 
