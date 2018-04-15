@@ -11,6 +11,7 @@ import com.haulmont.cuba.security.entity.User;
 import com.haulmont.cuba.security.entity.UserRole;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,14 +28,14 @@ import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
 import static java.util.stream.Collectors.toList;
 
-@Service(NAME)
+@Component(NAME)
 public class UserSynchronizationLogDao {
 
     public final static String NAME = "ldap_UserSynchronizationLogDao";
 
-    private final String INDENT = "   ";
-    private final String PASSWORD = "PASSWORD";
-    private final String PASSWORD_VALUE = "*****";
+    private static final String INDENT = "   ";
+    private static final String PASSWORD = "PASSWORD";
+    private static final String PASSWORD_VALUE = "*****";
 
     @Inject
     private Persistence persistence;
@@ -42,12 +43,12 @@ public class UserSynchronizationLogDao {
     @Inject
     private Metadata metadata;
 
+    @Inject
+    private DaoHelper daoHelper;
+
 
     public void saveUserSynchronizationLog(UserSynchronizationLog userSynchronizationLog) {
-        EntityManager entityManager = persistence.getEntityManager();
-        UserSynchronizationLog mergedUserSynchronizationLog = PersistenceHelper.isNew(userSynchronizationLog)
-                ? userSynchronizationLog : entityManager.merge(userSynchronizationLog);
-        entityManager.persist(mergedUserSynchronizationLog);
+        daoHelper.persistOrMerge(userSynchronizationLog);
     }
 
     @Transactional
@@ -55,7 +56,7 @@ public class UserSynchronizationLogDao {
         User cubaUser = ldapMatchingRuleContext.getCubaUser();
         UserSynchronizationLog userSynchronizationLog = metadata.create(UserSynchronizationLog.class);
         userSynchronizationLog.setLogin(cubaUser.getLogin());
-        userSynchronizationLog.setResult(SuccessSync);
+        userSynchronizationLog.setResult(SUCCESS_SYNC);
         userSynchronizationLog.setLdapAttributes(getLdapAttributes(ldapMatchingRuleContext.getLdapUser().getUnmodifiableLdapAttributeMap()));
         userSynchronizationLog.setAccessGroupBefore(originalUser.getGroup() == null ? null : originalUser.getGroup().getName());
         userSynchronizationLog.setAccessGroupAfter(cubaUser.getGroup() == null ? null : cubaUser.getGroup().getName());
@@ -75,7 +76,7 @@ public class UserSynchronizationLogDao {
     public void logLoginError(String login, Exception e) {
         UserSynchronizationLog userSynchronizationLog = metadata.create(UserSynchronizationLog.class);
         userSynchronizationLog.setLogin(login);
-        userSynchronizationLog.setResult(LdapLoginError);
+        userSynchronizationLog.setResult(LDAP_LOGIN_ERROR);
         userSynchronizationLog.setErrorText(ExceptionUtils.getFullStackTrace(e));
         saveUserSynchronizationLog(userSynchronizationLog);
     }
@@ -84,7 +85,7 @@ public class UserSynchronizationLogDao {
     public void logSynchronizationError(String login, Exception e) {
         UserSynchronizationLog userSynchronizationLog = metadata.create(UserSynchronizationLog.class);
         userSynchronizationLog.setLogin(login);
-        userSynchronizationLog.setResult(ErrorSync);
+        userSynchronizationLog.setResult(ERROR_SYNC);
         userSynchronizationLog.setErrorText(ExceptionUtils.getFullStackTrace(e));
         saveUserSynchronizationLog(userSynchronizationLog);
     }
@@ -139,7 +140,7 @@ public class UserSynchronizationLogDao {
             sb.append(cmr.getMatchingRuleId());
             sb.append(")");
             sb.append("\n");
-            if (!CUSTOM.equals(cmr.getRuleType())) {
+            if (!(CUSTOM == cmr.getRuleType())) {
                 AbstractDbStoredMatchingRule dbRule = (AbstractDbStoredMatchingRule) cmr;
                 sb.append(INDENT);
                 sb.append("Override existing group: ");
@@ -166,7 +167,7 @@ public class UserSynchronizationLogDao {
                 sb.append(dbRule.getRoles().stream().map(Role::getName).collect(Collectors.joining(",")));
                 sb.append(".");
 
-                if (!DEFAULT.equals(cmr.getRuleType())) {
+                if (!(DEFAULT == cmr.getRuleType())) {
                     sb.append("\n");
                     sb.append(INDENT);
                     sb.append("Additional rule info: ");
@@ -183,10 +184,10 @@ public class UserSynchronizationLogDao {
 
     private String getAdditionalRuleInfo(AbstractDbStoredMatchingRule dbRule) {
         StringBuilder sb = new StringBuilder();
-        if (SIMPLE.equals(dbRule.getRuleType())) {
+        if (SIMPLE == dbRule.getRuleType()) {
             SimpleMatchingRule smr = (SimpleMatchingRule) dbRule;
             sb.append(smr.getConditions().stream().map(SimpleRuleCondition::getAttributePair).collect(Collectors.joining(",")));
-        } else if (SCRIPTING.equals(dbRule.getRuleType())) {
+        } else if (SCRIPTING == dbRule.getRuleType()) {
             ScriptingMatchingRule smr = (ScriptingMatchingRule) dbRule;
             sb.append(smr.getScriptingCondition());
         }
@@ -200,7 +201,8 @@ public class UserSynchronizationLogDao {
             sb.append(attrName);
             sb.append(":");
             if (me.getValue() instanceof List) {
-                List<String> list = ((List<Object>) me.getValue()).stream().map(v -> v == null ? "null" : v.toString()).collect(toList());
+                List<Object> listValue = (List<Object>) me.getValue();
+                List<String> list = listValue.stream().map(v -> v == null ? "null" : v.toString()).collect(toList());
                 sb.append(list.stream().collect(Collectors.joining(",")));
             } else {
                 String attrValue = attrName.toUpperCase().contains(PASSWORD) ? PASSWORD_VALUE : me.getValue().toString();

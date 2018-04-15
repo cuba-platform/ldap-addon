@@ -8,7 +8,7 @@ import java.io.Serializable;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-public class TestUserSynchronizationDto implements Serializable{
+public class TestUserSynchronizationDto implements Serializable {
 
     private final Set<AbstractCommonMatchingRule> appliedMatchingRules = new LinkedHashSet<>();
     private final Set<Role> appliedCubaRoles = new LinkedHashSet<>();

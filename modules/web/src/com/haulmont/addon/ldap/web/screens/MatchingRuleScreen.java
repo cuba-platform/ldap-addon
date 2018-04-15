@@ -45,10 +45,10 @@ public class MatchingRuleScreen extends AbstractWindow {
     @Named("abstractMatchingRulesDs")
     private MatchingRuleDatasource matchingRuleDatasource;
 
-    @Named("appliedMatchingRulesDs")
+    @Inject
     private CollectionDatasource<AbstractCommonMatchingRule, UUID> appliedMatchingRulesDs;
 
-    @Named("appliedRolesDs")
+    @Inject
     private CollectionDatasource<Role, UUID> appliedRolesDs;
 
     @Named("testRuleScreenLogin")
@@ -95,18 +95,16 @@ public class MatchingRuleScreen extends AbstractWindow {
 
         matchingRuleTable.setSortable(false);
 
-        CollectionDatasource.CollectionChangeListener sortListener = new CollectionDatasource.CollectionChangeListener() {
+        CollectionDatasource.CollectionChangeListener<AbstractCommonMatchingRule, UUID> sortListener = new CollectionDatasource.CollectionChangeListener<AbstractCommonMatchingRule, UUID>() {
             @Override
-            public void collectionChanged(CollectionDatasource.CollectionChangeEvent e) {
+            public void collectionChanged(CollectionDatasource.CollectionChangeEvent<AbstractCommonMatchingRule, UUID> e) {
                 if (CollectionDatasource.Operation.ADD.equals(e.getOperation())) {
-                    Optional<Integer> maxOrder = matchingRuleDatasource.getItems().stream().filter(mr -> !DEFAULT.equals(mr.getRuleType()))
+                    Optional<Integer> maxOrder = matchingRuleDatasource.getItems().stream()
+                            .filter(mr -> !(DEFAULT == mr.getRuleType()))
                             .max(Comparator.comparing(mr -> mr.getOrder().getOrder())).map(mr -> mr.getOrder().getOrder());
                     int order = maxOrder.isPresent() ? maxOrder.get() + 1 : 1;
-                    Optional<AbstractCommonMatchingRule> ruleWithoutOrder = e.getItems().stream()
-                            .filter(mr -> DEFAULT_RULE_ORDER.equals(((AbstractCommonMatchingRule) mr).getOrder().getOrder())).findAny();
-                    if (ruleWithoutOrder.isPresent()) {
-                        ruleWithoutOrder.get().getOrder().setOrder(order);
-                    }
+                    Optional<AbstractCommonMatchingRule> ruleWithoutOrder = e.getItems().stream().filter(mr -> DEFAULT_RULE_ORDER.equals(mr.getOrder().getOrder())).findAny();
+                    ruleWithoutOrder.ifPresent(rule -> rule.getOrder().setOrder(order));
                     sortDsByOrder();
                 }
             }
@@ -119,7 +117,7 @@ public class MatchingRuleScreen extends AbstractWindow {
             @Override
             public boolean beforeActionPerformed() {
                 AbstractCommonMatchingRule rule = matchingRuleTable.getSingleSelected();
-                return !CUSTOM.equals(rule.getRuleType());
+                return !(CUSTOM == rule.getRuleType());
             }
         };
 
@@ -127,9 +125,9 @@ public class MatchingRuleScreen extends AbstractWindow {
             @Override
             public void handle(Entity entity) {
                 AbstractCommonMatchingRule amr = (AbstractCommonMatchingRule) entity;
-                if (MatchingRuleType.SIMPLE.equals(amr.getRuleType())) {
+                if (MatchingRuleType.SIMPLE == amr.getRuleType()) {
                     matchingRuleDatasource.getItems().forEach(mr -> {
-                        if (MatchingRuleType.SIMPLE.equals(mr.getRuleType()) && mr.getId().equals(amr.getId())) {
+                        if (MatchingRuleType.SIMPLE == mr.getRuleType() && mr.getId().equals(amr.getId())) {
                             ((SimpleMatchingRule) amr).getConditions().forEach(con -> {
                                 Optional<SimpleRuleCondition> src = ((SimpleMatchingRule) mr).getConditions().stream()
                                         .filter(c -> c.getId().equals(con.getId()))
@@ -155,17 +153,17 @@ public class MatchingRuleScreen extends AbstractWindow {
             @Override
             public String getWindowId() {
                 AbstractCommonMatchingRule rule = matchingRuleTable.getSingleSelected();
-                if (DEFAULT.equals(rule.getRuleType())) {
-                    return ("ldap$DefaultMatchingRule.edit");
-                } else if (SIMPLE.equals(rule.getRuleType())) {
-                    return ("ldap$SimpleMatchingRule.edit");
-                } else if (SCRIPTING.equals(rule.getRuleType())) {
-                    return ("ldap$ScriptingMatchingRule.edit");
-                } else {
-                    return "";
+
+                switch (rule.getRuleType()) {
+                    case DEFAULT:
+                        return ("ldap$DefaultMatchingRule.edit");
+                    case SIMPLE:
+                        return ("ldap$SimpleMatchingRule.edit");
+                    case SCRIPTING:
+                        return ("ldap$ScriptingMatchingRule.edit");
+                    default:
+                        return "";
                 }
-
-
             }
         };
 
@@ -173,12 +171,9 @@ public class MatchingRuleScreen extends AbstractWindow {
         customEdit.setAfterCommitHandler(customAfterCommitHandler);
 
 
-        RemoveAction.BeforeActionPerformedHandler customRemoveBeforeActionPerformedHandler = new RemoveAction.BeforeActionPerformedHandler() {
-            @Override
-            public boolean beforeActionPerformed() {
-                AbstractCommonMatchingRule rule = matchingRuleTable.getSingleSelected();
-                return !(CUSTOM.equals(rule.getRuleType()) || MatchingRuleType.DEFAULT.equals(rule.getRuleType()));
-            }
+        RemoveAction.BeforeActionPerformedHandler customRemoveBeforeActionPerformedHandler = () -> {
+            AbstractCommonMatchingRule rule = matchingRuleTable.getSingleSelected();
+            return !(CUSTOM == rule.getRuleType() || MatchingRuleType.DEFAULT == rule.getRuleType());
         };
 
         RemoveAction customRemove = new RemoveAction(matchingRuleTable, false);
@@ -216,7 +211,7 @@ public class MatchingRuleScreen extends AbstractWindow {
                 mr.getStatus().setIsActive(value);
             }
         });
-        if ((DEFAULT.equals(entity.getRuleType()))) {
+        if ((DEFAULT == entity.getRuleType())) {
             checkBox.setEditable(false);
             checkBox.setEnabled(false);
         }
@@ -322,7 +317,7 @@ public class MatchingRuleScreen extends AbstractWindow {
         TextField textField = componentsFactory.createComponent(TextField.class);
         textField.setValue(matchingRuleUtils.generateMatchingRuleTableOrderColumn(entity));
         textField.setWidth("50");
-        if (DEFAULT.equals(entity.getRuleType())) {
+        if (DEFAULT == entity.getRuleType()) {
             textField.setEditable(false);
             textField.setEnabled(false);
             textField.setValue(getMessage("matchingRuleTableDefaultRuleOrder"));
@@ -402,9 +397,9 @@ public class MatchingRuleScreen extends AbstractWindow {
         int i = 0;
         for (AbstractCommonMatchingRule acmr : items) {
             if (acmr == selected) {
-                if ((i == 0 && direction.equals(UP)) || DEFAULT.equals(selected.getRuleType())) return;
+                if ((i == 0 && direction.equals(UP)) || DEFAULT == selected.getRuleType()) return;
                 AbstractCommonMatchingRule neighbourElement = items.get(i + neighbourElementPosition);
-                if (DEFAULT.equals(neighbourElement.getRuleType())) return;
+                if (DEFAULT == neighbourElement.getRuleType()) return;
                 selected.getOrder().setOrder(neighbourElement.getOrder().getOrder());
                 neighbourElement.getOrder().setOrder(selectedOrder);
                 sortDsByOrder();
@@ -416,7 +411,7 @@ public class MatchingRuleScreen extends AbstractWindow {
 
     public Component generateMatchingRuleTableTerminalColumnCell(AbstractCommonMatchingRule entity) {
         CheckBox checkBox = componentsFactory.createComponent(CheckBox.class);
-        if ((!CUSTOM.equals(entity.getRuleType()))) {
+        if ((!(CUSTOM == entity.getRuleType()))) {
             AbstractDbStoredMatchingRule dbRule = (AbstractDbStoredMatchingRule) entity;
             checkBox.setValue(dbRule.getIsTerminalRule());
             checkBox.addValueChangeListener(new ValueChangeListener() {

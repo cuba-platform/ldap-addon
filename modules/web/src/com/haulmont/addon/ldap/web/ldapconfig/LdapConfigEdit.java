@@ -22,10 +22,10 @@ public class LdapConfigEdit extends AbstractEditor<LdapConfig> {
     @Inject
     private LdapService ldapService;
 
-    @Named("ldapUserAttributesDs")
+    @Inject
     private CollectionDatasource<LdapUserAttribute, UUID> ldapUserAttributesDs;
 
-    @Named("ldapConfigDs")
+    @Inject
     private Datasource<LdapConfig> ldapConfigDs;
 
     public void onTestConnectionClick() {

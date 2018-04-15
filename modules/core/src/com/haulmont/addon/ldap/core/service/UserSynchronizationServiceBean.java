@@ -14,6 +14,7 @@ import com.haulmont.addon.ldap.entity.AbstractCommonMatchingRule;
 import com.haulmont.addon.ldap.entity.AbstractDbStoredMatchingRule;
 import com.haulmont.addon.ldap.entity.CommonMatchingRule;
 import com.haulmont.addon.ldap.service.UserSynchronizationService;
+import com.haulmont.cuba.core.global.Events;
 import com.haulmont.cuba.core.global.Messages;
 import com.haulmont.cuba.core.global.MetadataTools;
 import com.haulmont.cuba.core.global.PersistenceHelper;
@@ -21,8 +22,6 @@ import com.haulmont.cuba.security.entity.User;
 import com.haulmont.cuba.security.entity.UserRole;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
@@ -50,7 +49,7 @@ public class UserSynchronizationServiceBean implements UserSynchronizationServic
     private MatchingRuleApplier matchingRuleApplier;
 
     @Inject
-    private ApplicationEventPublisher applicationEventPublisher;
+    private Events events;
 
     @Inject
     private MetadataTools metadataTools;
@@ -73,10 +72,10 @@ public class UserSynchronizationServiceBean implements UserSynchronizationServic
             LdapMatchingRuleContext ldapMatchingRuleContext = new LdapMatchingRuleContext(ldapUser, cubaUser);
             if (!ldapMatchingRuleContext.getLdapUser().getDisabled()) {
                 List<CommonMatchingRule> matchingRules = matchingRuleDao.getMatchingRules();
-                applicationEventPublisher.publishEvent(new BeforeUserUpdatedFromLdapEvent(this, ldapMatchingRuleContext, cubaUser));
+                events.publish(new BeforeUserUpdatedFromLdapEvent(this, ldapMatchingRuleContext, cubaUser));
                 setCommonAttributesFromLdapUser(ldapMatchingRuleContext, cubaUser, login);
                 matchingRuleApplier.applyMatchingRules(matchingRules, ldapMatchingRuleContext, beforeRulesApplyUserState);
-                applicationEventPublisher.publishEvent(new AfterUserUpdatedFromLdapEvent(this, ldapMatchingRuleContext, cubaUser));
+                events.publish(new AfterUserUpdatedFromLdapEvent(this, ldapMatchingRuleContext, cubaUser));
                 cubaUserDao.saveCubaUser(cubaUser, beforeRulesApplyUserState, ldapMatchingRuleContext);
             }
             logger.info(messages.formatMessage(UserSynchronizationServiceBean.class, "userSyncEnd", login));
@@ -95,15 +94,15 @@ public class UserSynchronizationServiceBean implements UserSynchronizationServic
         testUserSynchronizationDto.setUserExistsInLdap(true);
         User cubaUser = cubaUserDao.getCubaUserByLogin(login);
 
-        List<CommonMatchingRule> result = rulesToApply.stream().filter(r -> !CUSTOM.equals(r.getRuleType())).collect(Collectors.toList());
+        List<CommonMatchingRule> result = rulesToApply.stream().filter(r -> !(CUSTOM == r.getRuleType())).collect(Collectors.toList());
         List<CustomLdapMatchingRuleWrapper> customRules = matchingRuleDao.getCustomMatchingRules();
         rulesToApply.stream()
-                .filter(r -> CUSTOM.equals(r.getRuleType()))
+                .filter(r -> CUSTOM == r.getRuleType())
                 .forEach(customRuleDto -> {
                     CustomLdapMatchingRuleWrapper wrapper = customRules.stream()
                             .filter(cr -> cr.getMatchingRuleId().equals(customRuleDto.getMatchingRuleId()))
                             .findFirst()
-                            .get();
+                            .orElseThrow(() -> new RuntimeException("Custom matching rule with id " + customRuleDto.getMatchingRuleId() + " must exist"));
                     wrapper.getOrder().setOrder(customRuleDto.getOrder().getOrder());
                     wrapper.getStatus().setIsActive(customRuleDto.getStatus().getIsActive());
                     result.add(wrapper);
@@ -117,7 +116,7 @@ public class UserSynchronizationServiceBean implements UserSynchronizationServic
         matchingRuleApplier.applyMatchingRules(result, ldapMatchingRuleContext, beforeRulesApplyUserState);
 
         ldapMatchingRuleContext.getAppliedRules().forEach(matchingRule -> {
-            if (CUSTOM.equals(matchingRule.getRuleType())) {
+            if (CUSTOM == matchingRule.getRuleType()) {
                 CustomLdapMatchingRuleWrapper cmr = (CustomLdapMatchingRuleWrapper) matchingRule;
                 testUserSynchronizationDto.getAppliedMatchingRules().add(matchingRuleDao.mapCustomRuleToDto(cmr));
             } else {
@@ -140,7 +139,7 @@ public class UserSynchronizationServiceBean implements UserSynchronizationServic
         Boolean userDisabled = ldapMatchingRuleContext.getLdapUser().getDisabled();
         if (userDisabled) {
             cubaUser.setActive(false);
-            applicationEventPublisher.publishEvent(new UserDeactivatedFromLdapEvent(this, ldapMatchingRuleContext, cubaUser));
+            events.publish(new UserDeactivatedFromLdapEvent(this, ldapMatchingRuleContext, cubaUser));
             logger.info(messages.formatMessage(UserSynchronizationServiceBean.class, "userDeactivatedFromLdap", login));
         } else {
             cubaUser.setActive(true);
@@ -148,7 +147,7 @@ public class UserSynchronizationServiceBean implements UserSynchronizationServic
 
         if (PersistenceHelper.isNew(cubaUser)) {//only for new users
             logger.info(messages.formatMessage(UserSynchronizationServiceBean.class, "userCreatedFromLdap", login));
-            applicationEventPublisher.publishEvent(new UserCreatedFromLdapEvent(this, ldapMatchingRuleContext, cubaUser));
+            events.publish(new UserCreatedFromLdapEvent(this, ldapMatchingRuleContext, cubaUser));
         }
         logger.info(messages.formatMessage(UserSynchronizationServiceBean.class, "userGetCommonInfoFromLdap", login));
     }

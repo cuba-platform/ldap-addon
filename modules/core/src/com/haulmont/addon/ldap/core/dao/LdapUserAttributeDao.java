@@ -6,6 +6,7 @@ import com.haulmont.cuba.core.Persistence;
 import com.haulmont.cuba.core.TypedQuery;
 import com.haulmont.cuba.core.global.Metadata;
 import com.haulmont.cuba.core.global.PersistenceHelper;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,7 +15,7 @@ import java.util.List;
 
 import static com.haulmont.addon.ldap.core.dao.LdapUserAttributeDao.NAME;
 
-@Service(NAME)
+@Component(NAME)
 public class LdapUserAttributeDao {
 
     public final static String NAME = "ldap_LdapUserAttributeDao";
@@ -24,6 +25,9 @@ public class LdapUserAttributeDao {
 
     @Inject
     private Metadata metadata;
+
+    @Inject
+    private DaoHelper daoHelper;
 
 
     @Transactional(readOnly = true)
@@ -36,10 +40,7 @@ public class LdapUserAttributeDao {
 
     @Transactional
     public void saveLdapUserAttribute(LdapUserAttribute ldapUserAttribute) {
-        EntityManager entityManager = persistence.getEntityManager();
-        LdapUserAttribute mergedLdapUserAttribute = PersistenceHelper.isNew(ldapUserAttribute)
-                ? ldapUserAttribute : entityManager.merge(ldapUserAttribute);
-        entityManager.persist(mergedLdapUserAttribute);
+        daoHelper.persistOrMerge(ldapUserAttribute);
     }
 
     @Transactional

@@ -12,6 +12,7 @@ import com.haulmont.cuba.core.global.AppBeans;
 import com.haulmont.cuba.core.global.Messages;
 import com.haulmont.cuba.core.global.Metadata;
 import com.haulmont.cuba.core.global.PersistenceHelper;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,7 +26,7 @@ import java.util.stream.Collectors;
 import static com.haulmont.addon.ldap.core.dao.MatchingRuleDao.NAME;
 import static com.haulmont.addon.ldap.entity.MatchingRuleType.DEFAULT;
 
-@Service(NAME)
+@Component(NAME)
 public class MatchingRuleDao {
 
     public final static String NAME = "ldap_MatchingRuleDao";
@@ -46,6 +47,9 @@ public class MatchingRuleDao {
 
     @Inject
     private MatchingRuleStatusDao matchingRuleStatusDao;
+
+    @Inject
+    private DaoHelper daoHelper;
 
     public CustomLdapMatchingRuleDto mapCustomRuleToDto(CustomLdapMatchingRuleWrapper customLdapMatchingRule) {
         CustomLdapMatchingRuleDto customLdapMatchingRuleDto = metadata.create(CustomLdapMatchingRuleDto.class);
@@ -76,10 +80,10 @@ public class MatchingRuleDao {
         List<CommonMatchingRule> result = new ArrayList<>();
         TypedQuery<AbstractDbStoredMatchingRule> query = persistence.getEntityManager()
                 .createQuery("select distinct mr from ldap$AbstractDbStoredMatchingRule mr " +
-                "left join fetch mr.roles roles " +
-                "left join fetch mr.order mrOrder " +
-                "left join fetch mr.status mrStatus " +
-                "left join fetch mr.accessGroup group", AbstractDbStoredMatchingRule.class);
+                        "left join fetch mr.roles roles " +
+                        "left join fetch mr.order mrOrder " +
+                        "left join fetch mr.status mrStatus " +
+                        "left join fetch mr.accessGroup group", AbstractDbStoredMatchingRule.class);
         List<? extends CommonMatchingRule> dbMatchingRules = query.getResultList();
         initializeDbMatchingRules(dbMatchingRules);
         List<? extends CommonMatchingRule> programmaticMatchingRules = getCustomMatchingRules();
@@ -100,7 +104,7 @@ public class MatchingRuleDao {
     @Transactional(readOnly = true)
     public List<AbstractCommonMatchingRule> getMatchingRulesGui() {
         List<AbstractCommonMatchingRule> result = getMatchingRules().stream()
-                .map(mr -> MatchingRuleType.CUSTOM.equals(mr.getRuleType())
+                .map(mr -> MatchingRuleType.CUSTOM == mr.getRuleType()
                         ? mapCustomRuleToDto((CustomLdapMatchingRuleWrapper) mr) : (AbstractCommonMatchingRule) mr)
                 .collect(Collectors.toList());
         int i = 1;
@@ -116,28 +120,26 @@ public class MatchingRuleDao {
     @Transactional
     public void saveMatchingRules(List<AbstractCommonMatchingRule> matchingRules, List<AbstractCommonMatchingRule> matchingRulesToDelete) {
 
-        List<CommonMatchingRule> defaultRules = matchingRules.stream().filter(mr -> DEFAULT.equals(mr.getRuleType())).collect(Collectors.toList());
+        List<CommonMatchingRule> defaultRules = matchingRules.stream().filter(mr -> DEFAULT == mr.getRuleType()).collect(Collectors.toList());
         if (defaultRules.size() != 1) {
             throw new RuntimeException(messages.formatMessage(MatchingRuleDao.class, "onlySingleDefaultRule"));
         }
         EntityManager entityManager = persistence.getEntityManager();
-        matchingRules.forEach(mr -> {
-            if (MatchingRuleType.CUSTOM.equals(mr.getRuleType())) {
+        for (CommonMatchingRule mr : matchingRules) {
+            if (MatchingRuleType.CUSTOM == mr.getRuleType()) {
                 matchingRuleOrderDao.saveMatchingRuleOrder(mr.getOrder());
                 matchingRuleStatusDao.saveMatchingRuleStatus(mr.getStatus());
             } else {
-                AbstractDbStoredMatchingRule mergedRule = PersistenceHelper.isNew(mr)
-                        ? (AbstractDbStoredMatchingRule) mr : entityManager.merge((AbstractDbStoredMatchingRule) mr);
-                entityManager.persist(mergedRule);
+                daoHelper.persistOrMerge((AbstractDbStoredMatchingRule) mr);
             }
-        });
+        }
 
         matchingRulesToDelete.forEach(entityManager::remove);
     }
 
     private void initializeDbMatchingRules(List<? extends CommonMatchingRule> rules) {
         for (CommonMatchingRule rule : rules) {
-            if (MatchingRuleType.SIMPLE.equals(rule.getRuleType())) {
+            if (MatchingRuleType.SIMPLE == rule.getRuleType()) {
                 SimpleMatchingRule simpleMatchingRule = (SimpleMatchingRule) rule;
                 simpleMatchingRule.getConditions().forEach(SimpleRuleCondition::getSimpleMatchingRule);
             }

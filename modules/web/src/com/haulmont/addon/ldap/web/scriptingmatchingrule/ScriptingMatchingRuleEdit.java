@@ -3,7 +3,6 @@ package com.haulmont.addon.ldap.web.scriptingmatchingrule;
 import com.google.common.base.Strings;
 import com.haulmont.addon.ldap.dto.GroovyScriptTestResultDto;
 import com.haulmont.addon.ldap.entity.ScriptingMatchingRule;
-import com.haulmont.addon.ldap.entity.SimpleRuleCondition;
 import com.haulmont.addon.ldap.service.LdapService;
 import com.haulmont.cuba.gui.components.*;
 import com.haulmont.cuba.gui.data.Datasource;
@@ -28,14 +27,14 @@ public class ScriptingMatchingRuleEdit extends AbstractEditor<ScriptingMatchingR
     @Inject
     private ComponentsFactory componentsFactory;
 
-    @Named("rolesTable")
-    private Table<Role> roleTable;
+    @Inject
+    private Table<Role> rolesTable;
 
     @Override
     protected void postValidate(ValidationErrors errors) {
         super.postValidate(errors);
-        if (roleTable.getDatasource().getItems().isEmpty()) {
-            errors.add(roleTable, getMessage("validationEmptyRoles"));
+        if (rolesTable.getDatasource().getItems().isEmpty()) {
+            errors.add(rolesTable, getMessage("validationEmptyRoles"));
         }
     }
 
@@ -65,7 +64,7 @@ public class ScriptingMatchingRuleEdit extends AbstractEditor<ScriptingMatchingR
     public Component generateScriptingConditionField(Datasource datasource, String fieldId) {
         FlowBoxLayout fb = componentsFactory.createComponent(FlowBoxLayout.class);
         LinkButton lb = componentsFactory.createComponent(LinkButton.class);
-        Action action = new EmptyGroovyScriptHelpAction() {
+        Action action = new EmptyGroovyScriptHelpAction("EmptyGroovyScriptHelpAction") {
             @Override
             public void actionPerform(Component component) {
                 showMessageDialog(getMessage("groovyScriptConditionTitle"), getMessage("groovyScriptCondition"),

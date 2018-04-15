@@ -3,7 +3,7 @@ package com.haulmont.addon.ldap.dto;
 
 import java.io.Serializable;
 
-public class LdapContextDto implements Serializable{
+public class LdapContextDto implements Serializable {
 
     private String contextSourceUrl;
     private String contextSourceUserName;

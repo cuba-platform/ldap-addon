@@ -32,7 +32,7 @@ public class MatchingRuleUtils {
     }
 
     public String generateMatchingRuleOptionsColumn(AbstractCommonMatchingRule entity) {
-        if (CUSTOM.equals(entity.getRuleType())) return StringUtils.EMPTY;
+        if (CUSTOM == entity.getRuleType()) return StringUtils.EMPTY;
 
         AbstractDbStoredMatchingRule dbStoredMatchingRule = ((AbstractDbStoredMatchingRule) entity);
         StringBuilder sb = new StringBuilder();
@@ -57,7 +57,7 @@ public class MatchingRuleUtils {
     }
 
     public String generateMatchingRuleRolesAccessGroupColumn(AbstractCommonMatchingRule entity) {
-        if (CUSTOM.equals(entity.getRuleType())) return StringUtils.EMPTY;
+        if (CUSTOM == entity.getRuleType()) return StringUtils.EMPTY;
 
         AbstractDbStoredMatchingRule dbStoredMatchingRule = ((AbstractDbStoredMatchingRule) entity);
         StringBuilder sb = new StringBuilder("Roles: ");
@@ -73,17 +73,20 @@ public class MatchingRuleUtils {
     }
 
     public String generateMatchingRuleTableConditionColumn(AbstractCommonMatchingRule entity) {
-        if (SIMPLE.equals(entity.getRuleType())) {
-            SimpleMatchingRule simpleMatchingRule = (SimpleMatchingRule) entity;
-            return getStringCondition(simpleMatchingRule.getConditions());
-        } else if (SCRIPTING.equals(entity.getRuleType())) {
-            ScriptingMatchingRule scriptingMatchingRule = (ScriptingMatchingRule) entity;
-            return scriptingMatchingRule.getScriptingCondition();
-        } else if (CUSTOM.equals(entity.getRuleType())) {
-            CustomLdapMatchingRuleDto customLdapMatchingRule = ((CustomLdapMatchingRuleDto) entity);
-            return customLdapMatchingRule.getDescription();
-        } else {
-            return StringUtils.EMPTY;
+        MatchingRuleType mrt = entity.getRuleType();
+
+        switch (mrt) {
+            case SIMPLE:
+                SimpleMatchingRule simpleMatchingRule = (SimpleMatchingRule) entity;
+                return getStringCondition(simpleMatchingRule.getConditions());
+            case SCRIPTING:
+                ScriptingMatchingRule scriptingMatchingRule = (ScriptingMatchingRule) entity;
+                return scriptingMatchingRule.getScriptingCondition();
+            case CUSTOM:
+                CustomLdapMatchingRuleDto customLdapMatchingRule = ((CustomLdapMatchingRuleDto) entity);
+                return customLdapMatchingRule.getDescription();
+            default:
+                return StringUtils.EMPTY;
         }
     }
 
@@ -92,7 +95,7 @@ public class MatchingRuleUtils {
     }
 
     public String generateMatchingRuleTableDescriptionColumn(AbstractCommonMatchingRule entity) {
-        if (CUSTOM.equals(entity.getRuleType())) {
+        if (CUSTOM == entity.getRuleType()) {
             CustomLdapMatchingRuleDto customLdapMatchingRule = ((CustomLdapMatchingRuleDto) entity);
             return customLdapMatchingRule.getName();
         } else {

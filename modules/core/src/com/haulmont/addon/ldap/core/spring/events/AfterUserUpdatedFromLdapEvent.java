@@ -14,4 +14,12 @@ public class AfterUserUpdatedFromLdapEvent extends ApplicationEvent {
         this.ldapMatchingRuleContext = ldapMatchingRuleContext;
         this.cubaUser = cubaUser;
     }
+
+    public LdapMatchingRuleContext getLdapMatchingRuleContext() {
+        return ldapMatchingRuleContext;
+    }
+
+    public User getCubaUser() {
+        return cubaUser;
+    }
 }

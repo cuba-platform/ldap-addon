@@ -8,7 +8,7 @@
     <screen id="ldap$SimpleRuleCondition.edit"
             template="com/haulmont/addon/ldap/web/simplerulecondition/simple-rule-condition-edit.xml"/>
     <screen id="ldap$matchingRuleScreen"
-            template="com/haulmont/addon/ldap/web/screens/matchingRuleScreen.xml"/>
+            template="com/haulmont/addon/ldap/web/screens/matching-rule-screen.xml"/>
     <screen id="ldap$LdapUserAttribute.edit"
             template="com/haulmont/addon/ldap/web/ldapuserattribute/ldap-user-attribute-edit.xml"/>
     <screen id="ldap$UserSynchronizationLog.browse"

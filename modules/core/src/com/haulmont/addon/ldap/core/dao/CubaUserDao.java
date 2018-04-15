@@ -9,6 +9,7 @@ import com.haulmont.cuba.core.global.PersistenceHelper;
 import com.haulmont.cuba.security.entity.Role;
 import com.haulmont.cuba.security.entity.User;
 import com.haulmont.cuba.security.entity.UserRole;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,7 +20,7 @@ import java.util.stream.Collectors;
 
 import static com.haulmont.addon.ldap.core.dao.CubaUserDao.NAME;
 
-@Service(NAME)
+@Component(NAME)
 public class CubaUserDao {
     public final static String NAME = "ldap_CubaUserDao";
 
@@ -31,6 +32,9 @@ public class CubaUserDao {
 
     @Inject
     private UserSynchronizationLogDao userSynchronizationLogDao;
+
+    @Inject
+    private DaoHelper daoHelper;
 
     @Transactional(readOnly = true)
     public User getCubaUserByLogin(String login) {
@@ -59,11 +63,10 @@ public class CubaUserDao {
     @Transactional
     public void saveCubaUser(User cubaUser, User beforeRulesApplyUserState, LdapMatchingRuleContext ldapMatchingRuleContext) {
         EntityManager entityManager = persistence.getEntityManager();
-        User mergedUser = PersistenceHelper.isNew(cubaUser) ? cubaUser : entityManager.merge(cubaUser);
+        User mergedUser = daoHelper.persistOrMerge(cubaUser);
         List<Role> newRoles = mergedUser.getUserRoles().stream().map(UserRole::getRole).collect(Collectors.toList());
         beforeRulesApplyUserState.getUserRoles().stream().filter(ur -> !newRoles.contains(ur.getRole())).forEach(entityManager::remove);
         mergedUser.getUserRoles().forEach(entityManager::persist);
-        entityManager.persist(mergedUser);
         userSynchronizationLogDao.logUserSynchronization(ldapMatchingRuleContext, beforeRulesApplyUserState);
     }
 }

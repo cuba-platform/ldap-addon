@@ -7,6 +7,7 @@ import com.haulmont.cuba.core.TypedQuery;
 import com.haulmont.cuba.core.global.Metadata;
 import com.haulmont.cuba.core.global.PersistenceHelper;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,7 +15,7 @@ import javax.inject.Inject;
 
 import static com.haulmont.addon.ldap.core.dao.MatchingRuleOrderDao.NAME;
 
-@Service(NAME)
+@Component(NAME)
 public class MatchingRuleOrderDao {
 
     public final static String NAME = "ldap_MatchingRuleOrderDao";
@@ -25,12 +26,15 @@ public class MatchingRuleOrderDao {
     @Inject
     private Metadata metadata;
 
+    @Inject
+    private DaoHelper daoHelper;
+
 
     @Transactional(readOnly = true)
     public MatchingRuleOrder getCustomRuleOrder(String customMatchingRuleId) {
         TypedQuery<MatchingRuleOrder> query = persistence.getEntityManager()
                 .createQuery("select mro from ldap$MatchingRuleOrder mro " +
-                "where mro.customMatchingRuleId = :customMatchingRuleId", MatchingRuleOrder.class);
+                        "where mro.customMatchingRuleId = :customMatchingRuleId", MatchingRuleOrder.class);
         query.setParameter("customMatchingRuleId", customMatchingRuleId);
         MatchingRuleOrder matchingRuleOrder = query.getFirstResult();
         matchingRuleOrder = matchingRuleOrder == null ? metadata.create(MatchingRuleOrder.class) : matchingRuleOrder;
@@ -43,9 +47,6 @@ public class MatchingRuleOrderDao {
 
     @Transactional
     public void saveMatchingRuleOrder(MatchingRuleOrder matchingRuleOrder) {
-        EntityManager entityManager = persistence.getEntityManager();
-        MatchingRuleOrder mergedMatchingRuleOrder = PersistenceHelper.isNew(matchingRuleOrder)
-                ? matchingRuleOrder : entityManager.merge(matchingRuleOrder);
-        entityManager.persist(mergedMatchingRuleOrder);
+        daoHelper.persistOrMerge(matchingRuleOrder);
     }
 }

@@ -6,9 +6,9 @@ import javax.annotation.Nullable;
 
 
 public enum UserSynchronizationResultEnum implements EnumClass<String> {
-    SuccessSync("SUCCESS_SYNC"),
-    ErrorSync("ERROR_SYNC"),
-    LdapLoginError("LOGIN_ERROR");
+    SUCCESS_SYNC("SUCCESS_SYNC"),
+    ERROR_SYNC("ERROR_SYNC"),
+    LDAP_LOGIN_ERROR("LOGIN_ERROR");
 
     private String id;
 
