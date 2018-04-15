@@ -227,11 +227,15 @@ public class MatchingRuleScreen extends AbstractWindow {
 
     public void onSimpleRuleCreateButtonClick() {
         SimpleMatchingRule simpleMatchingRule = metadata.create(SimpleMatchingRule.class);
+        simpleMatchingRule.setOrder(metadata.create(MatchingRuleOrder.class));
+        simpleMatchingRule.setStatus(metadata.create(MatchingRuleStatus.class));
         openCreateRuleWindow(simpleMatchingRule, "ldap$SimpleMatchingRule.edit");
     }
 
     public void onScriptingRuleCreateButtonClick() {
         ScriptingMatchingRule scriptingMatchingRule = metadata.create(ScriptingMatchingRule.class);
+        scriptingMatchingRule.setOrder(metadata.create(MatchingRuleOrder.class));
+        scriptingMatchingRule.setStatus(metadata.create(MatchingRuleStatus.class));
         openCreateRuleWindow(scriptingMatchingRule, "ldap$ScriptingMatchingRule.edit");
     }
 

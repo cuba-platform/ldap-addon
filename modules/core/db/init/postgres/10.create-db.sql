@@ -8,6 +8,7 @@ create table LDAP_MATCHING_RULE (
     UPDATED_BY varchar(50),
     DELETE_TS timestamp,
     DELETED_BY varchar(50),
+    RULE_TYPE varchar(50) not null,
     MATCHING_RULE_STATUS_ID uuid not null,
     MATCHING_RULE_ORDER_ID uuid not null,
     DESCRIPTION varchar(1500),

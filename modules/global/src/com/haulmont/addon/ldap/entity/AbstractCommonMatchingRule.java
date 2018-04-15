@@ -16,16 +16,19 @@ public abstract class AbstractCommonMatchingRule extends StandardEntity implemen
     @Column(name = "RULE_TYPE", nullable = false)
     private String ruleType;
 
-    @Column(name = "MATCHING_RULE_STATUS_ID", nullable = false)
+    @Composition
+    @OnDelete(DeletePolicy.CASCADE)
+    @OneToOne(fetch = FetchType.LAZY, optional = false, cascade = CascadeType.ALL)
+    @JoinColumn(name = "MATCHING_RULE_STATUS_ID", nullable = false)
     @NotNull
-    private MatchingRuleStatus status = new MatchingRuleStatus();
+    private MatchingRuleStatus status;
 
     @Composition
     @OnDelete(DeletePolicy.CASCADE)
     @OneToOne(fetch = FetchType.LAZY, optional = false, cascade = CascadeType.ALL)
     @JoinColumn(name = "MATCHING_RULE_ORDER_ID")
     @NotNull
-    private MatchingRuleOrder order = new MatchingRuleOrder();
+    private MatchingRuleOrder order;
 
     @Column(name = "DESCRIPTION", length = 1500)
     private String description;
