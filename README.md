@@ -254,7 +254,7 @@ language, ou).
 * *appliedRules*: matching rules, which were previously applied to the context.
 * *roles*: roles, which were previously assigned to a user.
 * *group*: a current access group that a user belongs to.
-* *cubaUser*: a cuba user, to whom a current matching rule is applied.
+* *cubaUser*: a CUBA user, to whom a current matching rule is applied.
 * *isTerminalRuleApply*: signals that a current rule is a terminal one, i.e. once it is used, no other rules can be applied.
 
 ## Testing LDAP Matching Rules
