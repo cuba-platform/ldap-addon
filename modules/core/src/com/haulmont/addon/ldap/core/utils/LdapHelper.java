@@ -36,10 +36,12 @@ public class LdapHelper {
             ldapUser.setEmail(context.getStringAttribute(ldapConfig.getEmailAttribute()));
         }
         if (StringUtils.isNotEmpty(ldapConfig.getMemberOfAttribute())) {
-            ldapUser.setMemberOf(Arrays.asList(context.getStringAttributes(ldapConfig.getMemberOfAttribute())));
+            String[] memberOf = context.getStringAttributes(ldapConfig.getMemberOfAttribute());
+            ldapUser.setMemberOf(memberOf == null ? null : Arrays.asList(memberOf));
         }
         if (StringUtils.isNotEmpty(ldapConfig.getAccessGroupAttribute())) {
-            ldapUser.setAccessGroups(Arrays.asList(context.getStringAttributes(ldapConfig.getAccessGroupAttribute())));
+            String[] accessGroups = context.getStringAttributes(ldapConfig.getAccessGroupAttribute());
+            ldapUser.setAccessGroups(accessGroups == null ? null : Arrays.asList(accessGroups));
         }
         if (StringUtils.isNotEmpty(ldapConfig.getInactiveUserAttribute())) {
             ldapUser.setDisabled(mapDisabledProperty(context.getObjectAttribute(ldapConfig.getInactiveUserAttribute())));

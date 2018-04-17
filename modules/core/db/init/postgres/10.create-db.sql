@@ -12,7 +12,6 @@ create table LDAP_MATCHING_RULE (
     MATCHING_RULE_STATUS_ID uuid not null,
     MATCHING_RULE_ORDER_ID uuid not null,
     DESCRIPTION varchar(1500),
-    RULE_TYPE varchar(31),
     --
     ACCESS_GROUP_ID uuid,
     IS_TERMINAL_RULE boolean,
