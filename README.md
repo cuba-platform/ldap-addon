@@ -75,6 +75,14 @@ ldap.contextSourceUserName = uid=admin,ou=system
 ldap.contextSourcePassword = secret
 ```
 
+6. Specify the following properties in the `web-app.properties` file:
+
+```properties
+cuba.web.externalAuthentication = true
+cuba.web.externalAuthenticationProviderClass = com.haulmont.addon.ldap.web.extauth.LdapComponentAuthProvider
+cuba.web.standardAuthenticationUsers = admin
+```
+
 ## Additional Information
 
 You should keep in mind that the LDAP component should be enabled for each CUBA application, which is expected to use
