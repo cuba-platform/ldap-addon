@@ -41,11 +41,22 @@ public interface LdapPropertiesConfig extends Config {
     @DefaultString("admin")
     List<String> getStandardAuthenticationUsers();
 
+    @Source(type = SourceType.APP)
+    @Property("ldap.addonEnabled")
+    Boolean getLdapAddonEnabled();
+
     void setContextSourceUrl(String contextSourceUrl);
+
     void setContextSourceBase(String contextSourceBase);
+
     void setContextSourceUserName(String contextSourceUserName);
+
     void setContextSourcePassword(String contextSourcePassword);
+
     void setSessionExpiringPeriodSec(int sessionExpiringPeriod);
+
     void setStandardAuthenticationUsers(List<String> standardAuthenticationUsers);
+
+    void setLdapAddonEnabled(Boolean ldapAddonEnabled);
 
 }
