@@ -100,7 +100,7 @@ public class MatchingRuleScreen extends AbstractWindow {
             public void collectionChanged(CollectionDatasource.CollectionChangeEvent<AbstractCommonMatchingRule, UUID> e) {
                 if (CollectionDatasource.Operation.ADD.equals(e.getOperation())) {
                     Optional<Integer> maxOrder = matchingRuleDatasource.getItems().stream()
-                            .filter(mr -> !(DEFAULT == mr.getRuleType()))
+                            .filter(mr -> DEFAULT != mr.getRuleType())
                             .max(Comparator.comparing(mr -> mr.getOrder().getOrder())).map(mr -> mr.getOrder().getOrder());
                     int order = maxOrder.isPresent() ? maxOrder.get() + 1 : 1;
                     Optional<AbstractCommonMatchingRule> ruleWithoutOrder = e.getItems().stream().filter(mr -> DEFAULT_RULE_ORDER.equals(mr.getOrder().getOrder())).findAny();
@@ -109,7 +109,23 @@ public class MatchingRuleScreen extends AbstractWindow {
                 }
             }
         };
+
+
+        CollectionDatasource.CollectionChangeListener<AbstractCommonMatchingRule, UUID> orderDecreaseListener = new CollectionDatasource.CollectionChangeListener<AbstractCommonMatchingRule, UUID>() {
+            @Override
+            public void collectionChanged(CollectionDatasource.CollectionChangeEvent<AbstractCommonMatchingRule, UUID> e) {
+                if (CollectionDatasource.Operation.REMOVE.equals(e.getOperation())) {
+                    AbstractCommonMatchingRule removedItem = e.getItems().get(0);
+                    matchingRuleDatasource.getItems().stream()
+                            .filter(mr -> mr.getOrder().getOrder() > removedItem.getOrder().getOrder() && DEFAULT != mr.getRuleType())
+                            .forEach(mr -> mr.getOrder().setOrder(mr.getOrder().getOrder() - 1));
+                    matchingRuleTable.repaint();
+                }
+            }
+        };
+
         matchingRuleDatasource.addCollectionChangeListener(sortListener);
+        matchingRuleDatasource.addCollectionChangeListener(orderDecreaseListener);
 
         appliedRolesDs.clear();
 
@@ -169,7 +185,6 @@ public class MatchingRuleScreen extends AbstractWindow {
 
         customEdit.setBeforeActionPerformedHandler(customEditBeforeActionPerformedHandler);
         customEdit.setAfterCommitHandler(customAfterCommitHandler);
-
 
         RemoveAction.BeforeActionPerformedHandler customRemoveBeforeActionPerformedHandler = () -> {
             AbstractCommonMatchingRule rule = matchingRuleTable.getSingleSelected();
