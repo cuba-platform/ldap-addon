@@ -17,6 +17,6 @@
             template="com/haulmont/addon/ldap/web/usersynchronizationlog/user-synchronization-log-edit.xml"/>
     <screen id="ldap$ScriptingMatchingRule.edit"
             template="com/haulmont/addon/ldap/web/scriptingmatchingrule/scripting-matching-rule-edit.xml"/>
-    <screen id="ldap$LdapContextConfig.edit"
+    <screen id="ldap$LdapPropertiesConfig.edit"
             template="com/haulmont/addon/ldap/web/ldapconfig/ldap-config-edit.xml"/>
 </screen-config>

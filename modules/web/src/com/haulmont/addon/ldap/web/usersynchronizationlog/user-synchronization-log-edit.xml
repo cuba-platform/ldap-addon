@@ -33,9 +33,8 @@
                     <row>
                         <label value="msg://result"
                                width="100%"/>
-                        <textField datasource="userSynchronizationLogDs"
+                        <textField id="resultTextField"
                                    editable="false"
-                                   property="result"
                                    width="100%"/>
                     </row>
                     <row>

@@ -12,7 +12,7 @@ import com.haulmont.chile.core.annotations.MetaProperty;
 import javax.persistence.Transient;
 
 @Table(name = "LDAP_LDAP_CONFIG")
-@Entity(name = "ldap$LdapContextConfig")
+@Entity(name = "ldap$LdapPropertiesConfig")
 public class LdapConfig extends BaseUuidEntity implements Versioned, Updatable {
     private static final long serialVersionUID = 7194701707147252828L;
 

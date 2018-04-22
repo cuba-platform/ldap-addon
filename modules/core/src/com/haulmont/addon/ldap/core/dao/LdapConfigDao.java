@@ -1,6 +1,6 @@
 package com.haulmont.addon.ldap.core.dao;
 
-import com.haulmont.addon.ldap.config.LdapContextConfig;
+import com.haulmont.addon.ldap.config.LdapPropertiesConfig;
 import com.haulmont.addon.ldap.entity.LdapConfig;
 import com.haulmont.cuba.core.Persistence;
 import com.haulmont.cuba.core.TypedQuery;
@@ -20,12 +20,12 @@ public class LdapConfigDao {
     private Persistence persistence;
 
     @Inject
-    private LdapContextConfig ldapContextConfig;
+    private LdapPropertiesConfig ldapContextConfig;
 
     @Transactional(readOnly = true)
     public LdapConfig getLdapConfig() {
         TypedQuery<LdapConfig> query = persistence.getEntityManager()
-                .createQuery("select lc from ldap$LdapContextConfig lc", LdapConfig.class);
+                .createQuery("select lc from ldap$LdapPropertiesConfig lc", LdapConfig.class);
         LdapConfig lc = query.getSingleResult();
 
         lc.setContextSourceUrl(ldapContextConfig.getContextSourceUrl());

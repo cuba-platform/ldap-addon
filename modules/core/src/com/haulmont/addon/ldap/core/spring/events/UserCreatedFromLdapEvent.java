@@ -8,11 +8,13 @@ public class UserCreatedFromLdapEvent extends ApplicationEvent {
 
     private final LdapMatchingRuleContext ldapMatchingRuleContext;
     private final User cubaUser;
+    private final SynchronizationMode synchronizationMode;
 
-    public UserCreatedFromLdapEvent(Object source, LdapMatchingRuleContext ldapMatchingRuleContext, User cubaUser) {
+    public UserCreatedFromLdapEvent(Object source, LdapMatchingRuleContext ldapMatchingRuleContext, User cubaUser, SynchronizationMode synchronizationMode) {
         super(source);
         this.ldapMatchingRuleContext = ldapMatchingRuleContext;
         this.cubaUser = cubaUser;
+        this.synchronizationMode = synchronizationMode;
     }
 
     public LdapMatchingRuleContext getLdapMatchingRuleContext() {
@@ -21,5 +23,9 @@ public class UserCreatedFromLdapEvent extends ApplicationEvent {
 
     public User getCubaUser() {
         return cubaUser;
+    }
+
+    public SynchronizationMode getSynchronizationMode() {
+        return synchronizationMode;
     }
 }

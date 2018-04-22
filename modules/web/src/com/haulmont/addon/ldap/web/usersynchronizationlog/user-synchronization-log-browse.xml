@@ -35,7 +35,8 @@
                 <column id="createTs"
                         caption="msg://createDate"/>
                 <column id="result"
-                        caption="msg://result"/>
+                        caption="msg://result"
+                        generator="generateResultCell"/>
                 <column id="errorText"
                         caption="msg://errorText"/>
                 <column id="isNewUser"

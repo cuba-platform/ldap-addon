@@ -1,6 +1,6 @@
 package com.haulmont.addon.ldap.core.service;
 
-import com.haulmont.addon.ldap.config.LdapContextConfig;
+import com.haulmont.addon.ldap.config.LdapPropertiesConfig;
 import com.haulmont.addon.ldap.core.dao.CubaUserDao;
 import com.haulmont.addon.ldap.core.dao.LdapConfigDao;
 import com.haulmont.addon.ldap.core.dao.LdapUserAttributeDao;
@@ -65,7 +65,7 @@ public class LdapServiceBean implements LdapService {
     private Messages messages;
 
     @Inject
-    private LdapContextConfig ldapContextConfig;
+    private LdapPropertiesConfig ldapContextConfig;
 
     private LdapContextSource createAuthenticatedContext(String url, String base) {
         LdapContextSource ldapContextSource = new LdapContextSource();
@@ -149,7 +149,7 @@ public class LdapServiceBean implements LdapService {
 
     @Override
     public GroovyScriptTestResultDto testGroovyScript(String groovyScript, String login) {
-        LdapUser ldapUser = ldapUserDao.getExistedLdapUser(login, false);
+        LdapUser ldapUser = ldapUserDao.getLdapUser(login);
         if (ldapUser == null) {
             return new GroovyScriptTestResultDto(NO_USER, null);
         }

@@ -11,6 +11,7 @@ import javax.servlet.*;
 import java.io.IOException;
 import java.util.Locale;
 
+//TODO: switch to LoginProvider
 public class LdapComponentAuthProvider implements CubaAuthProvider {
 
     @Inject
@@ -25,7 +26,7 @@ public class LdapComponentAuthProvider implements CubaAuthProvider {
     @Override
     public void authenticate(String login, String password, Locale messagesLocale) throws LoginException {
         authUserService.ldapAuth(login, password, messagesLocale);
-        userSynchronizationService.synchronizeUser(login);
+        userSynchronizationService.synchronizeUser(login, true);
     }
 
     @Override

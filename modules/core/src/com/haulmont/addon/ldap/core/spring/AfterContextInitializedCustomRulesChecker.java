@@ -8,8 +8,13 @@ import org.springframework.stereotype.Component;
 
 import java.util.Map;
 
-@Component
+import static com.haulmont.addon.ldap.core.spring.AfterContextInitializedCustomRulesChecker.NAME;
+
+@Component(NAME)
 public class AfterContextInitializedCustomRulesChecker implements ApplicationListener<ContextRefreshedEvent> {
+
+    public final static String NAME = "ldap_AfterContextInitializedCustomRulesChecker";
+
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
         try {

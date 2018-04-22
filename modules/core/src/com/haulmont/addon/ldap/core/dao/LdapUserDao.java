@@ -46,7 +46,7 @@ public class LdapUserDao {
     @Inject
     private LdapConfigDao ldapConfigDao;
 
-    public LdapUser getExistedLdapUser(String login, boolean throwException) {
+    public LdapUser getLdapUser(String login) {
         LdapConfig ldapConfig = ldapConfigDao.getLdapConfig();
         LdapQuery query = LdapQueryBuilder.query()
                 .searchScope(SearchScope.SUBTREE)
@@ -56,13 +56,10 @@ public class LdapUserDao {
         List<LdapUser> list = ldapTemplate.search(query, new LdapUserMapper(ldapConfig));
         if (list.size() == 1) {
             return list.get(0);
+        } else if (list.size() == 0) {
+            return null;
         } else {
-            if (throwException) {
-                String message = messages.formatMessage(LdapUserDao.class, "userMustExistsInLdap", login);
-                throw new RuntimeException(message);
-            } else {
-                return null;
-            }
+            throw new RuntimeException(messages.formatMessage(LdapUserDao.class, "multipleUsersWithLogin", login));
         }
 
     }

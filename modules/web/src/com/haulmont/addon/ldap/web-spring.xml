@@ -2,6 +2,7 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:task="http://www.springframework.org/schema/task"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd">
 
@@ -13,12 +14,17 @@
                   ref="cuba_ServerSelector"/>
         <property name="remoteServices">
             <map>
-                <entry key="ldap_UserSynchronizationService" value="com.haulmont.addon.ldap.service.UserSynchronizationService"/>
+                <entry key="ldap_UserSynchronizationService"
+                       value="com.haulmont.addon.ldap.service.UserSynchronizationService"/>
                 <entry key="ldap_LdapConnectionTesterService" value="com.haulmont.addon.ldap.service.LdapService"/>
                 <entry key="ldap_MatchingRuleService" value="com.haulmont.addon.ldap.service.MatchingRuleService"/>
                 <entry key="ldap_AuthUserService" value="com.haulmont.addon.ldap.service.AuthUserService"/>
             </map>
         </property>
     </bean>
+
+    <task:scheduled-tasks scheduler="scheduler">
+        <task:scheduled ref="ldap_ExpiredSessionWatcher" method="notifyExpiringSessions" cron="${ldap.expiringSessionNotificationCron}"/>
+    </task:scheduled-tasks>
 
 </beans>
