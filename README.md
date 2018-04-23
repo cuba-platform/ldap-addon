@@ -12,12 +12,10 @@ Please pay attention that the component is still being developed and not stable.
     - [LDAP Matching Rules](#ldap-matching-rules)
     - [Testing LDAP Matching Rules](#testing-ldap-matching-rules)
     - [LDAP Log](#ldap-log)
-- [API](#api)
-- [Known Issues](#known-issues)
 
 # Overview
 
-The LDAP Integration CUBA component provides a readily available instrument for employing features of a directory
+The LDAP integration CUBA component provides readily available instruments for employing features of a directory
 server, e.g. Active Directory, in any CUBA-based application.
 The component is available for CUBA applications of any complexity and does not require any additional third-party 
 frameworks or libraries to be installed.
@@ -25,7 +23,7 @@ frameworks or libraries to be installed.
 The component comprises the following functionalities:
 
 * Storing user credentials in the LDAP database;
-* Using a single set of credentials in all applications having LDAP enabled;
+* Using a single set of user credentials in all applications having LDAP enabled;
 * Configuring LDAP parameters and the directory server schema;
 * Setting up rules for assigning roles and access groups to users.
 
@@ -78,9 +76,9 @@ ldap.contextSourcePassword = secret
 6. Specify the following properties in the `web-app.properties` file:
 
 ```properties
-cuba.web.externalAuthentication = true
-cuba.web.externalAuthenticationProviderClass = com.haulmont.addon.ldap.web.extauth.LdapComponentAuthProvider
 cuba.web.standardAuthenticationUsers = admin
+ldap.expiringSessionNotificationCron = */10 * * * * *
+ldap.addonEnabled = true
 ```
 
 ## Additional Information
@@ -95,7 +93,7 @@ its functionalities.
 Once you have successfully installed the component, check that all configured property values are displayed properly 
 on *LDAP Config Screen* (Menu: LDAP Component → LDAP Config).
 
-![LDAP-Config-menu](img/ldap-component-menu.png)
+![LDAP-component-menu](img/ldap-component-menu.png)
 
 ![LDAP-Config-Screen](img/ldap-config-screen.png)
 
@@ -112,7 +110,7 @@ application UI.
 Clicking the *Test Connection* button at the bottom of the screen launches connection testing. If the connection is 
 successfully established, the corresponding message is displayed.
 
-### Basic Attributes
+### Attribute Settings
 
 When a user logs in using LDAP credentials for the first time, a new user entity is created in the CUBA application.
 All details about the user are taken from the LDAP database (configuring these details is a part of preparation 
@@ -129,14 +127,13 @@ directory.
 ![LDAP_Schema-Settings](img/ldap-schema-settings.png)
 
 Using the table provided in the section, it is possible to set up attributes that can be used as conditions when applying
-matching rules. Clicking the *Refresh LDAP attributes* button uploads all attributes of the specified LDAP user object class.
+matching rules. Clicking the *Refresh LDAP Attributes* button uploads all attributes of the specified LDAP user object class.
 However, it is possible to add attributes manually by using the *Create* button.
 
 ## LDAP Matching Rules
 
-LDAP matching rules are special rules for configuring access rights for users. When a user logs in using LDAP credentials
-for the first time, a new user entity is created in the CUBA application. Using matching rules, it is possible to set up
-access groups and roles for new application users. There are four rule types intended for this purpose: custom,
+LDAP matching rules are special rules for configuring access rights for users. Using matching rules, it is possible to 
+set up access groups and roles for new application users. There are four rule types intended for this purpose: custom,
 default, simple and scripting. Creating and managing LDAP matching rules is available from *LDAP Matching Rule Screen*
 (Menu: LDAP Component → LDAP Matching Rules).
 
@@ -193,7 +190,7 @@ created in the system.
 It is used if none of other rules were applied, e.g. conditions for applying existing rules were not met.
 That is why it contains the 'LAST' value in the *Order* field.
 
-The default rule can be amended by clicking the *Edit Default Rule* button. All fields and settings present in *Default
+The default rule can be amended by clicking the *Edit* button. All fields and settings present in *Default
 Matching Rule Editor* are described in the section below.
 
 #### Default Matching Rule Editor
@@ -201,7 +198,7 @@ Matching Rule Editor* are described in the section below.
 ![Default Rule Editor](img/default-rule-editor.png)
 
 * *Description*: a short description of the default rule.
-* *Terminal rule*: if checked, then other rules cannot be applied, if the default rule was used.
+* *Terminal rule*: if checked, then rules coming after the current one (according to the rule order) will not be applied.
 * *Access group*: an access group to be assigned to a user, if the default rule is applied.
 * *Override existing access group*: if checked, then an access group that was previously assigned to a user is removed
 and the group specified in the 'Access group' field is used instead.
@@ -213,7 +210,7 @@ The *Roles* table allows creating a set of roles, which are assigned to a user, 
 ### Simple Rule
 
 Simple rules allow granting access rights (by assigning an access group and roles) to users, if particular conditions are met.
-To create a simple rule, select the *Create simple rule* option from the menu of the *Create matching rule* button. 
+To create a simple rule, select the *Create Simple Rule* option from the menu of the *Create Matching Rule* button. 
 
 #### Simple Matching Rule Editor
 
@@ -268,7 +265,7 @@ language, ou).
 ## Testing LDAP Matching Rules
 
 After creating all required matching rules, it is possible to test them right from *LDAP Matching Rule Screen*. For this 
-purpose, enter a user login in the corresponding field and click *Test rules*.
+purpose, enter a user login in the corresponding field and click *Test Rules*.
 
 After that, the applied matching rules and roles are displayed in the corresponding tables. This functionality is useful if it
 is required to find out whether a rule was applied correctly.
@@ -278,3 +275,9 @@ is required to find out whether a rule was applied correctly.
 LDAP Log Screen can be used to view all activities related to LDAP connection from the application UI,
 including user authentication checks, rule application, updates of user properties and errors that occur while the component
 features are used.
+
+![LDAP Log](#ldap-log)
+
+In order to view any log entry, just double-click it or select it in the table and click the *View* button.
+
+Clicking the *Excel* button enables to download details of the selected rows (or all rows if required) to an *.XLS file.
