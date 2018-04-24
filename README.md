@@ -276,7 +276,7 @@ LDAP Log Screen can be used to view all activities related to LDAP connection fr
 including user authentication checks, rule application, updates of user properties and errors that occur while the component
 features are used.
 
-![LDAP Log](#ldap-log)
+![LDAP Log](img/ldap-log.png)
 
 In order to view any log entry, just double-click it or select it in the table and click the *View* button.
 
