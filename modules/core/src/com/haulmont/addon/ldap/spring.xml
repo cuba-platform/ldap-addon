@@ -15,7 +15,8 @@
             url="${ldap.contextSourceUrl}"
             base="${ldap.contextSourceBase}"
             username="${ldap.contextSourceUserName}"
-            password="${ldap.contextSourcePassword}"/>
+            password="${ldap.contextSourcePassword}"
+            referral="${ldap.referral}"/>
 
     <ldap:ldap-template id="ldap_ldapTemplate" context-source-ref="ldap_ldapContextSource"/>
 
