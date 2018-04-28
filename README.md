@@ -65,9 +65,12 @@ An example of how to set up these properties is given below.
 
 ```properties
 ldap.contextSourceUrl = ldap://localhost:10389
-ldap.contextSourceBase = dc=example,dc=com
+ldap.contextSourceBase = dc=springframework,dc=org
 ldap.contextSourceUserName = uid=admin,ou=system
 ldap.contextSourcePassword = secret
+ldap.referral = follow
+ldap.sessionExpiringPeriodSec = 30
+ldap.standardAuthenticationUsers = admin
 ```
 
 6. Specify the following properties in the `web-app.properties` file:
