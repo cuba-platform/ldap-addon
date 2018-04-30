@@ -8,7 +8,8 @@ import javax.annotation.Nullable;
 public enum UserSynchronizationResultEnum implements EnumClass<String> {
     SUCCESS_SYNC("SUCCESS_SYNC", "SUCCESS"),
     ERROR_SYNC("ERROR_SYNC", "ERROR"),
-    LDAP_LOGIN_ERROR("LOGIN_ERROR", "ERROR DURING LOGIN");
+    LDAP_LOGIN_ERROR("LOGIN_ERROR", "ERROR DURING LOGIN"),
+    DISABLED_USER_TRY_LOGIN("DISABLED_USER_TRY_LOGIN", "DISABLED USER TRY TO LOGIN");
 
     private String id;
     private String name;
