@@ -29,8 +29,14 @@ public class LdapHelper {
         if (StringUtils.isNotEmpty(ldapConfig.getCnAttribute())) {
             ldapUser.setCn(context.getStringAttribute(ldapConfig.getCnAttribute()));
         }
+        if (StringUtils.isNotEmpty(ldapConfig.getGivenNameAttribute())) {
+            ldapUser.setGivenName(context.getStringAttribute(ldapConfig.getGivenNameAttribute()));
+        }
         if (StringUtils.isNotEmpty(ldapConfig.getSnAttribute())) {
             ldapUser.setSn(context.getStringAttribute(ldapConfig.getSnAttribute()));
+        }
+        if (StringUtils.isNotEmpty(ldapConfig.getMiddleNameAttribute())) {
+            ldapUser.setMiddleName(context.getStringAttribute(ldapConfig.getMiddleNameAttribute()));
         }
         if (StringUtils.isNotEmpty(ldapConfig.getEmailAttribute())) {
             ldapUser.setEmail(context.getStringAttribute(ldapConfig.getEmailAttribute()));

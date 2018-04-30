@@ -10,7 +10,9 @@ public class LdapUser {
     private final Map<String, Object> ldapUserAttributesMap;
     private String login;
     private String cn;
+    private String givenName;
     private String sn;
+    private String middleName;
     private String email;
     private List<String> memberOf;
     private List<String> accessGroups;
@@ -26,7 +28,9 @@ public class LdapUser {
     public LdapUser(LdapUser source) {
         this.login = source.login;
         this.cn = source.cn;
-        this.sn = source.cn;
+        this.givenName = source.givenName;
+        this.sn = source.sn;
+        this.middleName = source.middleName;
         this.email = source.email;
         this.memberOf = source.memberOf;
         this.accessGroups = source.accessGroups;
@@ -116,6 +120,22 @@ public class LdapUser {
 
     public void setOu(String ou) {
         this.ou = ou;
+    }
+
+    public String getGivenName() {
+        return givenName;
+    }
+
+    public void setGivenName(String givenName) {
+        this.givenName = givenName;
+    }
+
+    public String getMiddleName() {
+        return middleName;
+    }
+
+    public void setMiddleName(String middleName) {
+        this.middleName = middleName;
     }
 
     public Object getLdapAttribute(String attributeName) {

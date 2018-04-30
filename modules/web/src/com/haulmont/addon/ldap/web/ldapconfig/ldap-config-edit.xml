@@ -51,18 +51,23 @@
                                 <field caption="msg://cnAttribute"
                                        description="msg://cnAttributeHint"
                                        property="cnAttribute"/>
+                                <field caption="msg://givenNameAttribute"
+                                       description="msg://givenNameAttributeHint"
+                                       property="givenNameAttribute"/>
+                                <field caption="msg://middleNameAttribute"
+                                       description="msg://middleNameAttributeHint"
+                                       property="middleNameAttribute"/>
                                 <field caption="msg://snAttribute"
                                        description="msg://snAttributeHint"
                                        property="snAttribute"/>
-                                <field caption="msg://emailAttribute"
-                                       description="msg://emailAttributeHint"
-                                       property="emailAttribute"/>
                             </column>
                         </fieldGroup>
                         <fieldGroup id="attributeSettingsFieldGroup2"
                                     datasource="ldapConfigDs">
-                            <column width="250px"/>
                             <column>
+                                <field caption="msg://emailAttribute"
+                                       description="msg://emailAttributeHint"
+                                       property="emailAttribute"/>
                                 <field caption="msg://memberOfAttribute"
                                        description="msg://memberOfAttributeHint"
                                        property="memberOfAttribute"/>

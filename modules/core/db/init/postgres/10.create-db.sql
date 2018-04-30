@@ -134,6 +134,8 @@ create table LDAP_LDAP_CONFIG (
     EMAIL_ATTRIBUTE varchar(255),
     CN_ATTRIBUTE varchar(255),
     SN_ATTRIBUTE varchar(255),
+    GIVEN_NAME_ATTRIBUTE varchar(255),
+    MIDDLE_NAME_ATTRIBUTE varchar(255),
     MEMBER_OF_ATTRIBUTE varchar(255),
     ACCESS_GROUP_ATTRIBUTE varchar(255),
     POSITION_ATTRIBUTE varchar(255),

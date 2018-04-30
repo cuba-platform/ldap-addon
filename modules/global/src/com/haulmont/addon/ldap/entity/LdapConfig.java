@@ -52,6 +52,12 @@ public class LdapConfig extends BaseUuidEntity implements Versioned, Updatable {
     @Column(name = "SN_ATTRIBUTE")
     private String snAttribute;
 
+    @Column(name = "GIVEN_NAME_ATTRIBUTE")
+    protected String givenNameAttribute;
+
+    @Column(name = "MIDDLE_NAME_ATTRIBUTE")
+    protected String middleNameAttribute;
+
     @Column(name = "MEMBER_OF_ATTRIBUTE")
     private String memberOfAttribute;
 
@@ -82,6 +88,23 @@ public class LdapConfig extends BaseUuidEntity implements Versioned, Updatable {
     @Version
     @Column(name = "VERSION", nullable = false)
     private Integer version;
+
+    public void setGivenNameAttribute(String givenNameAttribute) {
+        this.givenNameAttribute = givenNameAttribute;
+    }
+
+    public String getGivenNameAttribute() {
+        return givenNameAttribute;
+    }
+
+    public void setMiddleNameAttribute(String middleNameAttribute) {
+        this.middleNameAttribute = middleNameAttribute;
+    }
+
+    public String getMiddleNameAttribute() {
+        return middleNameAttribute;
+    }
+
 
     public void setContextSourceBase(String contextSourceBase) {
         this.contextSourceBase = contextSourceBase;

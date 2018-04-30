@@ -102,12 +102,20 @@ public class UserSynchronizationLogDao {
 
     private String getUserInfoField(User originalUser) {
         StringBuilder sb = new StringBuilder();
-        sb.append("Name:");
-        sb.append(originalUser.getName());
+        sb.append("First name:");
+        sb.append(originalUser.getFirstName());
+        sb.append("\n");
+
+        sb.append("Middle name:");
+        sb.append(originalUser.getMiddleName());
         sb.append("\n");
 
         sb.append("Last name:");
         sb.append(originalUser.getLastName());
+        sb.append("\n");
+
+        sb.append("Full name:");
+        sb.append(originalUser.getName());
         sb.append("\n");
 
         sb.append("Email:");
