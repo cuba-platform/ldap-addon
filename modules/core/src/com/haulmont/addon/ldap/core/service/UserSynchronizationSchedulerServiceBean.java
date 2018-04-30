@@ -10,16 +10,13 @@ import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 import java.util.*;
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.stream.Collectors;
 
 @Service(UserSynchronizationSchedulerService.NAME)
 public class UserSynchronizationSchedulerServiceBean implements UserSynchronizationSchedulerService {
 
-    private final ReadWriteLock lock = new ReentrantReadWriteLock();
-
-    private final Set<ExpiredSession> expiredSessions = new HashSet<>();
+    private final Set<ExpiredSession> expiredSessions = new CopyOnWriteArraySet<>();
 
     @Inject
     private UserSynchronizationService userSynchronizationService;
@@ -42,43 +39,23 @@ public class UserSynchronizationSchedulerServiceBean implements UserSynchronizat
         for (UserSessionEntity use : activeSessions) {
             boolean isSessionExpire = userSynchronizationService.synchronizeUser(use.getLogin(), false);
             if (isSessionExpire) {
-                lock.writeLock().lock();
-                try {
-                    expiredSessions.add(new ExpiredSession(use.getUuid(), use.getLogin(), timeSource.currentTimeMillis()));
-                } finally {
-                    lock.writeLock().unlock();
-                }
+                expiredSessions.add(new ExpiredSession(use.getUuid(), use.getLogin(), timeSource.currentTimeMillis()));
             }
         }
     }
 
     public void killExpiredSessions() {
-        for (ExpiredSession es : getExpiredSessionsSnapshot()) {
+        for (ExpiredSession es : expiredSessions) {
             boolean killSession = (timeSource.currentTimeMillis() - es.getCreateTsMillis()) >= ldapPropertiesConfig.getSessionExpiringPeriodSec() * 1000;
             if (killSession) {
-                lock.writeLock().lock();
-                try {
-                    expiredSessions.remove(es);
-                } finally {
-                    lock.writeLock().unlock();
-                }
+                expiredSessions.remove(es);
                 userSessionService.killSession(es.getUuid());
             }
         }
     }
 
     public Set<ExpiredSession> getExpiredSessions() {
-        return getExpiredSessionsSnapshot();
+        return new HashSet<>(expiredSessions);
     }
 
-    private Set<ExpiredSession> getExpiredSessionsSnapshot() {
-        Set<ExpiredSession> tempExpiredSessions;
-        lock.readLock().lock();
-        try {
-            tempExpiredSessions = new HashSet<>(expiredSessions);
-        } finally {
-            lock.readLock().unlock();
-        }
-        return tempExpiredSessions;
-    }
 }

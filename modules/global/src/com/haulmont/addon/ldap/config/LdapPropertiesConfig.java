@@ -36,7 +36,7 @@ public interface LdapPropertiesConfig extends Config {
     int getSessionExpiringPeriodSec();
 
     @Source(type = SourceType.APP)
-    @Property("ldap.standardAuthenticationUsers")
+    @Property("cuba.web.standardAuthenticationUsers")
     @Factory(factory = CommaSeparatedStringListTypeFactory.class)
     @DefaultString("admin")
     List<String> getStandardAuthenticationUsers();
@@ -44,6 +44,10 @@ public interface LdapPropertiesConfig extends Config {
     @Source(type = SourceType.APP)
     @Property("ldap.addonEnabled")
     Boolean getLdapAddonEnabled();
+
+    @Source(type = SourceType.APP)
+    @Property("ldap.expiringSessionsEnable")
+    Boolean getExpiringSessionsEnable();
 
     void setContextSourceUrl(String contextSourceUrl);
 
@@ -58,5 +62,7 @@ public interface LdapPropertiesConfig extends Config {
     void setStandardAuthenticationUsers(List<String> standardAuthenticationUsers);
 
     void setLdapAddonEnabled(Boolean ldapAddonEnabled);
+
+    void setExpiringSessionsEnable(Boolean expiringSessionsEnable);
 
 }

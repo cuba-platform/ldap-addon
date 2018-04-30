@@ -1,5 +1,6 @@
 package com.haulmont.addon.ldap.web.sessionwatcher;
 
+import com.haulmont.addon.ldap.config.LdapPropertiesConfig;
 import com.haulmont.addon.ldap.dto.ExpiredSession;
 import com.haulmont.addon.ldap.service.UserSynchronizationService;
 import com.haulmont.cuba.core.global.Messages;
@@ -15,24 +16,23 @@ import com.haulmont.cuba.web.security.events.AppStartedEvent;
 import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Notification.Type;
+import org.apache.commons.lang.BooleanUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
+import java.lang.ref.WeakReference;
 import java.util.*;
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 @Component("ldap_ExpiredSessionWatcher")
 public class ExpiredSessionWatcher {
 
     private final Logger logger = LoggerFactory.getLogger(ExpiredSessionWatcher.class);
 
-    private final ReadWriteLock lock = new ReentrantReadWriteLock();
-
-    private final List<VaadinSession> sessions = new ArrayList<>();
+    private final Set<WeakReference<VaadinSession>> sessions = new CopyOnWriteArraySet<>();
 
     @Inject
     private UserSynchronizationService userSynchronizationService;
@@ -46,7 +46,14 @@ public class ExpiredSessionWatcher {
     @Inject
     private Messages messages;
 
+    @Inject
+    private LdapPropertiesConfig ldapPropertiesConfig;
+
     public void notifyExpiringSessions() {
+
+        if (BooleanUtils.isFalse(ldapPropertiesConfig.getExpiringSessionsEnable())) {
+            return;
+        }
 
         UserSession systemSession;
         try {
@@ -65,16 +72,13 @@ public class ExpiredSessionWatcher {
             AppContext.setSecurityContext(null);
         }
 
-        ArrayList<VaadinSession> activeSessions;
-        lock.readLock().lock();
-        try {
-            activeSessions = new ArrayList<>(sessions);
-        } finally {
-            lock.readLock().unlock();
-        }
-
-        List<VaadinSession> closedSessions = new ArrayList<>();
-        for (VaadinSession session : activeSessions) {
+        List<WeakReference<VaadinSession>> closedSessions = new ArrayList<>();
+        for (WeakReference<VaadinSession> wr : sessions) {
+            VaadinSession session = wr.get();
+            if (session == null) {
+                closedSessions.add(wr);
+                continue;
+            }
             // obtain lock on session state
             session.accessSynchronously(() -> {
                 if (session.getState() == VaadinSession.State.OPEN) {
@@ -96,26 +100,17 @@ public class ExpiredSessionWatcher {
                         }
                     }
                 } else {
-                    closedSessions.add(session);
+                    closedSessions.add(wr);
                 }
             });
         }
-
-        lock.writeLock().lock();
-        try {
-            sessions.removeAll(closedSessions);
-        } finally {
-            lock.writeLock().unlock();
-        }
+        sessions.removeAll(closedSessions);
     }
 
     @EventListener
     public void onAppStart(AppStartedEvent event) {
-        lock.writeLock().lock();
-        try {
-            sessions.add(VaadinSession.getCurrent());
-        } finally {
-            lock.writeLock().unlock();
+        if (BooleanUtils.isTrue(ldapPropertiesConfig.getExpiringSessionsEnable())) {
+            sessions.add(new WeakReference<>(VaadinSession.getCurrent()));
         }
     }
 }
