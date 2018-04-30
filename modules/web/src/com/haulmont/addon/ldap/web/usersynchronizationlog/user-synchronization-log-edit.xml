@@ -7,7 +7,7 @@
     <dsContext>
         <datasource id="userSynchronizationLogDs"
                     class="com.haulmont.addon.ldap.entity.UserSynchronizationLog"
-                    view="_local"/>
+                    view="userSynchronizationLog-view-with-sys-prop"/>
     </dsContext>
     <dialogMode height="600"
                 width="800"/>
