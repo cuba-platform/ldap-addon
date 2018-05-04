@@ -5,11 +5,12 @@
     - [Prerequisites](#prerequisites)
     - [Installation](#installation)
     - [Additional Information](#additional-information)
-- [Features](#features)
+- [Component Functionalities](#component-functionalities)
     - [LDAP Config](#ldap-config)
     - [LDAP Matching Rules](#ldap-matching-rules)
     - [Testing LDAP Matching Rules](#testing-ldap-matching-rules)
     - [LDAP Log](#ldap-log)
+- [Scheduled Task Configuration](#scheduled-task-configuration)
 
 # Overview
 
@@ -281,3 +282,53 @@ features are used.
 In order to view any log entry, just double-click it or select it in the table and click the *View* button.
 
 Clicking the *Excel* button enables to download details of the selected rows (or all rows if required) to an *.XLS file.
+
+# Scheduled Task Configuration
+
+Scheduled tasks allow configuring the component to kill the current user session in the following cases:
+
+* If matching rules were changed and the current user is assigned a new access group or roles.
+* If the current user was deactivated on the LDAP server side.
+
+In order to register scheduled tasks in your application, follow the guidelines below:
+
+## Scheduled Task to Check Sessions
+
+1. Open Menu: Administration → Scheduled Tasks.
+2. Click the *Create* button.
+3. Fill in the required fields as follows:
+    * *Bean Name:* `ldap_UserSynchronizationSchedulerService`
+    * *Method Name:* `checkExpiredSessions()`
+    * *Scheduling Type:* Cron
+    * *Cron Expression:* specify a required cron expression (see [this documentation](https://doc.cuba-platform.com/manual-latest/scheduled_tasks_cuba_reg.html) for more details).
+    
+    ![Scheduled Task 1](img/scheduled-task1.png)
+    
+4. Click *OK* to save the changes.
+5. Activate the created task by clicking the corresponding button on Scheduled Tasks Screen.
+
+## Scheduled Task to Kill Sessions
+
+1. Repeat actions 1-2 described in the previous section.
+2. Fill in the required fields as follows:
+    * *Bean Name:* `ldap_UserSynchronizationSchedulerService`
+    * *Method Name:* `killExpiredSessions()`
+    * *Scheduling Type:* Cron
+    * *Cron Expression:* specify a required cron expression (see [this documentation](https://doc.cuba-platform.com/manual-latest/scheduled_tasks_cuba_reg.html) for more details).
+
+    ![Scheduled Task 2](img/scheduled-task2.png)
+
+3. Click *OK* to save the changes.
+4. Activate the created task by clicking the corresponding button on Scheduled Tasks Screen.
+
+## Enabling Scheduled Tasks
+
+1. Open Menu: Administration → Application Properties.
+2. Set the value of the *cuba.schedulingActive* property to 'true'.
+
+![Enabling Scheduling](img/enabling-scheduling.png)
+
+Once the scheduled tasks are created and scheduling is enabled, the system will check user sessions once in a specified 
+period of time. If there are any changes related to access groups, user roles or user status (i.e. deactivation), the 
+system will show a notification that the current session is about to expire and, after a configured period, the user 
+session will be killed.
