@@ -64,7 +64,7 @@ public class ScriptingMatchingRuleEdit extends AbstractEditor<ScriptingMatchingR
     public Component generateScriptingConditionField(Datasource datasource, String fieldId) {
         FlowBoxLayout fb = componentsFactory.createComponent(FlowBoxLayout.class);
         LinkButton lb = componentsFactory.createComponent(LinkButton.class);
-        Action action = new EmptyGroovyScriptHelpAction("EmptyGroovyScriptHelpAction") {
+        Action action = new EmptyGroovyScriptHelpAction("") {
             @Override
             public void actionPerform(Component component) {
                 showMessageDialog(getMessage("groovyScriptConditionTitle"), getMessage("groovyScriptCondition"),
