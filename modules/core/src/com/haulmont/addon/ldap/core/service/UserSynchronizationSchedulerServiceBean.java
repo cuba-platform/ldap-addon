@@ -2,6 +2,7 @@ package com.haulmont.addon.ldap.core.service;
 
 import com.haulmont.addon.ldap.config.LdapPropertiesConfig;
 import com.haulmont.addon.ldap.dto.ExpiredSession;
+import com.haulmont.addon.ldap.dto.UserSynchronizationResultDto;
 import com.haulmont.addon.ldap.service.UserSynchronizationService;
 import com.haulmont.cuba.core.global.TimeSource;
 import com.haulmont.cuba.security.app.UserSessionService;
@@ -37,8 +38,8 @@ public class UserSynchronizationSchedulerServiceBean implements UserSynchronizat
                 .filter(userSession -> !standardAuthenticationUsers.contains(userSession.getLogin()))
                 .collect(Collectors.toList());
         for (UserSessionEntity use : activeSessions) {
-            boolean isSessionExpire = userSynchronizationService.synchronizeUser(use.getLogin(), false);
-            if (isSessionExpire) {
+            UserSynchronizationResultDto userSynchronizationResult = userSynchronizationService.synchronizeUser(use.getLogin(), false);
+            if (userSynchronizationResult.isUserPrivilegesChanged()) {
                 expiredSessions.add(new ExpiredSession(use.getUuid(), use.getLogin(), timeSource.currentTimeMillis()));
             }
         }

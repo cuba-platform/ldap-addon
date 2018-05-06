@@ -11,6 +11,7 @@ import com.haulmont.addon.ldap.core.rule.custom.CustomLdapMatchingRuleWrapper;
 import com.haulmont.addon.ldap.core.spring.events.*;
 import com.haulmont.addon.ldap.dto.ExpiredSession;
 import com.haulmont.addon.ldap.dto.TestUserSynchronizationDto;
+import com.haulmont.addon.ldap.dto.UserSynchronizationResultDto;
 import com.haulmont.addon.ldap.entity.AbstractCommonMatchingRule;
 import com.haulmont.addon.ldap.entity.AbstractDbStoredMatchingRule;
 import com.haulmont.addon.ldap.entity.CommonMatchingRule;
@@ -65,7 +66,7 @@ public class UserSynchronizationServiceBean implements UserSynchronizationServic
     private UserSynchronizationSchedulerService userSynchronizationSchedulerService;
 
     @Override
-    public boolean synchronizeUser(String login, boolean saveSynchronizationResult) {
+    public UserSynchronizationResultDto synchronizeUser(String login, boolean saveSynchronizationResult) {
         try {
             String modeMessage = saveSynchronizationResult ? messages.formatMessage(UserSynchronizationServiceBean.class, "saveMode") :
                     messages.formatMessage(UserSynchronizationServiceBean.class, "notSaveMode");
@@ -73,7 +74,7 @@ public class UserSynchronizationServiceBean implements UserSynchronizationServic
 
             LdapUser ldapUser = ldapUserDao.getLdapUser(login);
             if (ldapUser == null) {
-                return false;
+                return new UserSynchronizationResultDto();
             }
             logger.info(messages.formatMessage(UserSynchronizationServiceBean.class, "userSyncStart", login, modeMessage));
             User cubaUser = cubaUserDao.getCubaUserByLogin(login);
@@ -93,7 +94,7 @@ public class UserSynchronizationServiceBean implements UserSynchronizationServic
             }
 
             logger.info(messages.formatMessage(UserSynchronizationServiceBean.class, "userSyncEnd", login, modeMessage));
-            return userPrivilegesWereChanged(beforeRulesApplyUserState, cubaUser);
+            return userPrivilegesChanged(beforeRulesApplyUserState, cubaUser);
         } catch (Exception e) {
             userSynchronizationLogDao.logSynchronizationError(login, e);
             throw new RuntimeException(messages.formatMessage(UserSynchronizationServiceBean.class, "errorDuringLdapSync", login), e);
@@ -178,14 +179,19 @@ public class UserSynchronizationServiceBean implements UserSynchronizationServic
         logger.info(messages.formatMessage(UserSynchronizationServiceBean.class, "userGetCommonInfoFromLdap", login, modeMessage));
     }
 
-    private boolean userPrivilegesWereChanged(User beforeSyncUser, User afterSyncUser) {
+    private UserSynchronizationResultDto userPrivilegesChanged(User beforeSyncUser, User afterSyncUser) {
+        UserSynchronizationResultDto result = new UserSynchronizationResultDto();
         if (!afterSyncUser.getActive()) {
-            return true;
+            result.setInactiveUser(true);
+        }
+        if ((beforeSyncUser.getActive() == null && afterSyncUser.getActive() != null) ||
+                (beforeSyncUser.getActive() != null && !beforeSyncUser.getActive().equals(afterSyncUser.getActive()))) {
+            result.setUserPrivilegesChanged(true);
         }
 
         if ((beforeSyncUser.getGroup() == null && afterSyncUser.getGroup() != null) ||
                 (beforeSyncUser.getGroup() != null && !beforeSyncUser.getGroup().equals(afterSyncUser.getGroup()))) {
-            return true;
+            result.setUserPrivilegesChanged(true);
         }
 
         List<Role> rolesBeforeSync = beforeSyncUser.getUserRoles().stream()
@@ -198,9 +204,9 @@ public class UserSynchronizationServiceBean implements UserSynchronizationServic
                 .collect(Collectors.toList());
 
         if (!rolesAfterSync.equals(rolesBeforeSync)) {
-            return true;
+            result.setUserPrivilegesChanged(true);
         }
 
-        return false;
+        return result;
     }
 }

@@ -2,9 +2,11 @@ package com.haulmont.addon.ldap.web.security.ldapcomponent;
 
 import com.google.common.collect.ImmutableMap;
 import com.haulmont.addon.ldap.config.LdapPropertiesConfig;
+import com.haulmont.addon.ldap.dto.UserSynchronizationResultDto;
 import com.haulmont.addon.ldap.service.AuthUserService;
 import com.haulmont.addon.ldap.service.UserSynchronizationService;
 import com.haulmont.cuba.core.global.ClientType;
+import com.haulmont.cuba.core.global.Messages;
 import com.haulmont.cuba.core.sys.ConditionalOnAppProperty;
 import com.haulmont.cuba.security.auth.*;
 import com.haulmont.cuba.security.global.LoginException;
@@ -14,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.Ordered;
 import org.springframework.stereotype.Component;
+
 import javax.annotation.Nullable;
 import javax.inject.Inject;
 import java.io.Serializable;
@@ -47,6 +50,9 @@ public class LdapAddonLoginProvider implements LoginProvider, Ordered {
     @Inject
     private LdapPropertiesConfig ldapPropertiesConfig;
 
+    @Inject
+    private Messages messages;
+
     @Nullable
     @Override
     public AuthenticationDetails login(Credentials credentials) throws LoginException {
@@ -58,7 +64,10 @@ public class LdapAddonLoginProvider implements LoginProvider, Ordered {
         }
 
         authUserService.ldapAuth(loginPasswordCredentials.getLogin(), loginPasswordCredentials.getPassword(), loginPasswordCredentials.getLocale());
-        userSynchronizationService.synchronizeUser(loginPasswordCredentials.getLogin(), true);
+        UserSynchronizationResultDto userSynchronizationResult = userSynchronizationService.synchronizeUser(loginPasswordCredentials.getLogin(), true);
+        if (userSynchronizationResult.isInactiveUser()) {
+            throw new LoginException(messages.formatMessage(LdapAddonLoginProvider.class, "LoginException.InactiveUserLoginAttempt", loginPasswordCredentials.getLocale()));
+        }
 
         TrustedClientCredentials tcCredentials = new TrustedClientCredentials(
                 loginPasswordCredentials.getLogin(),
