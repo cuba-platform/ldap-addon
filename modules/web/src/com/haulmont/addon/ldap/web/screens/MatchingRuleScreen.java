@@ -18,6 +18,8 @@ import com.haulmont.cuba.gui.data.CollectionDatasource;
 import com.haulmont.cuba.gui.data.Datasource;
 import com.haulmont.cuba.gui.xml.layout.ComponentsFactory;
 import com.haulmont.cuba.security.entity.Role;
+import com.haulmont.cuba.web.gui.data.ItemWrapper;
+import com.vaadin.event.ItemClickEvent;
 import org.apache.commons.lang.StringUtils;
 
 import javax.inject.Inject;
@@ -63,6 +65,12 @@ public class MatchingRuleScreen extends AbstractWindow {
     @Inject
     private MatchingRuleService matchingRuleService;
 
+    @Named("ruleEditButton")
+    private Button ruleEditButton;
+
+    @Named("ruleRemoveButton")
+    private Button ruleRemoveButton;
+
     private final static Integer DEFAULT_RULE_ORDER = 0;
 
     private final static String UP = "UP";
@@ -94,6 +102,15 @@ public class MatchingRuleScreen extends AbstractWindow {
         });
 
         matchingRuleTable.setSortable(false);
+
+        com.vaadin.ui.Table matchingRuleTableUi = matchingRuleTable.unwrap(com.vaadin.ui.Table.class);
+        matchingRuleTableUi.addItemClickListener((ItemClickEvent.ItemClickListener) event -> {
+                    ItemWrapper iw = ((ItemWrapper) event.getItem());
+                    AbstractCommonMatchingRule rule = (AbstractCommonMatchingRule) iw.getItem();
+                    ruleEditButton.setEnabled(CUSTOM != rule.getRuleType());
+                    ruleRemoveButton.setEnabled(CUSTOM != rule.getRuleType() && DEFAULT != rule.getRuleType());
+                }
+        );
 
         CollectionDatasource.CollectionChangeListener<AbstractCommonMatchingRule, UUID> sortListener = new CollectionDatasource.CollectionChangeListener<AbstractCommonMatchingRule, UUID>() {
             @Override

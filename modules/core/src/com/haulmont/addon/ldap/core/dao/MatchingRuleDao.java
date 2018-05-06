@@ -17,13 +17,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.haulmont.addon.ldap.core.dao.MatchingRuleDao.NAME;
+import static com.haulmont.addon.ldap.entity.MatchingRuleType.CUSTOM;
 import static com.haulmont.addon.ldap.entity.MatchingRuleType.DEFAULT;
 
 @Component(NAME)
@@ -104,16 +102,20 @@ public class MatchingRuleDao {
     @Transactional(readOnly = true)
     public List<AbstractCommonMatchingRule> getMatchingRulesGui() {
         List<AbstractCommonMatchingRule> result = getMatchingRules().stream()
-                .map(mr -> MatchingRuleType.CUSTOM == mr.getRuleType()
+                .map(mr -> CUSTOM == mr.getRuleType()
                         ? mapCustomRuleToDto((CustomLdapMatchingRuleWrapper) mr) : (AbstractCommonMatchingRule) mr)
                 .collect(Collectors.toList());
-        int i = 1;
+        int i = result.stream()
+                      .filter(mr -> DEFAULT != mr.getRuleType())
+                      .max(Comparator.comparing(mr -> mr.getOrder().getOrder())).map(mr -> mr.getOrder().getOrder()).orElse(DEFAULT_RULE_ORDER) + 1;
         for (AbstractCommonMatchingRule acmr : result) {
             if (DEFAULT_RULE_ORDER.equals(acmr.getOrder().getOrder())) {
                 acmr.getOrder().setOrder(i);
                 i++;
             }
         }
+        result.sort(Comparator.comparing(mr -> mr.getOrder().getOrder()));
+
         return result;
     }
 
@@ -126,7 +128,7 @@ public class MatchingRuleDao {
         }
         EntityManager entityManager = persistence.getEntityManager();
         for (CommonMatchingRule mr : matchingRules) {
-            if (MatchingRuleType.CUSTOM == mr.getRuleType()) {
+            if (CUSTOM == mr.getRuleType()) {
                 matchingRuleOrderDao.saveMatchingRuleOrder(mr.getOrder());
                 matchingRuleStatusDao.saveMatchingRuleStatus(mr.getStatus());
             } else {
