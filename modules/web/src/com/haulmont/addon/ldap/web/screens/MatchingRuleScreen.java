@@ -108,7 +108,9 @@ public class MatchingRuleScreen extends AbstractWindow {
                     ItemWrapper iw = ((ItemWrapper) event.getItem());
                     AbstractCommonMatchingRule rule = (AbstractCommonMatchingRule) iw.getItem();
                     ruleEditButton.setEnabled(CUSTOM != rule.getRuleType());
+                    ruleEditButton.setAction(CUSTOM != rule.getRuleType() ? matchingRuleTable.getAction("edit") : null);
                     ruleRemoveButton.setEnabled(CUSTOM != rule.getRuleType() && DEFAULT != rule.getRuleType());
+                    ruleRemoveButton.setAction(CUSTOM != rule.getRuleType() && DEFAULT != rule.getRuleType() ? matchingRuleTable.getAction("remove") : null);
                 }
         );
 
