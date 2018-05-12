@@ -357,7 +357,8 @@ public class LdapEventListener {
 
 Event types
 The application component allows the following kind of LDAP events:
-*  BeforeUserUpdatedFromLdapEvent
-*  AfterUserUpdatedFromLdapEvent
+*  BeforeUserRolesAndAccessGroupUpdatedFromLdapEvent
+*  AfterUserRolesAndAccessGroupUpdatedFromLdapEvent
 *  UserCreatedFromLdapEvent
+*  UserActivatedFromLdapEvent
 *  UserDeactivatedFromLdapEvent

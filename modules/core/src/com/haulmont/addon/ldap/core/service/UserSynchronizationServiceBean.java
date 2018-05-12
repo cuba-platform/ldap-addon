@@ -85,9 +85,9 @@ public class UserSynchronizationServiceBean implements UserSynchronizationServic
             setCommonAttributesFromLdapUser(ldapMatchingRuleContext, cubaUser, beforeRulesApplyUserState, login, modeMessage, modeType);
             if (!ldapMatchingRuleContext.getLdapUser().getDisabled()) {
                 List<CommonMatchingRule> matchingRules = matchingRuleDao.getMatchingRules();
-                events.publish(new BeforeUserUpdatedFromLdapEvent(this, ldapMatchingRuleContext, cubaUser, modeType));
+                events.publish(new BeforeUserRolesAndAccessGroupUpdatedFromLdapEvent(this, ldapMatchingRuleContext, cubaUser, modeType));
                 matchingRuleApplier.applyMatchingRules(matchingRules, ldapMatchingRuleContext, beforeRulesApplyUserState);
-                events.publish(new AfterUserUpdatedFromLdapEvent(this, ldapMatchingRuleContext, cubaUser, modeType));
+                events.publish(new AfterUserRolesAndAccessGroupUpdatedFromLdapEvent(this, ldapMatchingRuleContext, cubaUser, modeType));
             }
             if (saveSynchronizationResult) {
                 cubaUserDao.saveCubaUser(cubaUser, beforeRulesApplyUserState, ldapMatchingRuleContext);
@@ -155,6 +155,9 @@ public class UserSynchronizationServiceBean implements UserSynchronizationServic
         Boolean userDisabled = ldapMatchingRuleContext.getLdapUser().getDisabled();
         if (!beforeRulesApplyUserState.getActive() && userDisabled) {
             return;
+        }
+        if (!beforeRulesApplyUserState.getActive() && !userDisabled) {
+            events.publish(new UserActivatedFromLdapEvent(this, ldapMatchingRuleContext, cubaUser, modeType));
         }
         cubaUser.setEmail(ldapMatchingRuleContext.getLdapUser().getEmail());
         cubaUser.setName(ldapMatchingRuleContext.getLdapUser().getCn());
