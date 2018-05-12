@@ -156,7 +156,7 @@ The description of all rule types and their peculiarities is provided in the sec
 ### Custom Rule
 
 The LDAP component provides means to process custom rules defined programmatically. These rules can be created only by 
-adding new classes to the classpath of your application. Classes of custom rules must be spring beans and have @LdapMatchingRule annotation.
+adding new classes to the classpath of your application. Classes of custom rules must be Spring beans and have @LdapMatchingRule annotation.
 Custom rules can be viewed from the application UI, however, they cannot be configured or amended there.
 
 One of the advantages of custom rules is that they allow specifying additional conditions not related to LDAP attributes or schema.
