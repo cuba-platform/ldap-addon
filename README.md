@@ -11,6 +11,7 @@
     - [Testing LDAP Matching Rules](#testing-ldap-matching-rules)
     - [LDAP Log](#ldap-log)
 - [Scheduled Task Configuration](#scheduled-task-configuration)
+- [EventListeners to interact with LDAP addon events](#event-listeners)
 
 # Overview
 
@@ -80,6 +81,7 @@ ldap.standardAuthenticationUsers = admin
 cuba.web.standardAuthenticationUsers = admin
 ldap.expiringSessionNotificationCron = */10 * * * * *
 ldap.addonEnabled = true
+ldap.expiringSessionsEnable = true
 ```
 
 ## Additional Information
@@ -154,8 +156,8 @@ The description of all rule types and their peculiarities is provided in the sec
 ### Custom Rule
 
 The LDAP component provides means to process custom rules defined programmatically. These rules can be created only by 
-adding new classes to the source code of your application. Custom rules can be viewed from the application UI, however,
-they cannot be configured or amended there.
+adding new classes to the classpath of your application. Classes of custom rules must be spring beans and have @LdapMatchingRule annotation.
+Custom rules can be viewed from the application UI, however, they cannot be configured or amended there.
 
 One of the advantages of custom rules is that they allow specifying additional conditions not related to LDAP attributes or schema.
 The example of a custom rule is provided below.
@@ -285,6 +287,10 @@ Clicking the *Excel* button enables to download details of the selected rows (or
 
 # Scheduled Task Configuration
 
+Before scheduled task configuration make sure that below properties are set in *web-app.properties* file:
+* *ldap.expiringSessionsEnable:* true. Activate notifications for users about expiring sessions.
+* *ldap.expiringSessionNotificationCron:* cron expression for getting expiring sessions from middleware.
+
 Scheduled tasks allow configuring the component to kill the current user session in the following cases:
 
 * If matching rules were changed and the current user is assigned a new access group or roles.
@@ -329,6 +335,29 @@ In order to register scheduled tasks in your application, follow the guidelines 
 ![Enabling Scheduling](img/enabling-scheduling.png)
 
 Once the scheduled tasks are created and scheduling is enabled, the system will check user sessions once in a specified 
-period of time. If there are any changes related to access groups, user roles or user status (i.e. deactivation), the 
+period of time. If there are any changes related to access groups, user roles or user status (i.e. deactivation), the
 system will show a notification that the current session is about to expire and, after a configured period, the user 
 session will be killed.
+
+# EventListeners to interact with LDAP addon events
+In order to react to LDAP addon events in your application, you can register @Component methods as Event listener through the @EventListener Annotation.
+
+```java
+import org.springframework.context.event.EventListener;
+
+@Component
+public class LdapEventListener {
+
+    @EventListener
+    public void userCreatedFromLdap(UserCreatedFromLdapEvent event) {
+      // handle user creation event
+    }
+}
+```
+
+Event types
+The application component allows the following kind of LDAP events:
+*  BeforeUserUpdatedFromLdapEvent
+*  AfterUserUpdatedFromLdapEvent
+*  UserCreatedFromLdapEvent
+*  UserDeactivatedFromLdapEvent
