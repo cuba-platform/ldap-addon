@@ -1,9 +1,6 @@
 package com.haulmont.addon.ldap.core.service;
 
-import com.haulmont.addon.ldap.core.dao.CubaUserDao;
-import com.haulmont.addon.ldap.core.dao.LdapUserDao;
-import com.haulmont.addon.ldap.core.dao.MatchingRuleDao;
-import com.haulmont.addon.ldap.core.dao.UserSynchronizationLogDao;
+import com.haulmont.addon.ldap.core.dao.*;
 import com.haulmont.addon.ldap.core.dto.LdapUser;
 import com.haulmont.addon.ldap.core.rule.LdapMatchingRuleContext;
 import com.haulmont.addon.ldap.core.rule.appliers.MatchingRuleApplier;
@@ -64,6 +61,9 @@ public class UserSynchronizationServiceBean implements UserSynchronizationServic
 
     @Inject
     private UserSynchronizationSchedulerService userSynchronizationSchedulerService;
+
+    @Inject
+    private GroupDao groupDao;
 
     @Override
     public UserSynchronizationResultDto synchronizeUser(String login, boolean saveSynchronizationResult) {
@@ -176,6 +176,9 @@ public class UserSynchronizationServiceBean implements UserSynchronizationServic
         }
 
         if (PersistenceHelper.isNew(cubaUser)) {//only for new users
+            if (!cubaUser.getActive()) {//set default group to new disabled user
+                cubaUser.setGroup(groupDao.getDefaultGroup());
+            }
             logger.info(messages.formatMessage(UserSynchronizationServiceBean.class, "userCreatedFromLdap", login, modeMessage));
             events.publish(new UserCreatedFromLdapEvent(this, ldapMatchingRuleContext, cubaUser, modeType));
         }
