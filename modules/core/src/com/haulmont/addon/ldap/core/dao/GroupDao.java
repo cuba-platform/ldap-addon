@@ -1,5 +1,6 @@
 package com.haulmont.addon.ldap.core.dao;
 
+import com.haulmont.addon.ldap.entity.LdapConfig;
 import com.haulmont.cuba.core.Persistence;
 import com.haulmont.cuba.core.TypedQuery;
 import com.haulmont.cuba.security.entity.Group;
@@ -18,11 +19,15 @@ public class GroupDao {
     @Inject
     private Persistence persistence;
 
+    @Inject
+    private LdapConfigDao ldapConfigDao;
+
     @Transactional(readOnly = true)
     public Group getDefaultGroup() {
+        LdapConfig ldapConfig = ldapConfigDao.getLdapConfig();
         TypedQuery<Group> query = persistence.getEntityManager()
                 .createQuery("select gr from sec$Group gr where gr.name = :name", Group.class);
-        query.setParameter("name", "Company");
+        query.setParameter("name", ldapConfig.getDefaultAccessGroupName());
         return query.getSingleResult();
     }
 }

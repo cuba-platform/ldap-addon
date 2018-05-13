@@ -127,6 +127,7 @@ create table LDAP_LDAP_CONFIG (
     VERSION integer not null,
     --
     SCHEMA_BASE varchar(255),
+    DEFAULT_ACCESS_GROUP_NAME varchar(255),
     LDAP_USER_OBJECT_CLASSES varchar(2000),
     OBJECT_CLASS_PROPERTY_NAME varchar(255),
     ATTRIBUTE_PROPERTY_NAMES varchar(2000),

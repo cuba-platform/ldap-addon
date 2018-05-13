@@ -94,6 +94,9 @@
                                 <field caption="msg://userBase"
                                        description="msg://userBaseHint"
                                        property="userBase"/>
+                                <field caption="msg://defaultGroupName"
+                                       description="msg://defaultGroupHint"
+                                       property="defaultAccessGroupName"/>
                             </column>
                         </fieldGroup>
                     </hbox>

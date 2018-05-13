@@ -22,6 +22,9 @@ public class LdapConfig extends BaseUuidEntity implements Versioned, Updatable {
     @Column(name = "SCHEMA_BASE")
     private String schemaBase;
 
+    @Column(name = "DEFAULT_ACCESS_GROUP_NAME")
+    protected String defaultAccessGroupName;
+
     @Transient
     @MetaProperty
     protected String contextSourceBase;
@@ -91,6 +94,15 @@ public class LdapConfig extends BaseUuidEntity implements Versioned, Updatable {
     @Version
     @Column(name = "VERSION", nullable = false)
     private Integer version;
+
+    public void setDefaultAccessGroupName(String defaultAccessGroupName) {
+        this.defaultAccessGroupName = defaultAccessGroupName;
+    }
+
+    public String getDefaultAccessGroupName() {
+        return defaultAccessGroupName;
+    }
+
 
     public void setGivenNameAttribute(String givenNameAttribute) {
         this.givenNameAttribute = givenNameAttribute;
