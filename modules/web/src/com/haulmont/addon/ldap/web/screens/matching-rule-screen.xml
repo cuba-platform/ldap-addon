@@ -83,10 +83,10 @@
             </table>
         </groupBox>
         <groupBox spacing="true">
-            <flowBox spacing="true"
-                     width="100%">
+            <flowBox spacing="true">
                 <label height="20px"
-                       value="msg://testRuleScreenUserName"/>
+                       value="msg://testRuleScreenUserName"
+                       width="70px"/>
                 <textField id="testRuleScreenLogin"/>
                 <button id="testRuleScreenTestButton"
                         caption="msg://testRuleScreenTestButton"
@@ -94,15 +94,16 @@
             </flowBox>
             <flowBox spacing="true">
                 <label value="msg://testRuleScreenAppliedGroup"
-                       width="67px"/>
+                       width="70px"/>
                 <textField id="testRuleScreenAppliedGroup"
                            enable="false"/>
             </flowBox>
             <hbox spacing="true"
                   width="100%">
                 <groupBox spacing="true">
+                    <label stylename="bold"
+                           value="msg://testRuleScreenRoleTable"/>
                     <table id="testRuleScreenRoleTable"
-                           caption="msg://testRuleScreenRoleTable"
                            height="200px"
                            width="100%">
                         <columns>
@@ -115,8 +116,9 @@
                     </table>
                 </groupBox>
                 <groupBox spacing="true">
+                    <label stylename="bold"
+                           value="msg://testRuleScreenRuleTable"/>
                     <table id="testRuleScreenRuleTable"
-                           caption="msg://testRuleScreenRuleTable"
                            height="200px"
                            width="100%">
                         <columns>

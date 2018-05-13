@@ -36,13 +36,17 @@
             </column>
         </fieldGroup>
         <flowBox spacing="true">
-            <buttonsPanel>
+            <hbox align="MIDDLE_CENTER"
+                  spacing="true">
                 <button id="testConstraintButton"
+                        align="MIDDLE_CENTER"
                         caption="msg://testConstraintButtonCaption"
                         invoke="onTestConstraintButtonClick"/>
-            </buttonsPanel>
-            <label value="msg://userLogin"/>
-            <textField id="userLoginTextField"/>
+                <label align="MIDDLE_CENTER"
+                       value="msg://userLogin"/>
+                <textField id="userLoginTextField"
+                           align="MIDDLE_CENTER"/>
+            </hbox>
         </flowBox>
         <fieldGroup datasource="scriptingMatchingRuleDs">
             <column width="250px">

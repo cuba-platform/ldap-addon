@@ -207,7 +207,7 @@
                         <textArea datasource="userSynchronizationLogDs"
                                   editable="false"
                                   property="errorText"
-                                  rows="4"
+                                  rows="12"
                                   width="100%"/>
                     </row>
                 </rows>
