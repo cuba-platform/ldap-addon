@@ -4,7 +4,9 @@ import com.haulmont.chile.core.datatypes.impl.EnumClass;
 
 import javax.annotation.Nullable;
 
-
+/**
+ * Result of user login attempt.
+ */
 public enum UserSynchronizationResultEnum implements EnumClass<String> {
     SUCCESS_SYNC("SUCCESS_SYNC", "SUCCESS"),
     ERROR_SYNC("ERROR_SYNC", "ERROR"),

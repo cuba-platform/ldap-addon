@@ -183,8 +183,7 @@ public class LdapServiceBean implements LdapService {
         return ldapConfigDao.getLdapConfig();
     }
 
-    @Override
-    public LdapContextDto getLdapContextConfig() {
+    private LdapContextDto getLdapContextConfig() {
         return new LdapContextDto(ldapContextConfig.getContextSourceUrl(),
                 ldapContextConfig.getContextSourceUserName(),
                 ldapContextConfig.getContextSourceBase());

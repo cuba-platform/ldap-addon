@@ -4,6 +4,9 @@ import com.haulmont.chile.core.datatypes.impl.EnumClass;
 
 import javax.annotation.Nullable;
 
+/**
+ * Matching rule type.
+ */
 public enum MatchingRuleType implements EnumClass<String> {
 
     SIMPLE("SIMPLE", "Simple"),

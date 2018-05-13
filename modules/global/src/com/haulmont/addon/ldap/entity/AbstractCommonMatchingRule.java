@@ -8,6 +8,9 @@ import com.haulmont.cuba.core.global.DeletePolicy;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
+/**
+ * Common fields for Custom and DB stored matching rules.
+ */
 @MappedSuperclass
 public abstract class AbstractCommonMatchingRule extends StandardEntity implements CommonMatchingRule {
     private static final long serialVersionUID = 1956446424046023194L;

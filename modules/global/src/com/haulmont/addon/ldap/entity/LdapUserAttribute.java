@@ -8,6 +8,9 @@ import java.util.Date;
 import com.haulmont.cuba.core.entity.BaseUuidEntity;
 import com.haulmont.cuba.core.entity.Creatable;
 
+/**
+ * Names of LDAP attributes available in SimpleRuleCondition
+ */
 @Table(name = "LDAP_USER_ATTRIBUTE")
 @Entity(name = "ldap$LdapUserAttribute")
 public class LdapUserAttribute extends BaseUuidEntity implements Creatable {

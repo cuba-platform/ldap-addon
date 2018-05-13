@@ -8,6 +8,10 @@ import com.haulmont.cuba.core.entity.StandardEntity;
 
 import javax.validation.constraints.NotNull;
 
+/**
+ * Matching rule order.<br>
+ * Rules with the smallest order are applied first. Starts with 1.
+ */
 @Table(name = "LDAP_MATCHING_RULE_ORDER")
 @Entity(name = "ldap$MatchingRuleOrder")
 public class MatchingRuleOrder extends StandardEntity {

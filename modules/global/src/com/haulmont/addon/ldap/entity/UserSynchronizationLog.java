@@ -10,6 +10,9 @@ import javax.persistence.Lob;
 import javax.persistence.Table;
 import java.util.Date;
 
+/**
+ * Tracks user login attempt
+ */
 @Table(name = "LDAP_USER_SYNCHRONIZATION_LOG")
 @Entity(name = "ldap$UserSynchronizationLog")
 public class UserSynchronizationLog extends BaseUuidEntity implements SoftDelete, Creatable {

@@ -8,6 +8,10 @@ import com.haulmont.cuba.core.entity.StandardEntity;
 import javax.persistence.Column;
 import javax.validation.constraints.NotNull;
 
+/**
+ * Matching rule status.<br>
+ * Active or disabled.
+ */
 @Table(name = "LDAP_MATCHING_RULE_STATUS")
 @Entity(name = "ldap$MatchingRuleStatus")
 public class MatchingRuleStatus extends StandardEntity {

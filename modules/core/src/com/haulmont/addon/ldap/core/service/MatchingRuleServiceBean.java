@@ -17,11 +17,6 @@ public class MatchingRuleServiceBean implements MatchingRuleService {
     private MatchingRuleDao matchingRuleDao;
 
     @Override
-    public List<CommonMatchingRule> getMatchingRules() {
-        return matchingRuleDao.getMatchingRules();
-    }
-
-    @Override
     public int getMatchingRulesCount() {
         return matchingRuleDao.getMatchingRulesCount();
     }

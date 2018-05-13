@@ -8,6 +8,10 @@ import com.haulmont.cuba.core.global.DeletePolicy;
 
 import java.util.List;
 
+/**
+ * Simple matching rule.<br>
+ * Applies if all provided conditions are true.
+ */
 @DiscriminatorValue("SIMPLE")
 @Entity(name = "ldap$SimpleMatchingRule")
 public class SimpleMatchingRule extends AbstractDbStoredMatchingRule {

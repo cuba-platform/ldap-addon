@@ -27,6 +27,11 @@ import java.lang.ref.WeakReference;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArraySet;
 
+/**
+ * Stores every user session.<br>
+ * Periodically get expiring user sessions from Middleware and send notification to expiring sessions.<br>
+ * Session becomes expiring if user's group or roles changes since last LDAP synchronization or user was deactivated in LDAP.
+ */
 @Component("ldap_ExpiredSessionWatcher")
 public class ExpiredSessionWatcher {
 

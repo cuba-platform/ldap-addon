@@ -11,13 +11,40 @@ import javax.naming.NamingException;
 import javax.naming.directory.Attributes;
 import java.util.*;
 
+/**
+ * Stores information about user's LDAP synchronization process.
+ */
 public class LdapMatchingRuleContext {
 
+    /**
+     * LDAP representation of synchronized CUBA user.
+     */
     private final LdapUser ldapUser;
+
+    /**
+     * Matching rules applied to the user.
+     */
     private final Set<CommonMatchingRule> appliedRules = new LinkedHashSet<>();
+
+    /**
+     * Roles from applied matching rules
+     */
     private final Set<Role> roles = new LinkedHashSet<>();
+
+    /**
+     * Access group from applied matching rules.
+     */
     private Group group;
+
+    /**
+     * CUBA user which synchronized state with LDAP.
+     */
     private final User cubaUser;
+
+    /**
+     * This field set if terminal matching rule was applied.<br>
+     * Stops applying of matching rules for this context.
+     */
     private boolean isTerminalRuleApply = false;
 
     public LdapMatchingRuleContext(LdapUser ldapUser, User cubaUser) {

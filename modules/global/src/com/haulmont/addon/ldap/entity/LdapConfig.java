@@ -11,6 +11,9 @@ import com.haulmont.cuba.core.entity.Updatable;
 import com.haulmont.chile.core.annotations.MetaProperty;
 import javax.persistence.Transient;
 
+/**
+ * Configuration of LDAP addon
+ */
 @Table(name = "LDAP_LDAP_CONFIG")
 @Entity(name = "ldap$LdapPropertiesConfig")
 public class LdapConfig extends BaseUuidEntity implements Versioned, Updatable {

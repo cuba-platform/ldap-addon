@@ -5,6 +5,10 @@ import javax.persistence.Entity;
 import javax.persistence.Column;
 import javax.persistence.Lob;
 
+/**
+ * Scripting matching rule.<br>
+ * Applies if provided Groovy script returns true.
+ */
 @DiscriminatorValue("SCRIPTING")
 @Entity(name = "ldap$ScriptingMatchingRule")
 public class ScriptingMatchingRule extends AbstractDbStoredMatchingRule {

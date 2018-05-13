@@ -4,6 +4,10 @@ import com.haulmont.cuba.core.entity.StandardEntity;
 
 import javax.persistence.*;
 
+/**
+ * Simple matching rule condition.<br>
+ * Contains LDAP attribute name and attribute's value. Supports only equal relationship between attribute and value.
+ */
 @Table(name = "LDAP_SIMPLE_RULE_CONDITION")
 @Entity(name = "ldap$SimpleRuleCondition")
 public class SimpleRuleCondition extends StandardEntity {

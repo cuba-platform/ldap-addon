@@ -8,6 +8,9 @@ import com.haulmont.cuba.security.entity.Role;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Fields for DB stored matching rules.
+ */
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "RULE_TYPE", discriminatorType = DiscriminatorType.STRING)
 @Table(name = "LDAP_MATCHING_RULE")
