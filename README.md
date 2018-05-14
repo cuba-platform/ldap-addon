@@ -24,7 +24,8 @@ The component provides the following functionalities:
 
 * Authentication in CUBA applications using LDAP credentials;
 * Configuration of rules for assigning roles and access groups to users;
-* Population of user details from the LDAP server.
+* Population of user details from the LDAP server;
+* Logging LDAP synchronization details.
 
 # Getting Started
 
@@ -156,7 +157,8 @@ The description of all rule types and their peculiarities is provided in the sec
 ### Custom Rule
 
 The LDAP component provides means to process custom rules defined programmatically. These rules can be created only by 
-adding new classes to the classpath of your application. Classes of custom rules must be Spring beans and have @LdapMatchingRule annotation.
+adding new classes to the classpath of your application. These classes should be implemented as Spring beans and 
+should be provided with the @LdapMatchingRule annotation.
 Custom rules can be viewed from the application UI, however, they cannot be configured or amended there.
 
 One of the advantages of custom rules is that they allow specifying additional conditions not related to LDAP attributes or schema.
@@ -287,9 +289,10 @@ Clicking the *Excel* button enables to download details of the selected rows (or
 
 # Scheduled Task Configuration
 
-Before scheduled task configuration make sure that below properties are set in *web-app.properties* file:
-* *ldap.expiringSessionsEnable:* true. Activate notifications for users about expiring sessions.
-* *ldap.expiringSessionNotificationCron:* cron expression for getting expiring sessions from middleware.
+Before configuring scheduled tasks, make sure that the properties listed below are configured in the `web-app.properties` file:
+
+* *ldap.expiringSessionsEnable:* if set to 'true', enables notifications to inform a user that his/her session is about to expire.
+* *ldap.expiringSessionNotificationCron:* defines the cron expression for retrieving expired sessions from the middleware layer.
 
 Scheduled tasks allow configuring the component to kill the current user session in the following cases:
 
@@ -339,8 +342,10 @@ period of time. If there are any changes related to access groups, user roles or
 system will show a notification that the current session is about to expire and, after a configured period, the user 
 session will be killed.
 
-# EventListeners to interact with LDAP addon events
-In order to react to LDAP addon events in your application, you can register @Component methods as Event listener through the @EventListener Annotation.
+# EventListeners to Interact with LDAP Addon Events
+
+In order to make your application react to events related to the LDAP component, you can register @Component methods
+as event listeners using the @EventListener annotation. The example of how to configure an event listener is given below:
 
 ```java
 import org.springframework.context.event.EventListener;
@@ -350,13 +355,15 @@ public class LdapEventListener {
 
     @EventListener
     public void userCreatedFromLdap(UserCreatedFromLdapEvent event) {
-      // handle user creation event
+      // handles user creation event
     }
 }
 ```
 
-Event types
-The application component allows the following kind of LDAP events:
+## Event types
+
+The application component supports the following LDAP event types:
+
 *  BeforeUserRolesAndAccessGroupUpdatedFromLdapEvent
 *  AfterUserRolesAndAccessGroupUpdatedFromLdapEvent
 *  UserCreatedFromLdapEvent
