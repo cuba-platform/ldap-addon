@@ -9,7 +9,7 @@ import com.haulmont.cuba.core.entity.BaseUuidEntity;
 import com.haulmont.cuba.core.entity.Creatable;
 
 /**
- * Names of LDAP attributes available in SimpleRuleCondition
+ * Names of LDAP attributes that can be used as simple rule conditions
  */
 @Table(name = "LDAP_USER_ATTRIBUTE")
 @Entity(name = "ldap$LdapUserAttribute")

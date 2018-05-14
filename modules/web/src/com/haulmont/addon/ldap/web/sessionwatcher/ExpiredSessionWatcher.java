@@ -28,9 +28,9 @@ import java.util.*;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 /**
- * Stores every user session.<br>
- * Periodically get expiring user sessions from Middleware and send notification to expiring sessions.<br>
- * Session becomes expiring if user's group or roles changes since last LDAP synchronization or user was deactivated in LDAP.
+ * Stores all user sessions.<br>
+ * Periodically, gets expired user sessions from the Middleware layer and sends notifications to users having expired sessions<br>
+ * A session becomes expired if an access group or roles assigned to the user are changed since the last LDAP synchronization or a user is deactivated via LDAP.
  */
 @Component("ldap_ExpiredSessionWatcher")
 public class ExpiredSessionWatcher {

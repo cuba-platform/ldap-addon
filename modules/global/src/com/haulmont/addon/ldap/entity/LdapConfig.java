@@ -12,7 +12,7 @@ import com.haulmont.chile.core.annotations.MetaProperty;
 import javax.persistence.Transient;
 
 /**
- * Configuration of LDAP addon
+ * Configuration of the LDAP addon
  */
 @Table(name = "LDAP_LDAP_CONFIG")
 @Entity(name = "ldap$LdapPropertiesConfig")

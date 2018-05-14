@@ -7,7 +7,7 @@ import javax.persistence.Lob;
 
 /**
  * Scripting matching rule.<br>
- * Applies if provided Groovy script returns true.
+ * Rules of this type are applied if a provided Groovy script returns 'true'.
  */
 @DiscriminatorValue("SCRIPTING")
 @Entity(name = "ldap$ScriptingMatchingRule")

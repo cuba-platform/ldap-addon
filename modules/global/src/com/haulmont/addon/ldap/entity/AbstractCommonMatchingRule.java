@@ -9,7 +9,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
 /**
- * Common fields for Custom and DB stored matching rules.
+ * Common fields for Custom matching rules and rules stored in the DB.
  */
 @MappedSuperclass
 public abstract class AbstractCommonMatchingRule extends StandardEntity implements CommonMatchingRule {

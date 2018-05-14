@@ -2,33 +2,34 @@ package com.haulmont.addon.ldap.entity;
 
 
 /**
- * Methods for Custom and DB stored matching rules.
+ * Methods for Custom matching rules and rules stored in the DB.
  */
 public interface CommonMatchingRule {
 
     /**
-     * Returns unique id of matching rule.<br>
-     * For DB stored matching rules it is value of FK column. For Custom rule it is canonical class name of Custom rule class.
+     * Returns a unique identifier of a matching rule.<br>
+     * For matching rules stored in the DB, it is the value provided in the FK column.<br>
+     * For Custom rules, it is a canonical class name of the Custom rule class.
      */
     String getMatchingRuleId();
 
     /**
-     * Returns rule type
+     * Returns a rule type.
      */
     MatchingRuleType getRuleType();
 
     /**
-     * Returns description
+     * Returns a rule description.
      */
     String getDescription();
 
     /**
-     * Returns matching rule order
+     * Returns a matching rule order number.
      */
     MatchingRuleOrder getOrder();
 
     /**
-     * Returns matching rule status.<br>
+     * Returns a matching rule status.
      */
     MatchingRuleStatus getStatus();
 }

@@ -6,7 +6,7 @@ import com.haulmont.cuba.security.entity.Role;
 import java.util.List;
 
 /**
- * Methods DB stored matching rules.
+ * Methods for matching rules stored in the DB.
  */
 public interface MatchingRule extends CommonMatchingRule {
 

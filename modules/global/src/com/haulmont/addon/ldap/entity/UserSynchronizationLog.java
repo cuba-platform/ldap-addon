@@ -11,7 +11,7 @@ import javax.persistence.Table;
 import java.util.Date;
 
 /**
- * Tracks user login attempt
+ * Tracks a user login attempt.
  */
 @Table(name = "LDAP_USER_SYNCHRONIZATION_LOG")
 @Entity(name = "ldap$UserSynchronizationLog")

@@ -10,7 +10,7 @@ import java.util.List;
 
 /**
  * Simple matching rule.<br>
- * Applies if all provided conditions are true.
+ * Rules of this type are applied if all provided conditions are met.
  */
 @DiscriminatorValue("SIMPLE")
 @Entity(name = "ldap$SimpleMatchingRule")

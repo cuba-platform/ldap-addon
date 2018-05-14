@@ -10,9 +10,9 @@ public interface AuthUserService {
     String NAME = "ldap_AuthUserService";
 
     /**
-     * Try to authenticate user in LDAP using {@link org.springframework.ldap.core.LdapTemplate#authenticate(Name, String, String)}
+     * Tries to authenticate a user in LDAP using {@link org.springframework.ldap.core.LdapTemplate#authenticate(Name, String, String)}
      *
-     * @throws LoginException if user with provided credentials not exists in LDAP.
+     * @throws LoginException if a user with provided credentials does not exist in LDAP.
      */
     void ldapAuth(String login, String password, Locale messagesLocale) throws LoginException;
 }

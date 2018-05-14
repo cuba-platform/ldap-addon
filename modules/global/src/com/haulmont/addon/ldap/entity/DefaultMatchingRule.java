@@ -5,7 +5,8 @@ import javax.persistence.DiscriminatorValue;
 
 /**
  * Default matching rule.<br>
- * Predefined rule. Applies only if other rules don't apply. Always applies last. Can't be removed or deactivated.
+ * This rule is a predefined one. It is used if none of other rules were applied. <br>
+ * That is why it contains the 'LAST' value in the *Order* field. The rule cannot be removed or deactivated.
  */
 @DiscriminatorValue("DEFAULT")
 @Entity(name = "ldap$DefaultMatchingRule")

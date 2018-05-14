@@ -12,12 +12,12 @@ import javax.naming.directory.Attributes;
 import java.util.*;
 
 /**
- * Stores information about user's LDAP synchronization process.
+ * Stores information about the LDAP synchronization process for the current user session.
  */
 public class LdapMatchingRuleContext {
 
     /**
-     * LDAP representation of synchronized CUBA user.
+     * LDAP representation of the synchronized CUBA user.
      */
     private final LdapUser ldapUser;
 
@@ -27,23 +27,23 @@ public class LdapMatchingRuleContext {
     private final Set<CommonMatchingRule> appliedRules = new LinkedHashSet<>();
 
     /**
-     * Roles from applied matching rules
+     * Roles to be assigned to the user after the application of matching rules.
      */
     private final Set<Role> roles = new LinkedHashSet<>();
 
     /**
-     * Access group from applied matching rules.
+     * An access group to be assigned to the user after the application of matching rules.
      */
     private Group group;
 
     /**
-     * CUBA user which synchronized state with LDAP.
+     * A CUBA user that has its state synchronized in accordance with LDAP.
      */
     private final User cubaUser;
 
     /**
-     * This field set if terminal matching rule was applied.<br>
-     * Stops applying of matching rules for this context.
+     * The value of this field defines whether the applied rule is terminal.<br>
+     * If set to 'true', matching rule application for this context becomes restricted.
      */
     private boolean isTerminalRuleApply = false;
 

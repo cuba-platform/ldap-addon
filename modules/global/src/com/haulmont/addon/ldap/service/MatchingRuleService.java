@@ -9,17 +9,17 @@ public interface MatchingRuleService {
     String NAME = "ldap_MatchingRuleService";
 
     /**
-     * Returns count of matching rules.
+     * Returns the amount of existing matching rules.
      */
     int getMatchingRulesCount();
 
     /**
-     * Returns GUI representation of matching rules.
+     * Returns the GUI representation of matching rules.
      */
     List<AbstractCommonMatchingRule> getMatchingRulesGui();
 
     /**
-     * Persists matching rules state from LDAP Matching Rule screen.
+     * Persists the state of matching rules from LDAP Matching Rule Screen.
      */
     void saveMatchingRules(List<AbstractCommonMatchingRule> matchingRules, List<AbstractCommonMatchingRule> matchingRulesToDelete);
 
