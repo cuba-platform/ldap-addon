@@ -344,7 +344,7 @@ session will be killed.
 
 # EventListeners to Interact with LDAP Addon Events
 
-In order to make your application react to events related to the LDAP component, you can register @Component methods
+In order to make your application react to events related to the LDAP component, you can register the @Component methods
 as event listeners using the @EventListener annotation. The example of how to configure an event listener is given below:
 
 ```java
@@ -364,8 +364,10 @@ public class LdapEventListener {
 
 The application component supports the following LDAP event types:
 
-*  BeforeUserRolesAndAccessGroupUpdatedFromLdapEvent
-*  AfterUserRolesAndAccessGroupUpdatedFromLdapEvent
-*  UserCreatedFromLdapEvent
-*  UserActivatedFromLdapEvent
-*  UserDeactivatedFromLdapEvent
+*  *BeforeUserRolesAndAccessGroupUpdatedFromLdapEvent*: defines the state of a CUBA user before matching rules are applied, i.e.
+before user roles and an access group are assigned. 
+*  *AfterUserRolesAndAccessGroupUpdatedFromLdapEvent*: defines the state of a CUBA user after matching rules are applied, i.e.
+after user roles and an access group are assigned. 
+*  *UserCreatedFromLdapEvent*: describes the state when a new CUBA user is created after logging in using LDAP credentials.
+*  *UserActivatedFromLdapEvent*: defines the state of a CUBA user that was previously inactive, and then activated.
+*  *UserDeactivatedFromLdapEvent*: defines the state of a CUBA user that was previously active, and then disabled.
