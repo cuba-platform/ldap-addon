@@ -11,6 +11,7 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.ldap.CommunicationException;
 import org.springframework.ldap.core.LdapTemplate;
 import org.springframework.ldap.filter.AndFilter;
 import org.springframework.ldap.filter.EqualsFilter;
@@ -80,13 +81,19 @@ public class LdapUserDao {
     }
 
     public void authenticateLdapUser(String login, String password, Locale messagesLocale) throws LoginException {
-        if (!ldapTemplate.authenticate(LdapUtils.emptyLdapName(), createUserBaseAndLoginFilter(login).encode(), password)) {
-            String loginFailedMessage = messages.formatMessage(LdapUserDao.class, "LoginException.InvalidLoginOrPassword", messagesLocale, login);
-            logger.warn(loginFailedMessage);
-            throw new LoginException(loginFailedMessage);
-        } else {
-            String loginSuccessMessage = messages.formatMessage(LdapUserDao.class, "successLdapLogin", messagesLocale, login);
-            logger.warn(loginSuccessMessage);
+        try {
+            if (!ldapTemplate.authenticate(LdapUtils.emptyLdapName(), createUserBaseAndLoginFilter(login).encode(), password)) {
+                String loginFailedMessage = messages.formatMessage(LdapUserDao.class, "LoginException.InvalidLoginOrPassword", messagesLocale, login);
+                logger.warn(loginFailedMessage);
+                throw new LoginException(loginFailedMessage);
+            } else {
+                String loginSuccessMessage = messages.formatMessage(LdapUserDao.class, "successLdapLogin", messagesLocale, login);
+                logger.warn(loginSuccessMessage);
+            }
+        } catch (CommunicationException e) {
+            String serverConnectionProblem = messages.formatMessage(LdapUserDao.class, "ldapServerConnectionProblem", messagesLocale, login);
+            logger.error(serverConnectionProblem, e);
+            throw new LoginException(serverConnectionProblem);
         }
 
     }
