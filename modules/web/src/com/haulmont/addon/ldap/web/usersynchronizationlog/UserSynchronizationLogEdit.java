@@ -14,6 +14,6 @@ public class UserSynchronizationLogEdit extends AbstractEditor<UserSynchronizati
     @Override
     protected void postInit() {
         super.postInit();
-        resultTextField.setValue(getItem().getResult().getName());
+        resultTextField.setValue(getMessage(getItem().getResult().name()));
     }
 }
