@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 import javax.inject.Inject;
 
 @Component
-@LdapMatchingRule(name = "barts rule", description = "Test custom Rule")
+@LdapMatchingRule(name = "barts rule", condition = "Test custom Rule")
 public class TestCustomLdapRule implements CustomLdapMatchingRule {
 
     @Inject
