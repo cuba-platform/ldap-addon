@@ -13,5 +13,5 @@ import java.lang.annotation.Target;
 public @interface LdapMatchingRule {
 
     String name();
-    String description();
+    String condition();
 }

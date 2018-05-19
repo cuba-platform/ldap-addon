@@ -72,7 +72,7 @@ public class CustomLdapMatchingRuleWrapper implements CustomLdapMatchingRule, Co
         Class clazz = customLdapMatchingRule.getClass();
         Annotation annotation = clazz.getAnnotation(LdapMatchingRule.class);
         LdapMatchingRule ldapMatchingRule = (LdapMatchingRule) annotation;
-        return ldapMatchingRule.description();
+        return ldapMatchingRule.condition();
     }
 
     private MatchingRuleOrder getOrder(CustomLdapMatchingRule customLdapMatchingRule) {
