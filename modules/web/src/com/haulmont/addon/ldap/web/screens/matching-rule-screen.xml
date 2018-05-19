@@ -84,19 +84,30 @@
         </groupBox>
         <groupBox spacing="true">
             <flowBox spacing="true">
-                <label height="20px"
-                       value="msg://testRuleScreenUserName"
-                       width="70px"/>
-                <textField id="testRuleScreenLogin"/>
-                <button id="testRuleScreenTestButton"
-                        caption="msg://testRuleScreenTestButton"
-                        invoke="onTestRuleScreenTestButtonClick"/>
+                <hbox align="MIDDLE_CENTER"
+                      spacing="true">
+                    <label align="MIDDLE_CENTER"
+                           height="20px"
+                           value="msg://testRuleScreenUserName"
+                           width="70px"/>
+                    <textField id="testRuleScreenLogin"
+                               align="MIDDLE_CENTER"/>
+                    <button id="testRuleScreenTestButton"
+                            align="MIDDLE_CENTER"
+                            caption="msg://testRuleScreenTestButton"
+                            invoke="onTestRuleScreenTestButtonClick"/>
+                </hbox>
             </flowBox>
             <flowBox spacing="true">
-                <label value="msg://testRuleScreenAppliedGroup"
-                       width="70px"/>
-                <textField id="testRuleScreenAppliedGroup"
-                           enable="false"/>
+                <hbox align="MIDDLE_CENTER"
+                      spacing="true">
+                    <label align="MIDDLE_CENTER"
+                           value="msg://testRuleScreenAppliedGroup"
+                           width="70px"/>
+                    <textField id="testRuleScreenAppliedGroup"
+                               align="MIDDLE_CENTER"
+                               enable="false"/>
+                </hbox>
             </flowBox>
             <hbox spacing="true"
                   width="100%">
