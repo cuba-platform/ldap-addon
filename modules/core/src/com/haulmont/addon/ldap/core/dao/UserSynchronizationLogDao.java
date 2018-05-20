@@ -58,7 +58,7 @@ public class UserSynchronizationLogDao {
         userSynchronizationLog.setLogin(cubaUser.getLogin());
         UserSynchronizationResultEnum result = (originalUser.getActive() || cubaUser.getActive()) ? SUCCESS_SYNC : DISABLED_USER_TRY_LOGIN;
         userSynchronizationLog.setResult(result);
-        userSynchronizationLog.setLdapAttributes(getLdapAttributes(ldapMatchingRuleContext.getLdapUser().getUnmodifiableLdapAttributeMap()));
+        userSynchronizationLog.setLdapAttributes(ldapMatchingRuleContext.getLdapUser() == null ? null : getLdapAttributes(ldapMatchingRuleContext.getLdapUser().getUnmodifiableLdapAttributeMap()));
         userSynchronizationLog.setAccessGroupBefore(originalUser.getGroup() == null ? null : originalUser.getGroup().getName());
         userSynchronizationLog.setAccessGroupAfter(cubaUser.getGroup() == null ? null : cubaUser.getGroup().getName());
         userSynchronizationLog.setRolesBefore(getRolesField(originalUser.getUserRoles()));

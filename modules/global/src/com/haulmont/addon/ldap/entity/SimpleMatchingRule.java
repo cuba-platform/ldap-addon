@@ -6,6 +6,7 @@ import com.haulmont.chile.core.annotations.Composition;
 import com.haulmont.cuba.core.entity.annotation.OnDelete;
 import com.haulmont.cuba.core.global.DeletePolicy;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -21,7 +22,7 @@ public class SimpleMatchingRule extends AbstractDbStoredMatchingRule {
     @Composition
     @OnDelete(DeletePolicy.CASCADE)
     @OneToMany(mappedBy = "simpleMatchingRule", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<SimpleRuleCondition> conditions;
+    private List<SimpleRuleCondition> conditions = new ArrayList<>();
 
     public SimpleMatchingRule() {
         super();

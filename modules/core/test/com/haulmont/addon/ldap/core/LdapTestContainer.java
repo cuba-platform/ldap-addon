@@ -29,8 +29,15 @@ public class LdapTestContainer extends TestContainer {
                 // Add this file which is located in CUBA and defines some properties
                 // specifically for test environment. You can replace it with your own
                 // or add another one in the end.
-                "test-app.properties");
-        initDbProperties();
+                "test-app.properties",
+                "com/haulmont/addon/ldap/core/resources/ldap-test-app.properties");
+
+        dbDriver = "org.postgresql.Driver";
+        dbUrl = "jdbc:postgresql://localhost/ldap_test";
+        dbUser = "postgres";
+        dbPassword = "postgres";
+
+        //initDbProperties();
     }
 
     private void initDbProperties() {

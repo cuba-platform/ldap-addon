@@ -5,6 +5,7 @@ import com.haulmont.cuba.core.Persistence;
 import com.haulmont.cuba.core.entity.Entity;
 import com.haulmont.cuba.core.global.EntityStates;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
 
@@ -20,7 +21,8 @@ public class DaoHelper {
     @Inject
     private EntityStates entityStates;
 
-    <T extends Entity> T persistOrMerge(T entity) {
+    @Transactional
+    public <T extends Entity> T persistOrMerge(T entity) {
         T mergedEntity;
         EntityManager entityManager = persistence.getEntityManager();
         if (entityStates.isNew(entity)) {
