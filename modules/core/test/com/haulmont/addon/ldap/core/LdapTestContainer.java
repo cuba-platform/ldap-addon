@@ -32,10 +32,10 @@ public class LdapTestContainer extends TestContainer {
                 "test-app.properties",
                 "com/haulmont/addon/ldap/core/resources/ldap-test-app.properties");
 
-        dbDriver = "org.postgresql.Driver";
-        dbUrl = "jdbc:postgresql://localhost/ldap_test";
-        dbUser = "postgres";
-        dbPassword = "postgres";
+        dbDriver = "org.hsqldb.jdbc.JDBCDriver";
+        dbUrl = "jdbc:hsqldb:hsql://localhost/ldap-test";
+        dbUser = "sa";
+        dbPassword = "";
 
         //initDbProperties();
     }

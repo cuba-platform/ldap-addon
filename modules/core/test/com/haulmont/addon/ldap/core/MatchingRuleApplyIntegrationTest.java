@@ -1,9 +1,7 @@
 package com.haulmont.addon.ldap.core;
 
 
-import com.haulmont.addon.ldap.entity.DefaultMatchingRule;
-import com.haulmont.addon.ldap.entity.MatchingRuleType;
-import com.haulmont.addon.ldap.entity.SimpleMatchingRule;
+import com.haulmont.addon.ldap.entity.*;
 import com.haulmont.cuba.core.Persistence;
 import com.haulmont.cuba.core.global.Metadata;
 import com.haulmont.cuba.security.entity.Group;
@@ -58,18 +56,24 @@ public class MatchingRuleApplyIntegrationTest {
             simpleMatchingRule1.setIsOverrideExistingAccessGroup(true);
             simpleMatchingRule1.setRuleType(MatchingRuleType.SIMPLE);
             simpleMatchingRule1.getRoles().add(role1);
+            simpleMatchingRule1.setStatus(metadata.create(MatchingRuleStatus.class));
+            simpleMatchingRule1.setOrder(metadata.create(MatchingRuleOrder.class));
            // simpleMatchingRule1.setLdapCondition("(sAMAccountName=" + login + ")");
 
             simpleMatchingRule2 = metadata.create(SimpleMatchingRule.class);
             simpleMatchingRule2.setAccessGroup(group2);
             simpleMatchingRule2.setRuleType(MatchingRuleType.SIMPLE);
             simpleMatchingRule2.getRoles().add(role2);
+            simpleMatchingRule2.setStatus(metadata.create(MatchingRuleStatus.class));
+            simpleMatchingRule2.setOrder(metadata.create(MatchingRuleOrder.class));
             //simpleMatchingRule2.setLdapCondition("(sAMAccountName=fake)");
 
             defaultMatchingRule = metadata.create(DefaultMatchingRule.class);
             defaultMatchingRule.setAccessGroup(group2);
             defaultMatchingRule.setRuleType(MatchingRuleType.DEFAULT);
             defaultMatchingRule.getRoles().add(role3);
+            defaultMatchingRule.setStatus(metadata.create(MatchingRuleStatus.class));
+            defaultMatchingRule.setOrder(metadata.create(MatchingRuleOrder.class));
 
 
             entityManager.persist(role1);
