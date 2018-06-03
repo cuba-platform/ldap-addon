@@ -74,7 +74,7 @@ givenName: Joe
 uid: joes
 userPassword: joespassword
 memberOf: cn=Sales,ou=groups,dc=springframework,dc=org
-roomNumber: 0
+roomNumber: 1
 mail: P.Prutser@example.com
 
 dn: uid=barts,ou=people,dc=springframework,dc=org
@@ -88,5 +88,5 @@ givenName: Bart
 uid: barts
 userPassword: bartspassword
 memberOf: cn=Sales,ou=groups,dc=springframework,dc=org
-roomNumber: 1
+roomNumber: 0
 mail: P.Prutser@example.com
