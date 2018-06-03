@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:ldap="http://www.springframework.org/schema/ldap"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
+        http://www.springframework.org/schema/ldap http://www.springframework.org/schema/ldap/spring-ldap.xsd">
+
+    <!-- Annotation-based beans -->
+    <context:component-scan base-package="com.haulmont.addon.ldap"/>
+
+    <bean id="ldap_ldapContextSource" class="org.springframework.ldap.test.TestContextSourceFactoryBean">
+        <property name="defaultPartitionSuffix" value="dc=springframework,dc=org" />
+        <!--<property name="defaultPartitionName" value="springframework" />-->
+        <property name="principal" value="uid=admin,ou=system" />
+        <property name="password" value="secret" />
+        <property name="ldifFile" value="classpath:/com/haulmont/addon/ldap/core/resources/test-schema.ldif" />
+        <property name="port" value="1888" />
+    </bean>
+
+    <ldap:ldap-template id="ldap_ldapTemplate" context-source-ref="ldap_ldapContextSource"/>
+
+</beans>

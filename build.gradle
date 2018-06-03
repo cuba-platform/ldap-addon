@@ -61,6 +61,13 @@ configure([globalModule, coreModule, guiModule, webModule]) {
 
     dependencies {
         testCompile('junit:junit:4.12')
+        testCompile ('org.springframework.ldap:spring-ldap-test:2.3.2.RELEASE')
+        testCompile "org.apache.directory.server:apacheds-core:1.5.5",
+                "org.apache.directory.server:apacheds-core-entry:1.5.5",
+                "org.apache.directory.server:apacheds-protocol-shared:1.5.5",
+                "org.apache.directory.server:apacheds-protocol-ldap:1.5.5",
+                "org.apache.directory.server:apacheds-server-jndi:1.5.5",
+                "org.apache.directory.shared:shared-ldap:0.9.15"
     }
 
     task sourceJar(type: Jar) {

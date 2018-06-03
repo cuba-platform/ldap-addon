@@ -1,0 +1,92 @@
+dn: ou=groups,dc=springframework,dc=org
+objectclass: top
+objectclass: organizationalUnit
+ou: groups
+
+dn: ou=subgroups,ou=groups,dc=springframework,dc=org
+objectclass: top
+objectclass: organizationalUnit
+ou: subgroups
+
+dn: ou=people,dc=springframework,dc=org
+objectclass: top
+objectclass: organizationalUnit
+ou: people
+
+dn: cn=Admin,ou=groups,dc=springframework,dc=org
+objectClass: groupOfUniqueNames
+objectClass: top
+cn: Admin
+uniqueMember: uid=ben,ou=people,dc=springframework,dc=org
+
+dn: cn=Developer,ou=groups,dc=springframework,dc=org
+objectClass: groupOfUniqueNames
+objectClass: top
+cn: Developer
+uniqueMember: uid=ben,ou=people,dc=springframework,dc=org
+uniqueMember: uid=bob,ou=people,dc=springframework,dc=org
+
+dn: cn=Sales,ou=groups,dc=springframework,dc=org
+objectClass: groupOfUniqueNames
+objectClass: top
+cn: Sales
+uniqueMember: uid=joe,ou=people,dc=springframework,dc=org
+uniqueMember: uid=bart,ou=people,dc=springframework,dc=org
+
+dn: uid=bena,ou=people,dc=springframework,dc=org
+objectclass: top
+objectclass: person
+objectclass: organizationalPerson
+objectclass: inetOrgPerson
+cn: Ben Alex
+sn: Alex
+givenName: Ben
+uid: bena
+userPassword: benspassword
+memberOf: cn=Admin,ou=groups,dc=springframework,dc=org
+memberOf: cn=Developer,ou=groups,dc=springframework,dc=org
+roomNumber: 0
+mail: P.Prutser@example.com
+sAMAccountName: bena
+
+dn: uid=bobh,ou=people,dc=springframework,dc=org
+objectclass: top
+objectclass: person
+objectclass: organizationalPerson
+objectclass: inetOrgPerson
+cn: Bob Hamilton
+sn: Hamilton
+givenName: Bob
+uid: bobh
+userPassword: bobspassword
+memberOf: cn=Developer,ou=groups,dc=springframework,dc=org
+roomNumber: 0
+mail: P.Prutser@example.com
+
+dn: uid=joes,ou=people,dc=springframework,dc=org
+objectclass: top
+objectclass: person
+objectclass: organizationalPerson
+objectclass: inetOrgPerson
+cn: Joe Smeth
+sn: Smeth
+givenName: Joe
+uid: joes
+userPassword: joespassword
+memberOf: cn=Sales,ou=groups,dc=springframework,dc=org
+roomNumber: 0
+mail: P.Prutser@example.com
+
+dn: uid=barts,ou=people,dc=springframework,dc=org
+objectclass: top
+objectclass: person
+objectclass: organizationalPerson
+objectclass: inetOrgPerson
+cn: Bart Smeth
+sn: Smeth
+givenName: Bart
+uid: barts
+userPassword: bartspassword
+memberOf: cn=Sales,ou=groups,dc=springframework,dc=org
+roomNumber: 1
+mail: P.Prutser@example.com
