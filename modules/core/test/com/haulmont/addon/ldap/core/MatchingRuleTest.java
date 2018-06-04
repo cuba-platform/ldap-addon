@@ -90,6 +90,7 @@ public class MatchingRuleTest {
 
             User joes = cubaUserDao.getCubaUserByLogin("joes");
             joes.setGroup(testGroup);
+            joes.setLoginLowerCase("joes");
             daoHelper.persistOrMerge(joes);
 
             Role simpleRole = metadata.create(Role.class);
@@ -130,15 +131,11 @@ public class MatchingRuleTest {
             assertEquals(1, ldapMatchingRuleContext.getAppliedRules().size());
             assertEquals(true, ldapMatchingRuleContext.getAppliedRules().stream().allMatch(mr -> MatchingRuleType.DEFAULT == mr.getRuleType()));
 
-            //cubaUserDao.saveCubaUser(joes, joes, ldapMatchingRuleContext);
+            cubaUserDao.saveCubaUser(joes, joes, ldapMatchingRuleContext);
 
-            //MatchingRuleOrder defaultRuleOrder = persistence.getEntityManager().getDelegate().find(MatchingRuleOrder.class, UUID.fromString("ff2ebe74-3836-465b-9185-60141a6a0548"));
+            User updated = cubaUserDao.getCubaUserByLogin("joes");
 
-            //persistence.getEntityManager().getDelegate().detach(defaultRuleOrder);
-
-            //User updated = cubaUserDao.getCubaUserByLogin("joes");
-            //int t = 1;
-
+            //assertEquals("Administrators", updated.getUserRoles().get(0).getRole().getName());
 
         }
     }
