@@ -207,9 +207,6 @@ public class UserSynchronizationLogDao {
         StringBuilder sb = new StringBuilder();
         for (Map.Entry<String, Object> me : ldapAttributes.entrySet()) {
             String attrName = me.getKey();
-            if ("OBJECTGUID".equalsIgnoreCase(attrName) || "OBJECTSID".equalsIgnoreCase(attrName)) {
-                continue;
-            }
             sb.append(attrName);
             sb.append(":");
             if (me.getValue() instanceof List) {
