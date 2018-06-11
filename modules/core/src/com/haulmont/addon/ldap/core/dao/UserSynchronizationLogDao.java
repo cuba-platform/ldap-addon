@@ -222,6 +222,6 @@ public class UserSynchronizationLogDao {
             }
             sb.append("\n");
         }
-        return sb.toString();
+        return sb.toString().replaceAll("\0", "");
     }
 }
