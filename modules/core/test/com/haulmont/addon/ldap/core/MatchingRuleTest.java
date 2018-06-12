@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.UUID;
 
 import static org.junit.Assert.assertEquals;
-//TODO check simple , scripting , custom rule
+
 public class MatchingRuleTest {
 
     @ClassRule
@@ -122,7 +122,6 @@ public class MatchingRuleTest {
             List<CommonMatchingRule> rules = matchingRuleDao.getMatchingRules();
             assertEquals(3, rules.size());
 
-            //userSynchronizationService.synchronizeUser("joes", true);
             LdapUser ldapUser = new LdapUser(new BasicAttributes());
             ldapUser.setLogin("joes");
             LdapMatchingRuleContext ldapMatchingRuleContext = new LdapMatchingRuleContext(ldapUser, joes);
@@ -135,7 +134,8 @@ public class MatchingRuleTest {
 
             User updated = cubaUserDao.getCubaUserByLogin("joes");
 
-            //assertEquals("Administrators", updated.getUserRoles().get(0).getRole().getName());
+            assertEquals("Administrators", updated.getUserRoles().get(0).getRole().getName());
+            assertEquals("Company", updated.getGroup().getName());
 
         }
     }
@@ -143,7 +143,7 @@ public class MatchingRuleTest {
     @Test
     public void testTerminalAttribute() {
         try (Transaction tx = persistence.createTransaction()) {
-            prepareTerminalAttributeTest(true, "joes");
+            prepareTerminalAttributeTest(true, "joes", true);
 
             User joes = cubaUserDao.getCubaUserByLogin("joes");
 
@@ -160,9 +160,9 @@ public class MatchingRuleTest {
             assertEquals("Scripting role 1", joes.getUserRoles().get(0).getRole().getName());
             assertEquals(true, ldapMatchingRuleContext.isTerminalRuleApply());
 
-            //cubaUserDao.saveCubaUser(joes, joes, ldapMatchingRuleContext);
+            cubaUserDao.saveCubaUser(joes, joes, ldapMatchingRuleContext);
 
-            prepareTerminalAttributeTest(false, "bena");
+            prepareTerminalAttributeTest(false, "bena", false);
 
             User bena = cubaUserDao.getCubaUserByLogin("bena");
 
@@ -180,7 +180,7 @@ public class MatchingRuleTest {
             assertEquals(true, bena.getUserRoles().stream().anyMatch(ur -> ur.getRole().getName().equals("Scripting role 2")));
             assertEquals(false, ldapMatchingRuleContext.isTerminalRuleApply());
 
-            //cubaUserDao.saveCubaUser(bena, bena, ldapMatchingRuleContext);
+            cubaUserDao.saveCubaUser(bena, bena, ldapMatchingRuleContext);
 
         }
     }
@@ -188,7 +188,7 @@ public class MatchingRuleTest {
     @Test
     public void testOverrideAttribute() {
         try (Transaction tx = persistence.createTransaction()) {
-            prepareOverrideAttributeTest(true, "joes");
+            prepareOverrideAttributeTest(true, "joes", true);
 
             User joes = cubaUserDao.getCubaUserByLogin("joes");
 
@@ -204,9 +204,9 @@ public class MatchingRuleTest {
             assertEquals(1, joes.getUserRoles().size());
             assertEquals("Scripting role 2", joes.getUserRoles().get(0).getRole().getName());
 
-            //cubaUserDao.saveCubaUser(joes, joes, ldapMatchingRuleContext);
+            cubaUserDao.saveCubaUser(joes, joes, ldapMatchingRuleContext);
 
-            prepareOverrideAttributeTest(false, "bena");
+            prepareOverrideAttributeTest(false, "bena", false);
 
             User bena = cubaUserDao.getCubaUserByLogin("bena");
 
@@ -218,12 +218,12 @@ public class MatchingRuleTest {
 
             assertEquals(2, ldapMatchingRuleContext.getAppliedRules().size());
             assertEquals(true, ldapMatchingRuleContext.getAppliedRules().stream().allMatch(mr -> MatchingRuleType.SCRIPTING == mr.getRuleType()));
-            assertEquals("Test group", bena.getGroup().getName());
+            assertEquals("Test group 1", bena.getGroup().getName());
             assertEquals(2, bena.getUserRoles().size());
             assertEquals(true, bena.getUserRoles().stream().anyMatch(ur -> ur.getRole().getName().equals("Scripting role 1")));
             assertEquals(true, bena.getUserRoles().stream().anyMatch(ur -> ur.getRole().getName().equals("Scripting role 2")));
 
-            //cubaUserDao.saveCubaUser(bena, bena, ldapMatchingRuleContext);
+            cubaUserDao.saveCubaUser(bena, bena, ldapMatchingRuleContext);
 
         }
     }
@@ -295,7 +295,7 @@ public class MatchingRuleTest {
 
     }
 
-    private void prepareTerminalAttributeTest(boolean terminal, String login) {
+    private void prepareTerminalAttributeTest(boolean terminal, String login, boolean createCustom) {
 
         persistence.getEntityManager().getDelegate().clear();
 
@@ -304,16 +304,18 @@ public class MatchingRuleTest {
         daoHelper.persistOrMerge(testGroup);
 
         //Custom
-        MatchingRuleOrder customOrder = metadata.create(MatchingRuleOrder.class);
-        customOrder.setOrder(1);
-        customOrder.setCustomMatchingRuleId("com.haulmont.addon.ldap.core.custom.TestCustomLdapRule");
+        if (createCustom) {
+            MatchingRuleOrder customOrder = metadata.create(MatchingRuleOrder.class);
+            customOrder.setOrder(1);
+            customOrder.setCustomMatchingRuleId("com.haulmont.addon.ldap.core.custom.TestCustomLdapRule");
 
-        MatchingRuleStatus customStatus = metadata.create(MatchingRuleStatus.class);
-        customStatus.setCustomMatchingRuleId("com.haulmont.addon.ldap.core.custom.TestCustomLdapRule");
-        customStatus.setIsActive(true);
+            MatchingRuleStatus customStatus = metadata.create(MatchingRuleStatus.class);
+            customStatus.setCustomMatchingRuleId("com.haulmont.addon.ldap.core.custom.TestCustomLdapRule");
+            customStatus.setIsActive(true);
 
-        daoHelper.persistOrMerge(customOrder);
-        daoHelper.persistOrMerge(customStatus);
+            daoHelper.persistOrMerge(customOrder);
+            daoHelper.persistOrMerge(customStatus);
+        }
 
         //Scripting 1
         Role scriptingRole1 = metadata.create(Role.class);
@@ -355,13 +357,11 @@ public class MatchingRuleTest {
         daoHelper.persistOrMerge(scriptingMatchingRule2);
 
 
-        //MatchingRuleOrder defaultRuleOrder = persistence.getEntityManager().getDelegate().find(MatchingRuleOrder.class, UUID.fromString("ff2ebe74-3836-465b-9185-60141a6a0548"));
         persistence.getEntityManager().flush();
 
-        persistence.getEntityManager().getDelegate().clear();
     }
 
-    private void prepareOverrideAttributeTest(boolean override, String login) {
+    private void prepareOverrideAttributeTest(boolean override, String login, boolean createCustom) {
 
         persistence.getEntityManager().getDelegate().clear();
 
@@ -374,16 +374,18 @@ public class MatchingRuleTest {
         daoHelper.persistOrMerge(testGroup2);
 
         //Custom
-        MatchingRuleOrder customOrder = metadata.create(MatchingRuleOrder.class);
-        customOrder.setOrder(1);
-        customOrder.setCustomMatchingRuleId("com.haulmont.addon.ldap.core.custom.TestCustomLdapRule");
+        if (createCustom) {
+            MatchingRuleOrder customOrder = metadata.create(MatchingRuleOrder.class);
+            customOrder.setOrder(1);
+            customOrder.setCustomMatchingRuleId("com.haulmont.addon.ldap.core.custom.TestCustomLdapRule");
 
-        MatchingRuleStatus customStatus = metadata.create(MatchingRuleStatus.class);
-        customStatus.setCustomMatchingRuleId("com.haulmont.addon.ldap.core.custom.TestCustomLdapRule");
-        customStatus.setIsActive(true);
+            MatchingRuleStatus customStatus = metadata.create(MatchingRuleStatus.class);
+            customStatus.setCustomMatchingRuleId("com.haulmont.addon.ldap.core.custom.TestCustomLdapRule");
+            customStatus.setIsActive(true);
 
-        daoHelper.persistOrMerge(customOrder);
-        daoHelper.persistOrMerge(customStatus);
+            daoHelper.persistOrMerge(customOrder);
+            daoHelper.persistOrMerge(customStatus);
+        }
 
         //Scripting 1
         Role scriptingRole1 = metadata.create(Role.class);
@@ -427,10 +429,6 @@ public class MatchingRuleTest {
         daoHelper.persistOrMerge(scriptingRole2);
         daoHelper.persistOrMerge(scriptingMatchingRule2);
 
-
-        //MatchingRuleOrder defaultRuleOrder = persistence.getEntityManager().getDelegate().find(MatchingRuleOrder.class, UUID.fromString("ff2ebe74-3836-465b-9185-60141a6a0548"));
         persistence.getEntityManager().flush();
-
-        persistence.getEntityManager().getDelegate().clear();
     }
 }

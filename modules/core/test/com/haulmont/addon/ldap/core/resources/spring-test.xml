@@ -12,7 +12,6 @@
 
     <bean id="ldap_ldapContextSource" class="org.springframework.ldap.test.TestContextSourceFactoryBean">
         <property name="defaultPartitionSuffix" value="dc=springframework,dc=org" />
-        <!--<property name="defaultPartitionName" value="springframework" />-->
         <property name="principal" value="uid=admin,ou=system" />
         <property name="password" value="secret" />
         <property name="ldifFile" value="classpath:/com/haulmont/addon/ldap/core/resources/test-schema.ldif" />

@@ -4,6 +4,7 @@ import com.haulmont.addon.ldap.core.rule.LdapMatchingRuleContext;
 import com.haulmont.addon.ldap.entity.*;
 import com.haulmont.cuba.core.EntityManager;
 import com.haulmont.cuba.core.Persistence;
+import com.haulmont.cuba.core.TypedQuery;
 import com.haulmont.cuba.core.global.Metadata;
 import com.haulmont.cuba.core.global.PersistenceHelper;
 import com.haulmont.cuba.security.entity.Role;
@@ -89,6 +90,14 @@ public class UserSynchronizationLogDao {
         userSynchronizationLog.setResult(ERROR_SYNC);
         userSynchronizationLog.setErrorText(ExceptionUtils.getFullStackTrace(e));
         saveUserSynchronizationLog(userSynchronizationLog);
+    }
+
+    @Transactional(readOnly = true)
+    public List<UserSynchronizationLog> getByLogin(String login) {
+        TypedQuery<UserSynchronizationLog> query = persistence.getEntityManager()
+                .createQuery("select usl from ldap$UserSynchronizationLog usl where usl.login = :login", UserSynchronizationLog.class);
+        query.setParameter("login", login);
+        return query.getResultList();
     }
 
     private String getRolesField(List<UserRole> originalRoles) {

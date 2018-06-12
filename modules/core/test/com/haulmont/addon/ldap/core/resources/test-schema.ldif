@@ -61,7 +61,7 @@ uid: bobh
 userPassword: bobspassword
 memberOf: cn=Developer,ou=groups,dc=springframework,dc=org
 roomNumber: 0
-mail: P.Prutser@example.com
+mail: bobh@example.com
 
 dn: uid=joes,ou=people,dc=springframework,dc=org
 objectclass: top
@@ -75,7 +75,7 @@ uid: joes
 userPassword: joespassword
 memberOf: cn=Sales,ou=groups,dc=springframework,dc=org
 roomNumber: 1
-mail: P.Prutser@example.com
+mail: joes@example.com
 
 dn: uid=barts,ou=people,dc=springframework,dc=org
 objectclass: top
@@ -85,8 +85,11 @@ objectclass: inetOrgPerson
 cn: Bart Smeth
 sn: Smeth
 givenName: Bart
+initials: Petrovich
 uid: barts
 userPassword: bartspassword
 memberOf: cn=Sales,ou=groups,dc=springframework,dc=org
 roomNumber: 0
-mail: P.Prutser@example.com
+mail: barts@example.com
+preferredLanguage: ru
+employeeType: Manager
