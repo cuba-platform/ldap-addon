@@ -61,6 +61,7 @@ public class LdapHelper {
         if (StringUtils.isNotEmpty(ldapConfig.getOuAttribute())) {
             ldapUser.setOu(context.getStringAttribute(ldapConfig.getOuAttribute()));
         }
+        ldapUser.setDn(context.getNameInNamespace());
         return ldapUser;
     }
 

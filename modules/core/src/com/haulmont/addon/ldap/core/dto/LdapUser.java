@@ -8,6 +8,7 @@ import java.util.*;
 public class LdapUser {
 
     private final Map<String, Object> ldapUserAttributesMap;
+    private String dn;
     private String login;
     private String cn;
     private String givenName;
@@ -27,6 +28,7 @@ public class LdapUser {
 
     public LdapUser(LdapUser source) {
         this.login = source.login;
+        this.dn = source.dn;
         this.cn = source.cn;
         this.givenName = source.givenName;
         this.sn = source.sn;
@@ -64,6 +66,14 @@ public class LdapUser {
 
     public void setLogin(String login) {
         this.login = login;
+    }
+
+    public String getDn() {
+        return dn;
+    }
+
+    public void setDn(String dn) {
+        this.dn = dn;
     }
 
     public String getCn() {
