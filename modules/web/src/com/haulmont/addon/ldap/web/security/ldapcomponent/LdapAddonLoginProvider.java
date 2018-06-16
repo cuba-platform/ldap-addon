@@ -56,12 +56,19 @@ public class LdapAddonLoginProvider implements LoginProvider, Ordered {
     @Nullable
     @Override
     public AuthenticationDetails login(Credentials credentials) throws LoginException {
-        LoginPasswordCredentials loginPasswordCredentials = (LoginPasswordCredentials) credentials;
-
-        if (webAuthConfig.getStandardAuthenticationUsers().contains(loginPasswordCredentials.getLogin())) {
-            log.debug("User {} is not allowed to use external login");
+        if (!checkUserSupportsAddonLogin(credentials)) {
             return null;
         }
+
+        if (RememberMeCredentials.class.isAssignableFrom(credentials.getClass())) {
+            UserSynchronizationResultDto userSynchronizationResult = userSynchronizationService.synchronizeUser(((RememberMeCredentials) credentials).getLogin(), true);
+            if (userSynchronizationResult.isInactiveUser()) {
+                throw new LoginException(messages.formatMessage(LdapAddonLoginProvider.class, "LoginException.InactiveUserLoginAttempt", ((RememberMeCredentials) credentials).getLocale()));
+            }
+            return null;
+        }
+
+        LoginPasswordCredentials loginPasswordCredentials = (LoginPasswordCredentials) credentials;
 
         authUserService.ldapAuth(loginPasswordCredentials.getLogin(), loginPasswordCredentials.getPassword(), loginPasswordCredentials.getLocale());
         UserSynchronizationResultDto userSynchronizationResult = userSynchronizationService.synchronizeUser(loginPasswordCredentials.getLogin(), true);
@@ -104,12 +111,28 @@ public class LdapAddonLoginProvider implements LoginProvider, Ordered {
     @Override
     public boolean supports(Class<?> credentialsClass) {
         return ldapPropertiesConfig.getLdapAddonEnabled()
-                && LoginPasswordCredentials.class.isAssignableFrom(credentialsClass);
+                && (LoginPasswordCredentials.class.isAssignableFrom(credentialsClass) ||
+                RememberMeCredentials.class.isAssignableFrom(credentialsClass));
     }
 
     @Override
     public int getOrder() {
         return HIGHEST_PLATFORM_PRECEDENCE + 40;
+    }
+
+    private boolean checkUserSupportsAddonLogin(Credentials credentials) {
+        String login = null;
+        if (LoginPasswordCredentials.class.isAssignableFrom(credentials.getClass())) {
+            login = ((LoginPasswordCredentials) (credentials)).getLogin();
+        } else {
+            login = ((RememberMeCredentials) (credentials)).getLogin();
+        }
+
+        if (webAuthConfig.getStandardAuthenticationUsers().contains(login)) {
+            log.debug("User {} is not allowed to use external login");
+            return false;
+        }
+        return true;
     }
 
 }
