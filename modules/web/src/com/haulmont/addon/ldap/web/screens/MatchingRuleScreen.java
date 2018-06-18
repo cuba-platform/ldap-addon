@@ -16,6 +16,7 @@ import com.haulmont.cuba.gui.components.actions.EditAction;
 import com.haulmont.cuba.gui.components.actions.RemoveAction;
 import com.haulmont.cuba.gui.data.CollectionDatasource;
 import com.haulmont.cuba.gui.data.Datasource;
+import com.haulmont.cuba.gui.icons.CubaIcon;
 import com.haulmont.cuba.gui.xml.layout.ComponentsFactory;
 import com.haulmont.cuba.security.entity.Role;
 import com.haulmont.cuba.web.gui.data.ItemWrapper;
@@ -107,10 +108,22 @@ public class MatchingRuleScreen extends AbstractWindow {
         matchingRuleTableUi.addItemClickListener((ItemClickEvent.ItemClickListener) event -> {
                     ItemWrapper iw = ((ItemWrapper) event.getItem());
                     AbstractCommonMatchingRule rule = (AbstractCommonMatchingRule) iw.getItem();
-                    ruleEditButton.setEnabled(CUSTOM != rule.getRuleType());
-                    ruleEditButton.setAction(CUSTOM != rule.getRuleType() ? matchingRuleTable.getAction("edit") : null);
-                    ruleRemoveButton.setEnabled(CUSTOM != rule.getRuleType() && DEFAULT != rule.getRuleType());
-                    ruleRemoveButton.setAction(CUSTOM != rule.getRuleType() && DEFAULT != rule.getRuleType() ? matchingRuleTable.getAction("remove") : null);
+                    boolean editEnable =  CUSTOM != rule.getRuleType();
+                    boolean removeEnable =  CUSTOM != rule.getRuleType() && DEFAULT != rule.getRuleType();
+                    ruleEditButton.setEnabled(editEnable);
+                    ruleEditButton.setAction(editEnable ? matchingRuleTable.getAction("edit") : null);
+                    ruleRemoveButton.setEnabled(removeEnable);
+                    ruleRemoveButton.setAction(removeEnable ? matchingRuleTable.getAction("remove") : null);
+
+                    if (!editEnable) {
+                        ruleEditButton.setIconFromSet(CubaIcon.EDIT_ACTION);
+                        ruleEditButton.setCaption(getMessage("ruleEditButton"));
+                    }
+                    if (!removeEnable) {
+                        ruleRemoveButton.setIconFromSet(CubaIcon.REMOVE_ACTION);
+                        ruleRemoveButton.setCaption(getMessage("ruleRemoveButton"));
+                    }
+
                 }
         );
 
