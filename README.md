@@ -60,7 +60,7 @@ To add the LDAP component to your project, the following steps should be taken:
     
     | Platform Version | Component Version |
     |------------------|-------------------|
-    | 6.8.1            | 0.1-SNAPSHOT      |
+    | 6.9.x            | 0.1-SNAPSHOT      |
     
 5. Before using the component as a part of your application, it is vital to configure initial values for connecting to
 the LDAP server, and to set up basic attribute names for the LDAP user in the `app.properties` file.
@@ -123,6 +123,8 @@ of *Load Config Screen*.
 
 ![LDAP-Config-Basic-Attributes](img/ldap-config-basic-attributes.png)
 
+**Tip**: Move the cursor over the field names to read their descriptions.
+
 ### LDAP Schema
 
 The *Schema Settings* section enables to configure a set of rules that define what can be stored as entries in the LDAP 
@@ -145,7 +147,7 @@ LDAP Matching Rules).
 
 ![LDAP Matching Rules Screen](img/ldap-matching-rules.png)
 
-The screen comprises the table of matching rules and the section for testing how the existing matching rules are
+The screen comprises the table of matching rules and the section for testing how the existing matching rules can be 
 applied to a particular user (see [Testing LDAP Matching Rules](#testing-ldap-matching-rules)).
 Using the table, it is possible to enable/disable certain rules by ticking checkboxes in the *Active* column.
 
@@ -158,11 +160,11 @@ The description of all rule types and their peculiarities is provided in the sec
 
 The LDAP component provides means to process custom rules defined programmatically. These rules can be created only by 
 adding new classes to the classpath of your application. These classes should be implemented as Spring beans and 
-should be provided with the @LdapMatchingRule annotation.
+provided with the @LdapMatchingRule annotation.
 Custom rules can be viewed from the application UI, however, they cannot be configured or amended there.
 
-One of the advantages of custom rules is that they allow specifying additional conditions not related to LDAP attributes or schema.
-The example of a custom rule is provided below.
+One of the advantages of custom rules is that they allow specifying additional conditions not related to LDAP attributes
+or schema. The example of a custom rule is provided below.
 
 ```java
 @Component
@@ -239,7 +241,8 @@ refer to [LDAP Schema](#ldap-schema)).
 * *Attribute Value*: defines a value of the selected attribute. The rule will be applied to those user entities, which
 have the specified value of the selected attribute.
 
-3. _Roles_. The section is designed to add user roles, which will be assigned to a user in case of successful rule application.
+3. _Roles_. The section is designed to add user roles, which will be assigned to a user in case of successful rule 
+application.
 
 ### Scripting Rule
 
@@ -291,10 +294,11 @@ Clicking the *Excel* button enables to download details of the selected rows (or
 
 Before configuring scheduled tasks, make sure that the properties listed below are configured in the `web-app.properties` file:
 
-* *ldap.expiringSessionsEnable:* if set to 'true', enables notifications to inform a user that his/her session is about to expire.
+* *ldap.expiringSessionsEnable:* if set to 'true', the system sends notifications to inform a user that his/her session
+is about to expire.
 * *ldap.expiringSessionNotificationCron:* defines the cron expression for retrieving expired sessions from the middleware layer.
 
-Scheduled tasks allow configuring the component to kill the current user session in the following cases:
+Scheduled tasks allow configuring the component to kill a current user session in the following cases:
 
 * If matching rules were changed and the current user is assigned a new access group or roles.
 * If the current user was deactivated on the LDAP server side.
@@ -338,8 +342,8 @@ In order to register scheduled tasks in your application, follow the guidelines 
 ![Enabling Scheduling](img/enabling-scheduling.png)
 
 Once the scheduled tasks are created and scheduling is enabled, the system will check user sessions once in a specified 
-period of time. If there are any changes related to access groups, user roles or user status (i.e. deactivation), the
-system will show a notification that the current session is about to expire and, after a configured period, the user 
+period of time. If there are any changes related to access groups, user roles or user status (i.e. activation/deactivation), 
+the system will show a notification that the current session is about to expire and, after a configured period, the user 
 session will be killed.
 
 # EventListeners to Interact with LDAP Addon Events
