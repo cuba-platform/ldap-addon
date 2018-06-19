@@ -82,9 +82,13 @@
                 <buttonsPanel>
                     <button action="rolesTable.add"/>
                     <button action="rolesTable.remove"/>
-                    <label value="msg://isOverrideExistingRolesFieldCaption"/>
-                    <checkBox datasource="simpleMatchingRuleDs"
-                              property="isOverrideExistingRoles"/>
+                    <fieldGroup align="MIDDLE_LEFT"
+                                datasource="simpleMatchingRuleDs">
+                        <column width="250px">
+                            <field caption="msg://isOverrideExistingRolesFieldCaption"
+                                   property="isOverrideExistingRoles"/>
+                        </column>
+                    </fieldGroup>
                 </buttonsPanel>
             </table>
         </groupBox>
