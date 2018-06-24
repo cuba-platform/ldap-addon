@@ -111,35 +111,35 @@ public class UserSynchronizationLogDao {
 
     private String getUserInfoField(User originalUser) {
         StringBuilder sb = new StringBuilder();
-        sb.append("First name:");
+        sb.append("First name: ");
         sb.append(originalUser.getFirstName());
         sb.append("\n");
 
-        sb.append("Middle name:");
+        sb.append("Middle name: ");
         sb.append(originalUser.getMiddleName());
         sb.append("\n");
 
-        sb.append("Last name:");
+        sb.append("Last name: ");
         sb.append(originalUser.getLastName());
         sb.append("\n");
 
-        sb.append("Full name:");
+        sb.append("Full name: ");
         sb.append(originalUser.getName());
         sb.append("\n");
 
-        sb.append("Email:");
+        sb.append("Email: ");
         sb.append(originalUser.getEmail());
         sb.append("\n");
 
-        sb.append("Position:");
+        sb.append("Position: ");
         sb.append(originalUser.getPosition());
         sb.append("\n");
 
-        sb.append("Language:");
+        sb.append("Language: ");
         sb.append(originalUser.getLanguage());
         sb.append("\n");
 
-        sb.append("Active:");
+        sb.append("Active: ");
         sb.append(originalUser.getActive());
 
         return sb.toString();
@@ -217,7 +217,7 @@ public class UserSynchronizationLogDao {
         for (Map.Entry<String, Object> me : ldapAttributes.entrySet()) {
             String attrName = me.getKey();
             sb.append(attrName);
-            sb.append(":");
+            sb.append(": ");
             if (me.getValue() instanceof List) {
                 List<Object> listValue = (List<Object>) me.getValue();
                 List<String> list = listValue.stream().map(v -> v == null ? "null" : v.toString()).collect(toList());
