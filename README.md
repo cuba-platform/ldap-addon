@@ -85,6 +85,10 @@ ldap.addonEnabled = true
 ldap.expiringSessionsEnable = true
 ```
 
+**Note:** By default, if the component is enabled, users cannot log in to the system using CUBA credentials. If it is
+required to permit particular users to log in using CUBA credentials, their usernames should be specified as values 
+of the `cuba.web.standardAuthenticationUsers` and `ldap.standardAuthenticationUsers` properties.
+
 ## Additional Information
 
 You should keep in mind that the LDAP component should be enabled for each CUBA application, which is expected to use
