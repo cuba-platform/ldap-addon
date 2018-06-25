@@ -73,7 +73,7 @@ ldap.contextSourceUserName = uid=admin,ou=system
 ldap.contextSourcePassword = secret
 ldap.referral = follow
 ldap.sessionExpiringPeriodSec = 30
-ldap.standardAuthenticationUsers = admin
+cuba.web.standardAuthenticationUsers = admin
 ```
 
 6. Specify the following properties in the `web-app.properties` file:
@@ -85,9 +85,9 @@ ldap.addonEnabled = true
 ldap.expiringSessionsEnable = true
 ```
 
-**Note:** By default, if the component is enabled, users cannot log in to the system using CUBA credentials. If it is
-required to permit particular users to log in using CUBA credentials, their usernames should be specified as values 
-of the `cuba.web.standardAuthenticationUsers` and `ldap.standardAuthenticationUsers` properties.
+**Note:** By default, if the component is enabled, users cannot log in to the system using CUBA credentials. However, 
+you can permit particular users (e.g. system administrators)to log in using CUBA credentials by specifying their usernames 
+as values of the `cuba.web.standardAuthenticationUsers` property.
 
 ## Additional Information
 
