@@ -78,7 +78,7 @@ public class MatchingRuleDao {
     public List<CommonMatchingRule> getMatchingRules() {
         List<CommonMatchingRule> result = new ArrayList<>();
         TypedQuery<AbstractDbStoredMatchingRule> query = persistence.getEntityManager()
-                .createQuery("select distinct mr from ldap$AbstractDbStoredMatchingRule mr " +
+                .createQuery("select mr from ldap$AbstractDbStoredMatchingRule mr " +
                         "left join fetch mr.roles roles " +
                         "left join fetch mr.order mrOrder " +
                         "left join fetch mr.status mrStatus " +
