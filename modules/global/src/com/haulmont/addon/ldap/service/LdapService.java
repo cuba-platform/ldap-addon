@@ -1,7 +1,6 @@
 package com.haulmont.addon.ldap.service;
 
 import com.haulmont.addon.ldap.dto.GroovyScriptTestResultDto;
-import com.haulmont.addon.ldap.dto.LdapContextDto;
 import com.haulmont.addon.ldap.entity.LdapConfig;
 
 import java.util.List;

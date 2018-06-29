@@ -32,7 +32,8 @@ public class UserSynchronizationSchedulerServiceBean implements UserSynchronizat
     private LdapPropertiesConfig ldapPropertiesConfig;
 
     public void checkExpiredSessions() {
-        List<String> standardAuthenticationUsers = ldapPropertiesConfig.getStandardAuthenticationUsers() == null ? new ArrayList<>() : ldapPropertiesConfig.getStandardAuthenticationUsers();
+        List<String> standardAuthenticationUsers = ldapPropertiesConfig.getStandardAuthenticationUsers() ==
+                null ? new ArrayList<>() : ldapPropertiesConfig.getStandardAuthenticationUsers();
         List<UserSessionEntity> activeSessions = userSessionService.loadUserSessionEntities(UserSessionService.Filter.ALL).stream()
                 .filter(userSession -> !userSession.getSystem())
                 .filter(userSession -> !standardAuthenticationUsers.contains(userSession.getLogin()))
@@ -47,7 +48,8 @@ public class UserSynchronizationSchedulerServiceBean implements UserSynchronizat
 
     public void killExpiredSessions() {
         for (ExpiredSession es : expiredSessions) {
-            boolean killSession = (timeSource.currentTimeMillis() - es.getCreateTsMillis()) >= ldapPropertiesConfig.getSessionExpiringPeriodSec() * 1000;
+            boolean killSession = (timeSource.currentTimeMillis() - es.getCreateTsMillis())
+                    >= ldapPropertiesConfig.getSessionExpiringPeriodSec() * 1000;
             if (killSession) {
                 expiredSessions.remove(es);
                 userSessionService.killSession(es.getUuid());

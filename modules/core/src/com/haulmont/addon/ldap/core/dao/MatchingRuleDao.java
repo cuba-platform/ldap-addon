@@ -11,13 +11,14 @@ import com.haulmont.cuba.core.TypedQuery;
 import com.haulmont.cuba.core.global.AppBeans;
 import com.haulmont.cuba.core.global.Messages;
 import com.haulmont.cuba.core.global.Metadata;
-import com.haulmont.cuba.core.global.PersistenceHelper;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static com.haulmont.addon.ldap.core.dao.MatchingRuleDao.NAME;
@@ -122,7 +123,9 @@ public class MatchingRuleDao {
     @Transactional
     public void saveMatchingRules(List<AbstractCommonMatchingRule> matchingRules, List<AbstractCommonMatchingRule> matchingRulesToDelete) {
 
-        List<CommonMatchingRule> defaultRules = matchingRules.stream().filter(mr -> DEFAULT == mr.getRuleType()).collect(Collectors.toList());
+        List<CommonMatchingRule> defaultRules = matchingRules.stream()
+                .filter(mr -> DEFAULT == mr.getRuleType())
+                .collect(Collectors.toList());
         if (defaultRules.size() != 1) {
             throw new RuntimeException(messages.formatMessage(MatchingRuleDao.class, "onlySingleDefaultRule"));
         }

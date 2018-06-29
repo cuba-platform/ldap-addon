@@ -22,7 +22,6 @@ import org.springframework.ldap.query.LdapQueryBuilder;
 import org.springframework.ldap.query.SearchScope;
 import org.springframework.ldap.support.LdapUtils;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 import java.util.List;

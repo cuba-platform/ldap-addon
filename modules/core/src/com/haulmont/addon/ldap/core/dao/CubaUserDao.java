@@ -5,12 +5,10 @@ import com.haulmont.cuba.core.EntityManager;
 import com.haulmont.cuba.core.Persistence;
 import com.haulmont.cuba.core.TypedQuery;
 import com.haulmont.cuba.core.global.Metadata;
-import com.haulmont.cuba.core.global.PersistenceHelper;
 import com.haulmont.cuba.security.entity.Role;
 import com.haulmont.cuba.security.entity.User;
 import com.haulmont.cuba.security.entity.UserRole;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
@@ -65,8 +63,12 @@ public class CubaUserDao {
         if (beforeRulesApplyUserState.getActive() || cubaUser.getActive()) {
             EntityManager entityManager = persistence.getEntityManager();
             User mergedUser = daoHelper.persistOrMerge(cubaUser);
-            List<Role> newRoles = mergedUser.getUserRoles().stream().map(UserRole::getRole).collect(Collectors.toList());
-            beforeRulesApplyUserState.getUserRoles().stream().filter(ur -> !newRoles.contains(ur.getRole())).forEach(entityManager::remove);
+            List<Role> newRoles = mergedUser.getUserRoles().stream()
+                    .map(UserRole::getRole)
+                    .collect(Collectors.toList());
+            beforeRulesApplyUserState.getUserRoles().stream()
+                    .filter(ur -> !newRoles.contains(ur.getRole()))
+                    .forEach(entityManager::remove);
             mergedUser.getUserRoles().forEach(entityManager::persist);
         }
         userSynchronizationLogDao.logUserSynchronization(ldapMatchingRuleContext, beforeRulesApplyUserState);

@@ -30,7 +30,8 @@ import java.util.concurrent.CopyOnWriteArraySet;
 /**
  * Stores all user sessions.<br>
  * Periodically, gets expired user sessions from the Middleware layer and sends notifications to users having expired sessions<br>
- * A session becomes expired if an access group or roles assigned to the user are changed since the last LDAP synchronization or a user is deactivated via LDAP.
+ * A session becomes expired if an access group or roles assigned to the user are changed since
+ * the last LDAP synchronization or a user is deactivated via LDAP.
  */
 @Component("ldap_ExpiredSessionWatcher")
 public class ExpiredSessionWatcher {
@@ -89,7 +90,9 @@ public class ExpiredSessionWatcher {
                 if (session.getState() == VaadinSession.State.OPEN) {
                     // active app in this session
                     App app = App.getInstance();
-                    Optional<ExpiredSession> expiredSession = expiringSessions.stream().filter(es -> es.getUuid().equals(app.getConnection().getSessionNN().getId())).findFirst();
+                    Optional<ExpiredSession> expiredSession = expiringSessions.stream()
+                            .filter(es -> es.getUuid().equals(app.getConnection().getSessionNN().getId()))
+                            .findFirst();
                     // user is logged in and session is expiring
                     if (app.getConnection().isAuthenticated() && expiredSession.isPresent()) {
                         // notify all opened web browser tabs

@@ -2,7 +2,6 @@ package com.haulmont.addon.ldap.core.dao;
 
 import com.haulmont.addon.ldap.core.rule.LdapMatchingRuleContext;
 import com.haulmont.addon.ldap.entity.*;
-import com.haulmont.cuba.core.EntityManager;
 import com.haulmont.cuba.core.Persistence;
 import com.haulmont.cuba.core.TypedQuery;
 import com.haulmont.cuba.core.global.Metadata;
@@ -13,7 +12,6 @@ import com.haulmont.cuba.security.entity.UserRole;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
@@ -59,7 +57,8 @@ public class UserSynchronizationLogDao {
         userSynchronizationLog.setLogin(cubaUser.getLogin());
         UserSynchronizationResultEnum result = (originalUser.getActive() || cubaUser.getActive()) ? SUCCESS_SYNC : DISABLED_USER_TRY_LOGIN;
         userSynchronizationLog.setResult(result);
-        userSynchronizationLog.setLdapAttributes(ldapMatchingRuleContext.getLdapUser() == null ? null : getLdapAttributes(ldapMatchingRuleContext.getLdapUser().getUnmodifiableLdapAttributeMap()));
+        userSynchronizationLog.setLdapAttributes(ldapMatchingRuleContext.getLdapUser() == null ?
+                null : getLdapAttributes(ldapMatchingRuleContext.getLdapUser().getUnmodifiableLdapAttributeMap()));
         userSynchronizationLog.setAccessGroupBefore(originalUser.getGroup() == null ? null : originalUser.getGroup().getName());
         userSynchronizationLog.setAccessGroupAfter(cubaUser.getGroup() == null ? null : cubaUser.getGroup().getName());
         userSynchronizationLog.setRolesBefore(getRolesField(originalUser.getUserRoles()));
@@ -182,7 +181,9 @@ public class UserSynchronizationLogDao {
                 sb.append("\n");
                 sb.append(INDENT);
                 sb.append("Roles: ");
-                sb.append(dbRule.getRoles().stream().map(Role::getName).collect(Collectors.joining(",")));
+                sb.append(dbRule.getRoles().stream()
+                        .map(Role::getName)
+                        .collect(Collectors.joining(",")));
                 sb.append(".");
 
                 if (!(DEFAULT == cmr.getRuleType())) {
@@ -204,7 +205,9 @@ public class UserSynchronizationLogDao {
         StringBuilder sb = new StringBuilder();
         if (SIMPLE == dbRule.getRuleType()) {
             SimpleMatchingRule smr = (SimpleMatchingRule) dbRule;
-            sb.append(smr.getConditions().stream().map(SimpleRuleCondition::getAttributePair).collect(Collectors.joining(",")));
+            sb.append(smr.getConditions().stream()
+                    .map(SimpleRuleCondition::getAttributePair)
+                    .collect(Collectors.joining(",")));
         } else if (SCRIPTING == dbRule.getRuleType()) {
             ScriptingMatchingRule smr = (ScriptingMatchingRule) dbRule;
             sb.append(smr.getScriptingCondition());
@@ -220,7 +223,9 @@ public class UserSynchronizationLogDao {
             sb.append(": ");
             if (me.getValue() instanceof List) {
                 List<Object> listValue = (List<Object>) me.getValue();
-                List<String> list = listValue.stream().map(v -> v == null ? "null" : v.toString()).collect(toList());
+                List<String> list = listValue.stream()
+                        .map(v -> v == null ? "null" : v.toString())
+                        .collect(toList());
                 sb.append(list.stream().collect(Collectors.joining(",")));
             } else {
                 String attrValue = attrName.toUpperCase().contains(PASSWORD) ? PASSWORD_VALUE : me.getValue().toString();

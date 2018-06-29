@@ -3,7 +3,6 @@ package com.haulmont.addon.ldap.core.service;
 import com.haulmont.addon.ldap.core.dao.LdapUserDao;
 import com.haulmont.addon.ldap.service.AuthUserService;
 import com.haulmont.cuba.security.global.LoginException;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;

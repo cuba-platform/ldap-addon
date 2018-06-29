@@ -11,7 +11,6 @@ import com.haulmont.cuba.gui.data.CollectionDatasource;
 import com.haulmont.cuba.gui.data.Datasource;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 import java.util.UUID;
 
 import static com.haulmont.cuba.gui.components.Frame.NotificationType.HUMANIZED;

@@ -82,24 +82,21 @@ public class MatchingRuleScreen extends AbstractWindow {
     public void init(Map<String, Object> params) {
         super.init(params);
 
-        addBeforeCloseWithCloseButtonListener(new BeforeCloseWithCloseButtonListener() {
-            @Override
-            public void beforeCloseWithCloseButton(BeforeCloseWithCloseButtonEvent event) {
-                event.preventWindowClose();
-                showOptionDialog(
-                        getMessage("closeWindowTitle"),
-                        getMessage("closeWindow"),
-                        MessageType.CONFIRMATION,
-                        new Action[]{
-                                new DialogAction(DialogAction.Type.YES) {
-                                    public void actionPerform(Component component) {
-                                        close("");
-                                    }
-                                },
-                                new DialogAction(DialogAction.Type.NO)
-                        }
-                );
-            }
+        addBeforeCloseWithCloseButtonListener(event -> {
+            event.preventWindowClose();
+            showOptionDialog(
+                    getMessage("closeWindowTitle"),
+                    getMessage("closeWindow"),
+                    MessageType.CONFIRMATION,
+                    new Action[]{
+                            new DialogAction(DialogAction.Type.YES) {
+                                public void actionPerform(Component component) {
+                                    close("");
+                                }
+                            },
+                            new DialogAction(DialogAction.Type.NO)
+                    }
+            );
         });
 
         matchingRuleTable.setSortable(false);
@@ -127,32 +124,28 @@ public class MatchingRuleScreen extends AbstractWindow {
                 }
         );
 
-        CollectionDatasource.CollectionChangeListener<AbstractCommonMatchingRule, UUID> sortListener = new CollectionDatasource.CollectionChangeListener<AbstractCommonMatchingRule, UUID>() {
-            @Override
-            public void collectionChanged(CollectionDatasource.CollectionChangeEvent<AbstractCommonMatchingRule, UUID> e) {
-                if (CollectionDatasource.Operation.ADD.equals(e.getOperation())) {
-                    Optional<Integer> maxOrder = matchingRuleDatasource.getItems().stream()
-                            .filter(mr -> DEFAULT != mr.getRuleType())
-                            .max(Comparator.comparing(mr -> mr.getOrder().getOrder())).map(mr -> mr.getOrder().getOrder());
-                    int order = maxOrder.isPresent() ? maxOrder.get() + 1 : 1;
-                    Optional<AbstractCommonMatchingRule> ruleWithoutOrder = e.getItems().stream().filter(mr -> DEFAULT_RULE_ORDER.equals(mr.getOrder().getOrder())).findAny();
-                    ruleWithoutOrder.ifPresent(rule -> rule.getOrder().setOrder(order));
-                    sortDsByOrder();
-                }
+        CollectionDatasource.CollectionChangeListener<AbstractCommonMatchingRule, UUID> sortListener = e -> {
+            if (CollectionDatasource.Operation.ADD.equals(e.getOperation())) {
+                Optional<Integer> maxOrder = matchingRuleDatasource.getItems().stream()
+                        .filter(mr -> DEFAULT != mr.getRuleType())
+                        .max(Comparator.comparing(mr -> mr.getOrder().getOrder())).map(mr -> mr.getOrder().getOrder());
+                int order = maxOrder.isPresent() ? maxOrder.get() + 1 : 1;
+                Optional<AbstractCommonMatchingRule> ruleWithoutOrder = e.getItems().stream()
+                        .filter(mr -> DEFAULT_RULE_ORDER.equals(mr.getOrder().getOrder()))
+                        .findAny();
+                ruleWithoutOrder.ifPresent(rule -> rule.getOrder().setOrder(order));
+                sortDsByOrder();
             }
         };
 
 
-        CollectionDatasource.CollectionChangeListener<AbstractCommonMatchingRule, UUID> orderDecreaseListener = new CollectionDatasource.CollectionChangeListener<AbstractCommonMatchingRule, UUID>() {
-            @Override
-            public void collectionChanged(CollectionDatasource.CollectionChangeEvent<AbstractCommonMatchingRule, UUID> e) {
-                if (CollectionDatasource.Operation.REMOVE.equals(e.getOperation())) {
-                    AbstractCommonMatchingRule removedItem = e.getItems().get(0);
-                    matchingRuleDatasource.getItems().stream()
-                            .filter(mr -> mr.getOrder().getOrder() > removedItem.getOrder().getOrder() && DEFAULT != mr.getRuleType())
-                            .forEach(mr -> mr.getOrder().setOrder(mr.getOrder().getOrder() - 1));
-                    matchingRuleTable.repaint();
-                }
+        CollectionDatasource.CollectionChangeListener<AbstractCommonMatchingRule, UUID> orderDecreaseListener = e -> {
+            if (CollectionDatasource.Operation.REMOVE.equals(e.getOperation())) {
+                AbstractCommonMatchingRule removedItem = e.getItems().get(0);
+                matchingRuleDatasource.getItems().stream()
+                        .filter(mr -> mr.getOrder().getOrder() > removedItem.getOrder().getOrder() && DEFAULT != mr.getRuleType())
+                        .forEach(mr -> mr.getOrder().setOrder(mr.getOrder().getOrder() - 1));
+                matchingRuleTable.repaint();
             }
         };
 
@@ -161,35 +154,29 @@ public class MatchingRuleScreen extends AbstractWindow {
 
         appliedRolesDs.clear();
 
-        EditAction.BeforeActionPerformedHandler customEditBeforeActionPerformedHandler = new EditAction.BeforeActionPerformedHandler() {
-            @Override
-            public boolean beforeActionPerformed() {
-                AbstractCommonMatchingRule rule = matchingRuleTable.getSingleSelected();
-                return !(CUSTOM == rule.getRuleType());
-            }
+        EditAction.BeforeActionPerformedHandler customEditBeforeActionPerformedHandler = () -> {
+            AbstractCommonMatchingRule rule = matchingRuleTable.getSingleSelected();
+            return !(CUSTOM == rule.getRuleType());
         };
 
-        EditAction.AfterCommitHandler customAfterCommitHandler = new EditAction.AfterCommitHandler() {
-            @Override
-            public void handle(Entity entity) {
-                AbstractCommonMatchingRule amr = (AbstractCommonMatchingRule) entity;
-                if (MatchingRuleType.SIMPLE == amr.getRuleType()) {
-                    matchingRuleDatasource.getItems().forEach(mr -> {
-                        if (MatchingRuleType.SIMPLE == mr.getRuleType() && mr.getId().equals(amr.getId())) {
-                            ((SimpleMatchingRule) amr).getConditions().forEach(con -> {
-                                Optional<SimpleRuleCondition> src = ((SimpleMatchingRule) mr).getConditions().stream()
-                                        .filter(c -> c.getId().equals(con.getId()))
-                                        .findFirst();
-                                if (src.isPresent()) {
-                                    src.get().setAttribute(con.getAttribute());
-                                    src.get().setAttributeValue(con.getAttributeValue());
-                                }
-                            });
-                        }
-                    });
-                }
-                matchingRuleTable.repaint();
+        EditAction.AfterCommitHandler customAfterCommitHandler = entity -> {
+            AbstractCommonMatchingRule amr = (AbstractCommonMatchingRule) entity;
+            if (MatchingRuleType.SIMPLE == amr.getRuleType()) {
+                matchingRuleDatasource.getItems().forEach(mr -> {
+                    if (MatchingRuleType.SIMPLE == mr.getRuleType() && mr.getId().equals(amr.getId())) {
+                        ((SimpleMatchingRule) amr).getConditions().forEach(con -> {
+                            Optional<SimpleRuleCondition> src = ((SimpleMatchingRule) mr).getConditions().stream()
+                                    .filter(c -> c.getId().equals(con.getId()))
+                                    .findFirst();
+                            if (src.isPresent()) {
+                                src.get().setAttribute(con.getAttribute());
+                                src.get().setAttributeValue(con.getAttributeValue());
+                            }
+                        });
+                    }
+                });
             }
+            matchingRuleTable.repaint();
         };
 
         EditAction customEdit = new EditAction(matchingRuleTable) {
@@ -371,19 +358,16 @@ public class MatchingRuleScreen extends AbstractWindow {
         } else {
             textField.setDatatype(Datatypes.get(Integer.class));
         }
-        textField.addValueChangeListener(new ValueChangeListener() {
-            @Override
-            public void valueChanged(ValueChangeEvent e) {
-                if (!matchingRuleUtils.validateRuleOrder((Integer) e.getValue())) {
-                    textField.setValue(e.getPrevValue());
-                    return;
-                }
-                AbstractCommonMatchingRule mr = matchingRuleTable.getSingleSelected();
-                Integer order = (Integer) e.getValue();
-                MatchingRuleOrder matchingRuleOrder = mr.getOrder();
-                matchingRuleOrder.setOrder(order);
-                sortDsByOrder();
+        textField.addValueChangeListener(e -> {
+            if (!matchingRuleUtils.validateRuleOrder((Integer) e.getValue())) {
+                textField.setValue(e.getPrevValue());
+                return;
             }
+            AbstractCommonMatchingRule mr = matchingRuleTable.getSingleSelected();
+            Integer order = (Integer) e.getValue();
+            MatchingRuleOrder matchingRuleOrder = mr.getOrder();
+            matchingRuleOrder.setOrder(order);
+            sortDsByOrder();
         });
 
         return textField;
@@ -399,7 +383,8 @@ public class MatchingRuleScreen extends AbstractWindow {
             showNotification(getMessage("matchingRuleScreenEmptyOrderCaption"), getMessage("matchingRuleScreenEmptyOrder"), HUMANIZED);
         }
 
-        Map<Integer, Long> countMap = matchingRules.stream().collect(Collectors.groupingBy(mr -> mr.getOrder().getOrder(), Collectors.counting()));
+        Map<Integer, Long> countMap = matchingRules.stream()
+                .collect(Collectors.groupingBy(mr -> mr.getOrder().getOrder(), Collectors.counting()));
         for (Map.Entry<Integer, Long> entry : countMap.entrySet()) {
             if (entry.getValue() > 1) {
                 result = false;

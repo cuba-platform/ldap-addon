@@ -10,7 +10,8 @@ public class UserDeactivatedFromLdapEvent extends ApplicationEvent {
     private final User cubaUser;
     private final SynchronizationMode synchronizationMode;
 
-    public UserDeactivatedFromLdapEvent(Object source, LdapMatchingRuleContext ldapMatchingRuleContext, User cubaUser, SynchronizationMode synchronizationMode) {
+    public UserDeactivatedFromLdapEvent(Object source, LdapMatchingRuleContext ldapMatchingRuleContext, User cubaUser,
+                                        SynchronizationMode synchronizationMode) {
         super(source);
         this.ldapMatchingRuleContext = ldapMatchingRuleContext;
         this.cubaUser = cubaUser;

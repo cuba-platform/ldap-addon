@@ -110,7 +110,9 @@ public class UserSynchronizationServiceBean implements UserSynchronizationServic
         testUserSynchronizationDto.setUserExistsInLdap(true);
         User cubaUser = cubaUserDao.getCubaUserByLogin(login);
 
-        List<CommonMatchingRule> result = rulesToApply.stream().filter(r -> !(CUSTOM == r.getRuleType())).collect(Collectors.toList());
+        List<CommonMatchingRule> result = rulesToApply.stream()
+                .filter(r -> !(CUSTOM == r.getRuleType()))
+                .collect(Collectors.toList());
         List<CustomLdapMatchingRuleWrapper> customRules = matchingRuleDao.getCustomMatchingRules();
         rulesToApply.stream()
                 .filter(r -> CUSTOM == r.getRuleType())
@@ -118,7 +120,8 @@ public class UserSynchronizationServiceBean implements UserSynchronizationServic
                     CustomLdapMatchingRuleWrapper wrapper = customRules.stream()
                             .filter(cr -> cr.getMatchingRuleId().equals(customRuleDto.getMatchingRuleId()))
                             .findFirst()
-                            .orElseThrow(() -> new RuntimeException("Custom matching rule with id " + customRuleDto.getMatchingRuleId() + " must exist"));
+                            .orElseThrow(() ->
+                                    new RuntimeException("Custom matching rule with id " + customRuleDto.getMatchingRuleId() + " must exist"));
                     wrapper.getOrder().setOrder(customRuleDto.getOrder().getOrder());
                     wrapper.getStatus().setIsActive(customRuleDto.getStatus().getIsActive());
                     result.add(wrapper);
@@ -140,7 +143,9 @@ public class UserSynchronizationServiceBean implements UserSynchronizationServic
             }
         });
 
-        testUserSynchronizationDto.getAppliedCubaRoles().addAll(cubaUser.getUserRoles().stream().map(UserRole::getRole).collect(Collectors.toList()));
+        testUserSynchronizationDto.getAppliedCubaRoles().addAll(cubaUser.getUserRoles().stream()
+                .map(UserRole::getRole)
+                .collect(Collectors.toList()));
         testUserSynchronizationDto.setGroup(cubaUser.getGroup());
 
         return testUserSynchronizationDto;
@@ -151,7 +156,9 @@ public class UserSynchronizationServiceBean implements UserSynchronizationServic
         return userSynchronizationSchedulerService.getExpiredSessions();
     }
 
-    private void setCommonAttributesFromLdapUser(LdapMatchingRuleContext ldapMatchingRuleContext, User cubaUser, User beforeRulesApplyUserState, String login, String modeMessage, SynchronizationMode modeType) {
+    private void setCommonAttributesFromLdapUser(LdapMatchingRuleContext ldapMatchingRuleContext, User cubaUser,
+                                                 User beforeRulesApplyUserState, String login, String modeMessage,
+                                                 SynchronizationMode modeType) {
         Boolean userDisabled = ldapMatchingRuleContext.getLdapUser().getDisabled();
         if (!beforeRulesApplyUserState.getActive() && userDisabled) {
             return;

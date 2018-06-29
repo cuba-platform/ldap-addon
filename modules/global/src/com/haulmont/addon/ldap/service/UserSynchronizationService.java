@@ -20,7 +20,8 @@ public interface UserSynchronizationService {
     UserSynchronizationResultDto synchronizeUser(String login, boolean saveSynchronizationResult);
 
     /**
-     * Synchronizes the state of a CUBA user in accordance with LDAP using provided matching rules. After synchronization, the user state is not persisted.
+     * Synchronizes the state of a CUBA user in accordance with LDAP using provided matching rules.
+     * After synchronization, the user state is not persisted.
      *
      * @param login        user login
      * @param rulesToApply matching rules provided on LDAP Matching Rule Screen.
@@ -29,7 +30,8 @@ public interface UserSynchronizationService {
 
     /**
      * Returns expired user sessions<br>
-     * A session becomes expired if an access group or roles assigned to the user are changed since the last LDAP synchronization or a user is deactivated via LDAP.
+     * A session becomes expired if an access group or roles assigned to the user are changed since
+     * the last LDAP synchronization or a user is deactivated via LDAP.
      */
     Set<ExpiredSession> getExpiringSession();
 

@@ -31,8 +31,10 @@ public class MatchingRuleApplier {
     @Inject
     private Metadata metadata;
 
-    public void applyMatchingRules(List<CommonMatchingRule> matchingRules, LdapMatchingRuleContext ldapMatchingRuleContext, User beforeRulesApplyUserState) {
-        List<CommonMatchingRule> activeMatchingRules = matchingRules.stream().filter(cmr -> cmr.getStatus().getIsActive())
+    public void applyMatchingRules(List<CommonMatchingRule> matchingRules, LdapMatchingRuleContext ldapMatchingRuleContext,
+                                   User beforeRulesApplyUserState) {
+        List<CommonMatchingRule> activeMatchingRules = matchingRules.stream()
+                .filter(cmr -> cmr.getStatus().getIsActive())
                 .sorted(Comparator.comparing(mr -> mr.getOrder().getOrder()))
                 .collect(Collectors.toList());
 
@@ -49,11 +51,16 @@ public class MatchingRuleApplier {
     private void applyContextToUser(LdapMatchingRuleContext ldapMatchingRuleContext, User beforeRulesApplyUserState) {
         User cubaUser = ldapMatchingRuleContext.getCubaUser();
         cubaUser.setGroup(ldapMatchingRuleContext.getGroup());
-        List<Role> existingRoles = beforeRulesApplyUserState.getUserRoles().stream().map(UserRole::getRole).collect(Collectors.toList());
+        List<Role> existingRoles = beforeRulesApplyUserState.getUserRoles().stream()
+                .map(UserRole::getRole)
+                .collect(Collectors.toList());
 
         for (Role role : ldapMatchingRuleContext.getRoles()) {
             if (existingRoles.contains(role)) {
-                UserRole existingUserRole = beforeRulesApplyUserState.getUserRoles().stream().filter(ur -> ur.getRole().equals(role)).findFirst().get();
+                UserRole existingUserRole = beforeRulesApplyUserState.getUserRoles().stream()
+                        .filter(ur -> ur.getRole().equals(role))
+                        .findFirst()
+                        .get();
                 cubaUser.getUserRoles().add(existingUserRole);
             } else {
                 UserRole userRole = metadata.create(UserRole.class);

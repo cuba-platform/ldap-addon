@@ -61,19 +61,24 @@ public class LdapAddonLoginProvider implements LoginProvider, Ordered {
         }
 
         if (RememberMeCredentials.class.isAssignableFrom(credentials.getClass())) {
-            UserSynchronizationResultDto userSynchronizationResult = userSynchronizationService.synchronizeUser(((RememberMeCredentials) credentials).getLogin(), true);
+            UserSynchronizationResultDto userSynchronizationResult =
+                    userSynchronizationService.synchronizeUser(((RememberMeCredentials) credentials).getLogin(), true);
             if (userSynchronizationResult.isInactiveUser()) {
-                throw new LoginException(messages.formatMessage(LdapAddonLoginProvider.class, "LoginException.InactiveUserLoginAttempt", ((RememberMeCredentials) credentials).getLocale()));
+                throw new LoginException(messages.formatMessage(LdapAddonLoginProvider.class,
+                        "LoginException.InactiveUserLoginAttempt", ((RememberMeCredentials) credentials).getLocale()));
             }
             return null;
         }
 
         LoginPasswordCredentials loginPasswordCredentials = (LoginPasswordCredentials) credentials;
 
-        authUserService.ldapAuth(loginPasswordCredentials.getLogin(), loginPasswordCredentials.getPassword(), loginPasswordCredentials.getLocale());
-        UserSynchronizationResultDto userSynchronizationResult = userSynchronizationService.synchronizeUser(loginPasswordCredentials.getLogin(), true);
+        authUserService.ldapAuth(
+                loginPasswordCredentials.getLogin(), loginPasswordCredentials.getPassword(), loginPasswordCredentials.getLocale());
+        UserSynchronizationResultDto userSynchronizationResult
+                = userSynchronizationService.synchronizeUser(loginPasswordCredentials.getLogin(), true);
         if (userSynchronizationResult.isInactiveUser()) {
-            throw new LoginException(messages.formatMessage(LdapAddonLoginProvider.class, "LoginException.InactiveUserLoginAttempt", loginPasswordCredentials.getLocale()));
+            throw new LoginException(messages.formatMessage(LdapAddonLoginProvider.class,
+                    "LoginException.InactiveUserLoginAttempt", loginPasswordCredentials.getLocale()));
         }
 
         TrustedClientCredentials tcCredentials = new TrustedClientCredentials(

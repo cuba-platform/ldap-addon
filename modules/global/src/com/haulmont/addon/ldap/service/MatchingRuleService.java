@@ -1,7 +1,6 @@
 package com.haulmont.addon.ldap.service;
 
 import com.haulmont.addon.ldap.entity.AbstractCommonMatchingRule;
-import com.haulmont.addon.ldap.entity.CommonMatchingRule;
 
 import java.util.List;
 

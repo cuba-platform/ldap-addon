@@ -10,7 +10,8 @@ public class BeforeUserRolesAndAccessGroupUpdatedFromLdapEvent extends Applicati
     private final User cubaUser;
     private final SynchronizationMode synchronizationMode;
 
-    public BeforeUserRolesAndAccessGroupUpdatedFromLdapEvent(Object source, LdapMatchingRuleContext ldapMatchingRuleContext, User cubaUser, SynchronizationMode synchronizationMode) {
+    public BeforeUserRolesAndAccessGroupUpdatedFromLdapEvent(Object source, LdapMatchingRuleContext ldapMatchingRuleContext,
+                                                             User cubaUser, SynchronizationMode synchronizationMode) {
         super(source);
         this.ldapMatchingRuleContext = ldapMatchingRuleContext;
         this.cubaUser = cubaUser;
