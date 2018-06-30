@@ -66,4 +66,20 @@
           extends="_local"
           name="userSynchronizationLog-view-with-sys-prop"
           systemProperties="true"/>
+    <view class="com.haulmont.addon.ldap.entity.AbstractDbStoredMatchingRule"
+          extends="_local"
+          name="abstractDbStoredMatchingRule-view-with-roles-order-status-group">
+        <property fetch="JOIN"
+                  name="accessGroup"
+                  view="_local"/>
+        <property fetch="JOIN"
+                  name="roles"
+                  view="_local"/>
+        <property fetch="JOIN"
+                  name="status"
+                  view="_local"/>
+        <property fetch="JOIN"
+                  name="order"
+                  view="_local"/>
+    </view>
 </views>

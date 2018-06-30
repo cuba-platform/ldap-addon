@@ -78,11 +78,8 @@ public class MatchingRuleDao {
     public List<CommonMatchingRule> getMatchingRules() {
         List<CommonMatchingRule> result = new ArrayList<>();
         TypedQuery<AbstractDbStoredMatchingRule> query = persistence.getEntityManager()
-                .createQuery("select mr from ldap$AbstractDbStoredMatchingRule mr " +
-                        "left join fetch mr.roles roles " +
-                        "left join fetch mr.order mrOrder " +
-                        "left join fetch mr.status mrStatus " +
-                        "left join fetch mr.accessGroup group", AbstractDbStoredMatchingRule.class);
+                .createQuery("select mr from ldap$AbstractDbStoredMatchingRule mr", AbstractDbStoredMatchingRule.class);
+        query.setViewName("abstractDbStoredMatchingRule-view-with-roles-order-status-group");
         List<? extends CommonMatchingRule> dbMatchingRules = query.getResultList();
         initializeDbMatchingRules(dbMatchingRules);
         List<? extends CommonMatchingRule> programmaticMatchingRules = getCustomMatchingRules();
