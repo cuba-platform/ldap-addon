@@ -55,7 +55,8 @@ public class UserSynchronizationSchedulerServiceBean implements UserSynchronizat
                 .filter(userSession -> !standardAuthenticationUsers.contains(userSession.getLogin()))
                 .collect(Collectors.toList());
         for (UserSessionEntity use : activeSessions) {
-            UserSynchronizationResultDto userSynchronizationResult = userSynchronizationService.synchronizeUser(use.getLogin(), false, null, null, null);
+            UserSynchronizationResultDto userSynchronizationResult = userSynchronizationService.synchronizeUser(
+                    use.getLogin(), false, null, null, null);
             if (userSynchronizationResult.isUserPrivilegesChanged()) {
                 expiredSessions.add(new ExpiredSession(use.getUuid(), use.getLogin(), timeSource.currentTimeMillis()));
             }
