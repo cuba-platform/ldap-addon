@@ -1,8 +1,5 @@
-package com.haulmont.addon.ldap.core.dto;
+package com.haulmont.addon.ldap.dto;
 
-import com.haulmont.addon.ldap.core.utils.LdapHelper;
-
-import javax.naming.directory.Attributes;
 import java.util.*;
 
 public class LdapUser {
@@ -22,8 +19,8 @@ public class LdapUser {
     private String language;
     private String ou;
 
-    public LdapUser(Attributes ldapUserAttributes) {
-        this.ldapUserAttributesMap = LdapHelper.setLdapAttributesMap(ldapUserAttributes);
+    public LdapUser(Map<String, Object> ldapUserAttributes) {
+        this.ldapUserAttributesMap = ldapUserAttributes;
     }
 
     public LdapUser(LdapUser source) {

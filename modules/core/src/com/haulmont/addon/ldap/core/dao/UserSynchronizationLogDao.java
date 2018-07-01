@@ -1,5 +1,6 @@
 package com.haulmont.addon.ldap.core.dao;
 
+import com.haulmont.addon.ldap.dto.LdapUser;
 import com.haulmont.addon.ldap.core.rule.LdapMatchingRuleContext;
 import com.haulmont.addon.ldap.entity.*;
 import com.haulmont.cuba.core.Persistence;
@@ -74,11 +75,12 @@ public class UserSynchronizationLogDao {
     }
 
     @Transactional
-    public void logLoginError(String login, Exception e) {
+    public void logDisabledDuringSync(LdapUser ldapUser) {
         UserSynchronizationLog userSynchronizationLog = metadata.create(UserSynchronizationLog.class);
-        userSynchronizationLog.setLogin(login);
-        userSynchronizationLog.setResult(LDAP_LOGIN_ERROR);
-        userSynchronizationLog.setErrorText(ExceptionUtils.getFullStackTrace(e));
+        userSynchronizationLog.setLogin(ldapUser.getLogin());
+        userSynchronizationLog.setResult(USER_DISABLED_DURING_LDAP_SYNC);
+        userSynchronizationLog.setLdapAttributes(getLdapAttributes(ldapUser.getUnmodifiableLdapAttributeMap()));
+        userSynchronizationLog.setIsDeactivated(TRUE);
         saveUserSynchronizationLog(userSynchronizationLog);
     }
 

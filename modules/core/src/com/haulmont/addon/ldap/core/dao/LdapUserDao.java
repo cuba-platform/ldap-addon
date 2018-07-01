@@ -1,6 +1,6 @@
 package com.haulmont.addon.ldap.core.dao;
 
-import com.haulmont.addon.ldap.core.dto.LdapUser;
+import com.haulmont.addon.ldap.dto.LdapUser;
 import com.haulmont.addon.ldap.core.utils.LdapConstants;
 import com.haulmont.addon.ldap.core.utils.LdapUserMapper;
 import com.haulmont.addon.ldap.entity.LdapConfig;
@@ -17,6 +17,7 @@ import org.springframework.ldap.filter.AndFilter;
 import org.springframework.ldap.filter.EqualsFilter;
 import org.springframework.ldap.filter.Filter;
 import org.springframework.ldap.filter.HardcodedFilter;
+import org.springframework.ldap.query.ContainerCriteria;
 import org.springframework.ldap.query.LdapQuery;
 import org.springframework.ldap.query.LdapQueryBuilder;
 import org.springframework.ldap.query.SearchScope;
@@ -97,6 +98,15 @@ public class LdapUserDao {
 
     }
 
+    public List<LdapUser> getLdapUsers(List<String> logins) {
+        LdapConfig ldapConfig = ldapConfigDao.getLdapConfig();
+        LdapQuery query = LdapQueryBuilder.query()
+                .searchScope(SearchScope.SUBTREE)
+                .timeLimit(10_000)
+                .filter(createUserBaseAndLoginsFilter(logins));
+        return ldapTemplate.search(query, new LdapUserMapper(ldapConfig));
+    }
+
 
     private Filter createUserBaseAndLoginFilter(String login) {
         LdapConfig ldapConfig = ldapConfigDao.getLdapConfig();
@@ -145,6 +155,24 @@ public class LdapUserDao {
             }
         }
         return prevFilter;
+    }
+
+    private Filter createUserBaseAndLoginsFilter(List<String> logins) {
+        LdapConfig ldapConfig = ldapConfigDao.getLdapConfig();
+        ContainerCriteria containerCriteria = LdapQueryBuilder.query().where(ldapConfig.getLoginAttribute()).is(logins.get(0));
+        for (String login : logins.subList(1, logins.size())) {
+            containerCriteria = containerCriteria.or(ldapConfig.getLoginAttribute()).is(login);
+        }
+
+        Filter ef = containerCriteria.filter();
+        if (StringUtils.isEmpty(ldapConfig.getUserBase())) {
+            return ef;
+        }
+        AndFilter andFilter = new AndFilter();
+        andFilter.and(ef);
+        andFilter.and(new HardcodedFilter("(" + ldapConfig.getUserBase() + ")"));
+
+        return andFilter;
     }
 }
 

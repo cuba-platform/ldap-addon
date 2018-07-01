@@ -1,15 +1,11 @@
 package com.haulmont.addon.ldap.core;
 
-import com.haulmont.addon.ldap.core.LdapTestContainer;
 import com.haulmont.addon.ldap.core.dao.*;
-import com.haulmont.addon.ldap.core.dto.LdapUser;
 import com.haulmont.addon.ldap.dto.UserSynchronizationResultDto;
 import com.haulmont.addon.ldap.entity.*;
 import com.haulmont.addon.ldap.service.UserSynchronizationService;
-import com.haulmont.cuba.core.EntityManager;
 import com.haulmont.cuba.core.Persistence;
 import com.haulmont.cuba.core.Transaction;
-import com.haulmont.cuba.core.TypedQuery;
 import com.haulmont.cuba.core.global.AppBeans;
 import com.haulmont.cuba.core.global.DataManager;
 import com.haulmont.cuba.core.global.Metadata;
@@ -178,7 +174,7 @@ public class SampleIntegrationTest {
 
             persistence.getEntityManager().flush();
 
-            UserSynchronizationResultDto userSynchronizationResultDto = userSynchronizationService.synchronizeUser("barts", true);
+            UserSynchronizationResultDto userSynchronizationResultDto = userSynchronizationService.synchronizeUser("barts", true, null, null, null);
 
             assertEquals(true, userSynchronizationResultDto.isUserPrivilegesChanged());
 
@@ -319,7 +315,7 @@ public class SampleIntegrationTest {
             persistence.getEntityManager().getDelegate().detach(role);
             persistence.getEntityManager().getDelegate().detach(userRole);
 
-            UserSynchronizationResultDto userSynchronizationResultDto = userSynchronizationService.synchronizeUser("joes", true);
+            UserSynchronizationResultDto userSynchronizationResultDto = userSynchronizationService.synchronizeUser("joes", true, null, null, null);
 
             assertEquals(true, userSynchronizationResultDto.isUserPrivilegesChanged());
 
@@ -407,7 +403,7 @@ public class SampleIntegrationTest {
 
             persistence.getEntityManager().flush();
 
-            UserSynchronizationResultDto userSynchronizationResultDto = userSynchronizationService.synchronizeUser("joes", true);
+            UserSynchronizationResultDto userSynchronizationResultDto = userSynchronizationService.synchronizeUser("joes", true, null, null, null);
 
             assertEquals(true, userSynchronizationResultDto.isUserPrivilegesChanged());
 
@@ -489,7 +485,7 @@ public class SampleIntegrationTest {
 
             persistence.getEntityManager().flush();
 
-            UserSynchronizationResultDto userSynchronizationResultDto = userSynchronizationService.synchronizeUser("bobh", true);
+            UserSynchronizationResultDto userSynchronizationResultDto = userSynchronizationService.synchronizeUser("bobh", true, null, null, null);
 
             assertEquals(false, userSynchronizationResultDto.isUserPrivilegesChanged());
 

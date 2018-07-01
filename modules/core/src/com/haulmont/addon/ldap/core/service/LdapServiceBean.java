@@ -5,7 +5,7 @@ import com.haulmont.addon.ldap.core.dao.CubaUserDao;
 import com.haulmont.addon.ldap.core.dao.LdapConfigDao;
 import com.haulmont.addon.ldap.core.dao.LdapUserAttributeDao;
 import com.haulmont.addon.ldap.core.dao.LdapUserDao;
-import com.haulmont.addon.ldap.core.dto.LdapUser;
+import com.haulmont.addon.ldap.dto.LdapUser;
 import com.haulmont.addon.ldap.core.rule.LdapMatchingRuleContext;
 import com.haulmont.addon.ldap.core.spring.AnonymousLdapContextSource;
 import com.haulmont.addon.ldap.core.utils.LdapHelper;

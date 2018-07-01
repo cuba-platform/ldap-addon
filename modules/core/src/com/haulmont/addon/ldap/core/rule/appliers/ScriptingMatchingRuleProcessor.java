@@ -1,6 +1,6 @@
 package com.haulmont.addon.ldap.core.rule.appliers;
 
-import com.haulmont.addon.ldap.core.dto.LdapUser;
+import com.haulmont.addon.ldap.dto.LdapUser;
 import com.haulmont.addon.ldap.core.rule.LdapMatchingRuleContext;
 import com.haulmont.addon.ldap.core.service.LdapServiceBean;
 import com.haulmont.addon.ldap.entity.AbstractDbStoredMatchingRule;

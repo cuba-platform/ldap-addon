@@ -62,7 +62,7 @@ public class LdapAddonLoginProvider implements LoginProvider, Ordered {
 
         if (RememberMeCredentials.class.isAssignableFrom(credentials.getClass())) {
             UserSynchronizationResultDto userSynchronizationResult =
-                    userSynchronizationService.synchronizeUser(((RememberMeCredentials) credentials).getLogin(), true);
+                    userSynchronizationService.synchronizeUser(((RememberMeCredentials) credentials).getLogin(), true, null, null, null);
             if (userSynchronizationResult.isInactiveUser()) {
                 throw new LoginException(messages.formatMessage(LdapAddonLoginProvider.class,
                         "LoginException.InactiveUserLoginAttempt", ((RememberMeCredentials) credentials).getLocale()));
@@ -75,7 +75,7 @@ public class LdapAddonLoginProvider implements LoginProvider, Ordered {
         authUserService.ldapAuth(
                 loginPasswordCredentials.getLogin(), loginPasswordCredentials.getPassword(), loginPasswordCredentials.getLocale());
         UserSynchronizationResultDto userSynchronizationResult
-                = userSynchronizationService.synchronizeUser(loginPasswordCredentials.getLogin(), true);
+                = userSynchronizationService.synchronizeUser(loginPasswordCredentials.getLogin(), true, null, null, null);
         if (userSynchronizationResult.isInactiveUser()) {
             throw new LoginException(messages.formatMessage(LdapAddonLoginProvider.class,
                     "LoginException.InactiveUserLoginAttempt", loginPasswordCredentials.getLocale()));

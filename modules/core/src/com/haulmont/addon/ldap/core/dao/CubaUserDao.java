@@ -51,10 +51,9 @@ public class CubaUserDao {
     }
 
     @Transactional(readOnly = true)
-    public List<User> getCubaUsers() {
-        TypedQuery<User> query = persistence.getEntityManager()
-                .createQuery("select cu from sec$User cu where cu.login = :login", User.class);
-        query.setViewName("sec-user-view-with-group-roles");
+    public List<String> getActiveCubaUsersLogins() {
+        TypedQuery<String> query = persistence.getEntityManager()
+                .createQuery("select cu.login from sec$User cu where cu.active = true", String.class);
         return query.getResultList();
     }
 
@@ -72,5 +71,20 @@ public class CubaUserDao {
             mergedUser.getUserRoles().forEach(entityManager::persist);
         }
         userSynchronizationLogDao.logUserSynchronization(ldapMatchingRuleContext, beforeRulesApplyUserState);
+    }
+
+    @Transactional(readOnly = true)
+    public List<User> getCubaUsersByLogin(List<String> logins) {
+        TypedQuery<User> query = persistence.getEntityManager()
+                .createQuery("select cu from sec$User cu where cu.login in :logins", User.class);
+        query.setParameter("logins", logins);
+        query.setViewName("sec-user-view-with-group-roles");
+
+        return query.getResultList();
+    }
+
+    @Transactional
+    public void save(User cubaUser) {
+        daoHelper.persistOrMerge(cubaUser);
     }
 }

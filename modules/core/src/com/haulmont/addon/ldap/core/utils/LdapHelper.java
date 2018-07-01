@@ -1,6 +1,6 @@
 package com.haulmont.addon.ldap.core.utils;
 
-import com.haulmont.addon.ldap.core.dto.LdapUser;
+import com.haulmont.addon.ldap.dto.LdapUser;
 import com.haulmont.addon.ldap.entity.LdapConfig;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.ldap.core.DirContextAdapter;
@@ -22,7 +22,7 @@ public class LdapHelper {
     private final static String AD_DISABLED_PASSWORD_NEVER_EXPIRE = "66050";
 
     public static LdapUser mapLdapUser(DirContextAdapter context, LdapConfig ldapConfig) {
-        LdapUser ldapUser = new LdapUser(context.getAttributes());
+        LdapUser ldapUser = new LdapUser(LdapHelper.setLdapAttributesMap(context.getAttributes()));
         if (StringUtils.isNotEmpty(ldapConfig.getLoginAttribute())) {
             ldapUser.setLogin(context.getStringAttribute(ldapConfig.getLoginAttribute()));
         }

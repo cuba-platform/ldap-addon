@@ -1,7 +1,7 @@
 package com.haulmont.addon.ldap.core;
 
 import com.haulmont.addon.ldap.core.dao.*;
-import com.haulmont.addon.ldap.core.dto.LdapUser;
+import com.haulmont.addon.ldap.dto.LdapUser;
 import com.haulmont.addon.ldap.core.rule.LdapMatchingRuleContext;
 import com.haulmont.addon.ldap.core.rule.appliers.MatchingRuleApplier;
 import com.haulmont.addon.ldap.entity.*;
@@ -10,7 +10,6 @@ import com.haulmont.cuba.core.Persistence;
 import com.haulmont.cuba.core.Transaction;
 import com.haulmont.cuba.core.global.AppBeans;
 import com.haulmont.cuba.core.global.Metadata;
-import com.haulmont.cuba.core.global.PersistenceHelper;
 import com.haulmont.cuba.security.entity.Group;
 import com.haulmont.cuba.security.entity.Role;
 import com.haulmont.cuba.security.entity.User;
@@ -18,9 +17,8 @@ import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
 
-import javax.naming.directory.BasicAttributes;
+import java.util.HashMap;
 import java.util.List;
-import java.util.UUID;
 
 import static org.junit.Assert.assertEquals;
 
@@ -122,7 +120,7 @@ public class MatchingRuleTest {
             List<CommonMatchingRule> rules = matchingRuleDao.getMatchingRules();
             assertEquals(3, rules.size());
 
-            LdapUser ldapUser = new LdapUser(new BasicAttributes());
+            LdapUser ldapUser = new LdapUser(new HashMap<>());
             ldapUser.setLogin("joes");
             LdapMatchingRuleContext ldapMatchingRuleContext = new LdapMatchingRuleContext(ldapUser, joes);
             matchingRuleApplier.applyMatchingRules(matchingRuleDao.getMatchingRules(), ldapMatchingRuleContext, joes);
@@ -147,7 +145,7 @@ public class MatchingRuleTest {
 
             User joes = cubaUserDao.getCubaUserByLogin("joes");
 
-            LdapUser ldapUser = new LdapUser(new BasicAttributes());
+            LdapUser ldapUser = new LdapUser(new HashMap<>());
             ldapUser.setLogin("joes");
 
             LdapMatchingRuleContext ldapMatchingRuleContext = new LdapMatchingRuleContext(ldapUser, joes);
@@ -166,7 +164,7 @@ public class MatchingRuleTest {
 
             User bena = cubaUserDao.getCubaUserByLogin("bena");
 
-            ldapUser = new LdapUser(new BasicAttributes());
+            ldapUser = new LdapUser(new HashMap<>());
             ldapUser.setLogin("bena");
 
             ldapMatchingRuleContext = new LdapMatchingRuleContext(ldapUser, bena);
@@ -192,7 +190,7 @@ public class MatchingRuleTest {
 
             User joes = cubaUserDao.getCubaUserByLogin("joes");
 
-            LdapUser ldapUser = new LdapUser(new BasicAttributes());
+            LdapUser ldapUser = new LdapUser(new HashMap<>());
             ldapUser.setLogin("joes");
 
             LdapMatchingRuleContext ldapMatchingRuleContext = new LdapMatchingRuleContext(ldapUser, joes);
@@ -210,7 +208,7 @@ public class MatchingRuleTest {
 
             User bena = cubaUserDao.getCubaUserByLogin("bena");
 
-            ldapUser = new LdapUser(new BasicAttributes());
+            ldapUser = new LdapUser(new HashMap<>());
             ldapUser.setLogin("bena");
 
             ldapMatchingRuleContext = new LdapMatchingRuleContext(ldapUser, bena);

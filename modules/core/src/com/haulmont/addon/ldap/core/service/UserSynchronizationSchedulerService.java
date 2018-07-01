@@ -13,4 +13,6 @@ public interface UserSynchronizationSchedulerService {
     void killExpiredSessions();
 
     Set<ExpiredSession> getExpiredSessions();
+
+    void synchronizeUsersFromLdap();
 }

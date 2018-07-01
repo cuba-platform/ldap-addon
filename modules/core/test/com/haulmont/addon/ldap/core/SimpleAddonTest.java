@@ -1,7 +1,6 @@
 package com.haulmont.addon.ldap.core;
 
 import com.haulmont.addon.ldap.core.dao.*;
-import com.haulmont.addon.ldap.core.dto.LdapUser;
 import com.haulmont.addon.ldap.entity.LdapConfig;
 import com.haulmont.cuba.core.Persistence;
 import com.haulmont.cuba.core.Transaction;

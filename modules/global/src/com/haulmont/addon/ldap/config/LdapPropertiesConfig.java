@@ -4,7 +4,9 @@ import com.haulmont.cuba.core.config.Config;
 import com.haulmont.cuba.core.config.Property;
 import com.haulmont.cuba.core.config.Source;
 import com.haulmont.cuba.core.config.SourceType;
+import com.haulmont.cuba.core.config.defaults.DefaultBoolean;
 import com.haulmont.cuba.core.config.defaults.DefaultInt;
+import com.haulmont.cuba.core.config.defaults.DefaultInteger;
 import com.haulmont.cuba.core.config.defaults.DefaultString;
 import com.haulmont.cuba.core.config.type.CommaSeparatedStringListTypeFactory;
 import com.haulmont.cuba.core.config.type.Factory;
@@ -37,7 +39,7 @@ public interface LdapPropertiesConfig extends Config {
     @Source(type = SourceType.APP)
     @Property("cuba.web.standardAuthenticationUsers")
     @Factory(factory = CommaSeparatedStringListTypeFactory.class)
-    @DefaultString("admin")
+    @DefaultString("admin,anonymous")
     List<String> getStandardAuthenticationUsers();
 
     @Source(type = SourceType.APP)
@@ -47,6 +49,16 @@ public interface LdapPropertiesConfig extends Config {
     @Source(type = SourceType.APP)
     @Property("ldap.expiringSessionsEnable")
     Boolean getExpiringSessionsEnable();
+
+    @Source(type = SourceType.APP)
+    @Property("ldap.userSynchronizationBatchSize")
+    @DefaultInteger(100)
+    Integer getUserSynchronizationBatchSize();
+
+    @Source(type = SourceType.APP)
+    @Property("ldap.userSynchronizationOnlyActiveProperty")
+    @DefaultBoolean(true)
+    Boolean getUserSynchronizationOnlyActiveProperty();
 
     void setContextSourceUrl(String contextSourceUrl);
 
@@ -63,5 +75,9 @@ public interface LdapPropertiesConfig extends Config {
     void setLdapAddonEnabled(Boolean ldapAddonEnabled);
 
     void setExpiringSessionsEnable(Boolean expiringSessionsEnable);
+
+    void setUserSynchronizationBatchSize(Integer userSynchronizationBatchSize);
+
+    void setUserSynchronizationOnlyActiveProperty(Boolean userSynchronizationOnlyActiveProperty);
 
 }
