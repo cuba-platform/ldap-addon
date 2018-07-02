@@ -51,9 +51,9 @@ public class CubaUserDao {
     }
 
     @Transactional(readOnly = true)
-    public List<String> getActiveCubaUsersLogins() {
+    public List<String> getCubaUsersLogins() {
         TypedQuery<String> query = persistence.getEntityManager()
-                .createQuery("select cu.login from sec$User cu where cu.active = true", String.class);
+                .createQuery("select cu.login from sec$User cu", String.class);
         return query.getResultList();
     }
 
