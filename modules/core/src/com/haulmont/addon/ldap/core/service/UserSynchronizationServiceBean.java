@@ -169,9 +169,13 @@ public class UserSynchronizationServiceBean implements UserSynchronizationServic
             User cubaUser = cubaUsers.stream().filter(cu -> cu.getLogin().equals(ldapUser.getLogin())).findAny().
                                       orElseThrow(() -> (new RuntimeException("Synchronization: No CUBA user with login " + ldapUser.getLogin())));
             if (ldapPropertiesConfig.getUserSynchronizationOnlyActiveProperty()) {
-                if (ldapUser.getDisabled()) {
+                if (ldapUser.getDisabled() && cubaUser.getActive()) {
                     cubaUser.setActive(false);
                     userSynchronizationLogDao.logDisabledDuringSync(ldapUser);
+                    cubaUserDao.save(cubaUser);
+                } else if (!ldapUser.getDisabled() && !cubaUser.getActive()) {
+                    cubaUser.setActive(true);
+                    userSynchronizationLogDao.logEnabledDuringSync(ldapUser);
                     cubaUserDao.save(cubaUser);
                 }
             } else {

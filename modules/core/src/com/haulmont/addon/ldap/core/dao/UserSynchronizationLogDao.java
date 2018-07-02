@@ -85,6 +85,16 @@ public class UserSynchronizationLogDao {
     }
 
     @Transactional
+    public void logEnabledDuringSync(LdapUser ldapUser) {
+        UserSynchronizationLog userSynchronizationLog = metadata.create(UserSynchronizationLog.class);
+        userSynchronizationLog.setLogin(ldapUser.getLogin());
+        userSynchronizationLog.setResult(USER_ENABLED_DURING_LDAP_SYNC);
+        userSynchronizationLog.setLdapAttributes(getLdapAttributes(ldapUser.getUnmodifiableLdapAttributeMap()));
+        userSynchronizationLog.setIsDeactivated(FALSE);
+        saveUserSynchronizationLog(userSynchronizationLog);
+    }
+
+    @Transactional
     public void logSynchronizationError(String login, Exception e) {
         UserSynchronizationLog userSynchronizationLog = metadata.create(UserSynchronizationLog.class);
         userSynchronizationLog.setLogin(login);
