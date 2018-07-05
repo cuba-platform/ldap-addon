@@ -21,6 +21,14 @@
                   value="+com/haulmont/addon/ldap/spring.xml"/>
         <property name="cuba.mainMessagePack"
                   value="+com.haulmont.addon.ldap.core"/>
+        <property name="ldap.referral"
+                  value="follow"/>
+        <property name="ldap.sessionExpiringPeriodSec"
+                  value="30"/>
+        <property name="ldap.userSynchronizationBatchSize"
+                  value="100"/>
+        <property name="ldap.userSynchronizationOnlyActiveProperty"
+                  value="true"/>
         <artifact classifier="db"
                   configuration="dbscripts"
                   ext="zip"
@@ -53,5 +61,11 @@
                   value="+com/haulmont/addon/ldap/web-permissions.xml"/>
         <property name="cuba.mainMessagePack"
                   value="+com.haulmont/addon.ldap.web"/>
+        <property name="ldap.expiringSessionNotificationCron"
+                  value="*/10 * * * * *"/>
+        <property name="ldap.addonEnabled"
+                  value="true"/>
+        <property name="ldap.expiringSessionsEnable"
+                  value="true"/>
     </module>
 </app-component>
