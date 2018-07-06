@@ -1,5 +1,6 @@
 package com.haulmont.addon.ldap.core.dao;
 
+import com.haulmont.addon.ldap.config.LdapPropertiesConfig;
 import com.haulmont.addon.ldap.core.rule.LdapMatchingRuleContext;
 import com.haulmont.cuba.core.EntityManager;
 import com.haulmont.cuba.core.Persistence;
@@ -8,6 +9,7 @@ import com.haulmont.cuba.core.global.Metadata;
 import com.haulmont.cuba.security.entity.Role;
 import com.haulmont.cuba.security.entity.User;
 import com.haulmont.cuba.security.entity.UserRole;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,6 +19,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.haulmont.addon.ldap.core.dao.CubaUserDao.NAME;
+import static java.util.stream.Collectors.toList;
 
 @Component(NAME)
 public class CubaUserDao {
@@ -33,6 +36,9 @@ public class CubaUserDao {
 
     @Inject
     private DaoHelper daoHelper;
+
+    @Inject
+    private LdapPropertiesConfig ldapPropertiesConfig;
 
     @Transactional(readOnly = true)
     public User getCubaUserByLogin(String login) {
@@ -51,9 +57,10 @@ public class CubaUserDao {
     }
 
     @Transactional(readOnly = true)
-    public List<String> getCubaUsersLogins() {
-        TypedQuery<String> query = persistence.getEntityManager()
-                .createQuery("select cu.login from sec$User cu", String.class);
+    public List<String> getCubaUsersLoginsAndGroup() {
+        List<String> groups = ldapPropertiesConfig.getCubaGroupForSynchronization();
+        Boolean inverseGroups = ldapPropertiesConfig.getCubaGroupForSynchronizationInverse();
+        TypedQuery<String> query = getCubaUsersLoginsAndGroupQuery(groups, inverseGroups);
         return query.getResultList();
     }
 
@@ -64,7 +71,7 @@ public class CubaUserDao {
             User mergedUser = daoHelper.persistOrMerge(cubaUser);
             List<Role> newRoles = mergedUser.getUserRoles().stream()
                     .map(UserRole::getRole)
-                    .collect(Collectors.toList());
+                    .collect(toList());
             beforeRulesApplyUserState.getUserRoles().stream()
                     .filter(ur -> !newRoles.contains(ur.getRole()))
                     .forEach(entityManager::remove);
@@ -86,5 +93,19 @@ public class CubaUserDao {
     @Transactional
     public void save(User cubaUser) {
         daoHelper.persistOrMerge(cubaUser);
+    }
+
+    private TypedQuery<String> getCubaUsersLoginsAndGroupQuery(List<String> groups, Boolean inverseGroups) {
+        String queryString = "select cu.login from sec$User cu";
+        TypedQuery<String> query;
+        if (CollectionUtils.isNotEmpty(groups)) {
+            queryString = queryString + " inner join fetch cu.group cuGroup where upper(cuGroup.name) " + (inverseGroups ? "not in" : "in") + " :groups";
+            query = persistence.getEntityManager().createQuery(queryString, String.class);
+            query.setParameter("groups", groups.stream().map(String::toUpperCase).collect(toList()));
+        } else {
+            query = persistence.getEntityManager().createQuery(queryString, String.class);
+        }
+
+        return query;
     }
 }

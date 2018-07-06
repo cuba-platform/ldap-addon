@@ -60,6 +60,16 @@ public interface LdapPropertiesConfig extends Config {
     @DefaultBoolean(true)
     Boolean getUserSynchronizationOnlyActiveProperty();
 
+    @Source(type = SourceType.APP)
+    @Property("ldap.cubaGroupForSynchronization")
+    @Factory(factory = CommaSeparatedStringListTypeFactory.class)
+    List<String> getCubaGroupForSynchronization();
+
+    @Source(type = SourceType.APP)
+    @Property("ldap.cubaGroupForSynchronizationInverse")
+    @DefaultBoolean(false)
+    Boolean getCubaGroupForSynchronizationInverse();
+
     void setContextSourceUrl(String contextSourceUrl);
 
     void setContextSourceBase(String contextSourceBase);
@@ -79,5 +89,9 @@ public interface LdapPropertiesConfig extends Config {
     void setUserSynchronizationBatchSize(Integer userSynchronizationBatchSize);
 
     void setUserSynchronizationOnlyActiveProperty(Boolean userSynchronizationOnlyActiveProperty);
+
+    void setCubaGroupForSynchronization(List<String> cubaGroupForSynchronization);
+
+    void setCubaGroupForSynchronizationInverse(Boolean cubaGroupForSynchronizationInverse);
 
 }
