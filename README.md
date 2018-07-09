@@ -364,9 +364,13 @@ In order to register scheduled tasks in your application, follow the guidelines 
 ![Enabling Scheduling](img/enabling-scheduling.png)
 
 Once the scheduled tasks are created and scheduling is enabled, the system will check user sessions once in a specified 
-period of time. If there are any changes related to access groups, user roles or user status (i.e. activation/deactivation), 
+period of time. 
+
+If there are any changes related to access groups, user roles or user status (i.e. activation/deactivation), 
 the system will show a notification that the current session is about to expire and, after a configured period, the user 
-session will be killed.
+session will be killed. 
+
+If user details change on the LDAP server side, CUBA user details will be updated as well.
 
 # EventListeners to Interact with LDAP Addon Events
 
@@ -397,3 +401,88 @@ after user roles and an access group are assigned.
 *  *UserCreatedFromLdapEvent*: describes the state when a new CUBA user is created after logging in using LDAP credentials.
 *  *UserActivatedFromLdapEvent*: defines the state of a CUBA user that was previously inactive, and then activated.
 *  *UserDeactivatedFromLdapEvent*: defines the state of a CUBA user that was previously active, and then disabled.
+
+# Appendix A. Application Properties
+There is a set of application properties to be configured before working with the component. These properties should be 
+provided in the `app.properties` and `web-app.properties` files of your application.
+
+## `app.properties`
+
+### ldap.contextSourceUrl
+
+* **Description:**
+* **Default value:** ldap://localhost:10389
+
+### ldap.contextSourceBase
+
+* **Description:**
+* **Default value:** dc=springframework,dc=org
+
+### ldap.contextSourceUserName
+
+* **Description:**
+* **Default value:** uid=admin,ou=system
+
+### ldap.contextSourcePassword
+
+* **Description:**
+* **Default value:** secret
+
+### ldap.referral
+
+* **Description:**
+* **Default value:** follow
+
+### ldap.sessionExpiringPeriodSec
+
+* **Description:**
+* **Default value:** 30
+
+### cuba.web.standardAuthenticationUsers
+
+* **Description:** defines users that can log in to the system using standard CUBA credentials.
+* **Default value:** admin,anonymous
+
+### ldap.userSynchronizationBatchSize
+
+* **Description:**
+* **Default value:** 100
+
+### ldap.userSynchronizationOnlyActiveProperty
+
+* **Description:** if checked, the [`synchronizeUsersFromLdap()`](#scheduled-task-to-synchronize-users) scheduled task 
+updates only the value of the *Active* attribute.
+* **Default value:** true
+
+### ldap.cubaGroupForSynchronization
+
+* **Description:** defines access groups that are checked when executing the [`synchronizeUsersFromLdap()`](#scheduled-task-to-synchronize-users) 
+scheduled task.
+* **Default value:** company
+
+### ldap.cubaGroupForSynchronizationInverse
+
+* **Description:**
+* **Default value:** false
+
+## `web-app.properties`
+
+### cuba.web.standardAuthenticationUsers
+
+* **Description:** defines users that can log in to the system using standard CUBA credentials.
+* **Default value:** admin,anonymous
+
+### ldap.expiringSessionNotificationCron
+
+* **Description:** defines the cron expression for retrieving expired sessions from the middleware layer.
+* **Default value:** */10 * * * * *
+
+### ldap.addonEnabled
+
+* **Description:**
+* **Default value:** true
+
+### ldap.expiringSessionsEnable
+
+* **Description:** if set to 'true', the system sends notifications to inform a user that his/her session is about to expire.
+* **Default value:** true
