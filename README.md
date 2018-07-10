@@ -65,7 +65,7 @@ To add the LDAP component to your project, the following steps should be taken:
     
 5. Before using the component as a part of your application, it is vital to configure initial values for connecting to
 the LDAP server, and to set up basic attribute names for the LDAP user in the `app.properties` file.
-An example of how to set up these properties is given below.
+An example of how to set up these properties is given below. Learn more about application properties [here](#appendix-a-application-properties).
 
 ```properties
 ldap.contextSourceUrl = ldap://localhost:10389
@@ -302,11 +302,14 @@ Clicking the *Excel* button enables to download details of the selected rows (or
 
 # Scheduled Task Configuration
 
-Before setting up scheduled tasks, make sure that application properties are configured in the `web-app.properties` and `app.properties` files.
+Before setting up scheduled tasks, make sure that [application properties](#appendix-a-application-properties) are 
+configured in the `web-app.properties` and `app.properties` files.
 
 There are several scheduled tasks that can be configured for the LDAP component:
-* `checkExpiredSessions()` — checks if a new access group or roles were assigned to the current user, or if he/she was activated/deactivated.
-* `killExpiredSessions()` — kills the current user session, if the user was activated/disabled or a new access group / set of roles was assigned to him/her.
+* `checkExpiredSessions()` — checks if a new access group or roles were assigned to the current user, or if he/she was 
+activated/deactivated.
+* `killExpiredSessions()` — kills the current user session, if the user was activated/disabled or a new access group / 
+set of roles was assigned to him/her.
 * `synchronizeUsersFromLdap()` — synchronizes information about CUBA users in accordance with their state in LDAP.
 
 In order to register scheduled tasks in your application, follow the guidelines below:
@@ -408,81 +411,83 @@ provided in the `app.properties` and `web-app.properties` files of your applicat
 
 ## `app.properties`
 
-### ldap.contextSourceUrl
+#### ldap.contextSourceUrl
 
-* **Description:**
+* **Description:** defines a URL for reaching an LDAP server.
 * **Default value:** ldap://localhost:10389
 
-### ldap.contextSourceBase
+#### ldap.contextSourceBase
 
-* **Description:**
+* **Description:** defines a DN (distinguished name) that is considered to be a context source base.
 * **Default value:** dc=springframework,dc=org
 
-### ldap.contextSourceUserName
+#### ldap.contextSourceUserName
 
-* **Description:**
+* **Description:** 
 * **Default value:** uid=admin,ou=system
 
-### ldap.contextSourcePassword
+#### ldap.contextSourcePassword
 
-* **Description:**
+* **Description:** 
 * **Default value:** secret
 
-### ldap.referral
+#### ldap.referral
 
-* **Description:**
+* **Description:** indicates how referrals should be handled.
 * **Default value:** follow
 
-### ldap.sessionExpiringPeriodSec
+#### ldap.sessionExpiringPeriodSec
 
-* **Description:**
+* **Description:** 
 * **Default value:** 30
 
-### cuba.web.standardAuthenticationUsers
+#### cuba.web.standardAuthenticationUsers
 
 * **Description:** defines users that can log in to the system using standard CUBA credentials.
 * **Default value:** admin,anonymous
 
-### ldap.userSynchronizationBatchSize
+#### ldap.userSynchronizationBatchSize
 
-* **Description:**
+* **Description:** defines the number of users that can be synchronized during the execution of the 
+[`synchronizeUsersFromLdap()`](#scheduled-task-to-synchronize-users) scheduled task.
 * **Default value:** 100
 
-### ldap.userSynchronizationOnlyActiveProperty
+#### ldap.userSynchronizationOnlyActiveProperty
 
-* **Description:** if checked, the [`synchronizeUsersFromLdap()`](#scheduled-task-to-synchronize-users) scheduled task 
-updates only the value of the *Active* attribute.
+* **Description:** if set to 'true', the [`synchronizeUsersFromLdap()`](#scheduled-task-to-synchronize-users) scheduled task 
+updates only the value of the *Active* attribute. Otherwise, all user details are updated.
 * **Default value:** true
 
-### ldap.cubaGroupForSynchronization
+#### ldap.cubaGroupForSynchronization
 
 * **Description:** defines access groups that are checked when executing the [`synchronizeUsersFromLdap()`](#scheduled-task-to-synchronize-users) 
 scheduled task.
 * **Default value:** company
 
-### ldap.cubaGroupForSynchronizationInverse
+#### ldap.cubaGroupForSynchronizationInverse
 
-* **Description:**
+* **Description:** if set to 'true', then all groups except for the ones specified in `ldap.cubaGroupForSynchronization`
+are checked executing the [`synchronizeUsersFromLdap()`](#scheduled-task-to-synchronize-users) scheduled task.
 * **Default value:** false
 
 ## `web-app.properties`
 
-### cuba.web.standardAuthenticationUsers
+#### cuba.web.standardAuthenticationUsers
 
 * **Description:** defines users that can log in to the system using standard CUBA credentials.
 * **Default value:** admin,anonymous
 
-### ldap.expiringSessionNotificationCron
+#### ldap.expiringSessionNotificationCron
 
 * **Description:** defines the cron expression for retrieving expired sessions from the middleware layer.
 * **Default value:** */10 * * * * *
 
-### ldap.addonEnabled
+#### ldap.addonEnabled
 
-* **Description:**
+* **Description:** if set to 'true', then the LDAP addon is enabled. 
 * **Default value:** true
 
-### ldap.expiringSessionsEnable
+#### ldap.expiringSessionsEnable
 
 * **Description:** if set to 'true', the system sends notifications to inform a user that his/her session is about to expire.
 * **Default value:** true
