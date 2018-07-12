@@ -24,7 +24,7 @@
     </bean>
 
     <task:scheduled-tasks scheduler="scheduler">
-        <task:scheduled ref="ldap_ExpiredSessionWatcher" method="notifyExpiringSessions" cron="${ldap.expiringSessionNotificationCron}"/>
+        <task:scheduled ref="ldap_ExpiredSessionWatcher" method="notifyExpiringSessions" cron="${ldap.expiringSessionNotificationCron?:*/30 * * * * *}"/>
     </task:scheduled-tasks>
 
 </beans>
