@@ -169,9 +169,13 @@ public class UserSynchronizationServiceBean implements UserSynchronizationServic
             User cubaUser = cubaUsers.stream().filter(cu -> cu.getLogin().equals(ldapUser.getLogin())).findAny().
                                       orElseThrow(() -> (new RuntimeException("Synchronization: No CUBA user with login " + ldapUser.getLogin())));
             if (ldapPropertiesConfig.getUserSynchronizationOnlyActiveProperty()) {
-                if (ldapUser.getDisabled()) {
+                if (ldapUser.getDisabled() && cubaUser.getActive()) {
                     cubaUser.setActive(false);
                     userSynchronizationLogDao.logDisabledDuringSync(ldapUser);
+                    cubaUserDao.save(cubaUser);
+                } else if (!ldapUser.getDisabled() && !cubaUser.getActive()) {
+                    cubaUser.setActive(true);
+                    userSynchronizationLogDao.logEnabledDuringSync(ldapUser);
                     cubaUserDao.save(cubaUser);
                 }
             } else {
@@ -191,13 +195,16 @@ public class UserSynchronizationServiceBean implements UserSynchronizationServic
         if (!beforeRulesApplyUserState.getActive() && !userDisabled) {
             events.publish(new UserActivatedFromLdapEvent(this, ldapMatchingRuleContext, cubaUser, modeType));
         }
-        cubaUser.setEmail(ldapMatchingRuleContext.getLdapUser().getEmail());
-        cubaUser.setName(ldapMatchingRuleContext.getLdapUser().getCn());
-        cubaUser.setFirstName(ldapMatchingRuleContext.getLdapUser().getGivenName());
-        cubaUser.setLastName(ldapMatchingRuleContext.getLdapUser().getSn());
-        cubaUser.setMiddleName(ldapMatchingRuleContext.getLdapUser().getMiddleName());
-        cubaUser.setPosition(ldapMatchingRuleContext.getLdapUser().getPosition());
-        cubaUser.setLanguage(ldapMatchingRuleContext.getLdapUser().getLanguage());
+
+        if (PersistenceHelper.isNew(cubaUser) || ldapPropertiesConfig.getSynchronizeCommonInfoFromLdap()) {
+            cubaUser.setEmail(ldapMatchingRuleContext.getLdapUser().getEmail());
+            cubaUser.setName(ldapMatchingRuleContext.getLdapUser().getCn());
+            cubaUser.setFirstName(ldapMatchingRuleContext.getLdapUser().getGivenName());
+            cubaUser.setLastName(ldapMatchingRuleContext.getLdapUser().getSn());
+            cubaUser.setMiddleName(ldapMatchingRuleContext.getLdapUser().getMiddleName());
+            cubaUser.setPosition(ldapMatchingRuleContext.getLdapUser().getPosition());
+            cubaUser.setLanguage(ldapMatchingRuleContext.getLdapUser().getLanguage());
+        }
 
         if (userDisabled) {
             cubaUser.setActive(false);

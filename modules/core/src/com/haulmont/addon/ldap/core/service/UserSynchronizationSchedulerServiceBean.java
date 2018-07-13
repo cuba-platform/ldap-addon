@@ -80,7 +80,7 @@ public class UserSynchronizationSchedulerServiceBean implements UserSynchronizat
 
     @Override
     public void synchronizeUsersFromLdap() {
-        List<String> activeUsers = cubaUserDao.getActiveCubaUsersLogins();
+        List<String> activeUsers = cubaUserDao.getCubaUsersLoginsAndGroup();
         List<String> standardAuthenticationUsers = ldapPropertiesConfig.getStandardAuthenticationUsers();
         activeUsers.removeAll(standardAuthenticationUsers);
         List<List<String>> subLists = ListUtils.partition(activeUsers, ldapPropertiesConfig.getUserSynchronizationBatchSize());

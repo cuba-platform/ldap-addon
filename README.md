@@ -53,33 +53,39 @@ To add the LDAP component to your project, the following steps should be taken:
     
     * Artifact group: *com.haulmont.addon.ldap*
     * Artifact name: *ldap-global*
-    * Version: *0.1-SNAPSHOT*
+    * Version: *1.1.0*
     
         When specifying the component version, you should select the one, which is compatible with the platform version used
     in your project.
     
     | Platform Version | Component Version |
     |------------------|-------------------|
-    | 6.9.x            | 0.1-SNAPSHOT      |
+    | 6.8.x            | 1.0.0      |
+    | 6.9.x            | 1.1.0      |
     
 5. Before using the component as a part of your application, it is vital to configure initial values for connecting to
 the LDAP server, and to set up basic attribute names for the LDAP user in the `app.properties` file.
-An example of how to set up these properties is given below.
+An example of how to set up these properties is given below. Learn more about application properties [here](#appendix-a-application-properties).
 
 ```properties
 ldap.contextSourceUrl = ldap://localhost:10389
-ldap.contextSourceBase = dc=springframework,dc=org
+ldap.contextSourceBase = dc=example,dc=com
 ldap.contextSourceUserName = uid=admin,ou=system
 ldap.contextSourcePassword = secret
 ldap.referral = follow
 ldap.sessionExpiringPeriodSec = 30
-cuba.web.standardAuthenticationUsers = admin
+cuba.web.standardAuthenticationUsers = admin,anonymous
+ldap.userSynchronizationBatchSize = 100
+ldap.userSynchronizationOnlyActiveProperty = true
+ldap.cubaGroupForSynchronization = company
+ldap.cubaGroupForSynchronizationInverse = false
+
 ```
 
 6. Specify the following properties in the `web-app.properties` file:
 
 ```properties
-cuba.web.standardAuthenticationUsers = admin
+cuba.web.standardAuthenticationUsers = admin,anonymous
 ldap.expiringSessionNotificationCron = */10 * * * * *
 ldap.addonEnabled = true
 ldap.expiringSessionsEnable = true
@@ -296,20 +302,19 @@ Clicking the *Excel* button enables to download details of the selected rows (or
 
 # Scheduled Task Configuration
 
-Before configuring scheduled tasks, make sure that the properties listed below are configured in the `web-app.properties` file:
+Before setting up scheduled tasks, make sure that [application properties](#appendix-a-application-properties) are 
+configured in the `web-app.properties` and `app.properties` files.
 
-* *ldap.expiringSessionsEnable:* if set to 'true', the system sends notifications to inform a user that his/her session
-is about to expire.
-* *ldap.expiringSessionNotificationCron:* defines the cron expression for retrieving expired sessions from the middleware layer.
-
-Scheduled tasks allow configuring the component to kill a current user session in the following cases:
-
-* If matching rules were changed and the current user is assigned a new access group or roles.
-* If the current user was deactivated on the LDAP server side.
+There are several scheduled tasks that can be configured for the LDAP component:
+* `checkExpiredSessions()` — checks if a new access group or roles were assigned to the current user, or if he/she was 
+activated/deactivated.
+* `killExpiredSessions()` — kills the current user session, if the user was activated/disabled or a new access group / 
+set of roles was assigned to him/her.
+* `synchronizeUsersFromLdap()` — synchronizes information about CUBA users in accordance with their state in LDAP.
 
 In order to register scheduled tasks in your application, follow the guidelines below:
 
-## Scheduled Task to Check Sessions
+## Scheduled Task to Check User Sessions
 
 1. Open Menu: Administration → Scheduled Tasks.
 2. Click the *Create* button.
@@ -324,10 +329,11 @@ In order to register scheduled tasks in your application, follow the guidelines 
 4. Click *OK* to save the changes.
 5. Activate the created task by clicking the corresponding button on Scheduled Tasks Screen.
 
-## Scheduled Task to Kill Sessions
+## Scheduled Task to Kill User Sessions
 
-1. Repeat actions 1-2 described in the previous section.
-2. Fill in the required fields as follows:
+1. Open Menu: Administration → Scheduled Tasks.
+2. Click the *Create* button.
+3. Fill in the required fields as follows:
     * *Bean Name:* `ldap_UserSynchronizationSchedulerService`
     * *Method Name:* `killExpiredSessions()`
     * *Scheduling Type:* Cron
@@ -335,8 +341,23 @@ In order to register scheduled tasks in your application, follow the guidelines 
 
     ![Scheduled Task 2](img/scheduled-task2.png)
 
-3. Click *OK* to save the changes.
-4. Activate the created task by clicking the corresponding button on Scheduled Tasks Screen.
+4. Click *OK* to save the changes.
+5. Activate the created task by clicking the corresponding button on Scheduled Tasks Screen.
+
+## Scheduled Task to Synchronize Users
+
+1. Open Menu: Administration → Scheduled Tasks.
+2. Click the *Create* button.
+3. Fill in the required fields as follows:
+    * *Bean Name:* `ldap_UserSynchronizationSchedulerService`
+    * *Method Name:* `synchronizeUsersFromLdap()`
+    * *Scheduling Type:* Cron
+    * *Cron Expression:* specify a required cron expression (see [this documentation](https://doc.cuba-platform.com/manual-latest/scheduled_tasks_cuba_reg.html) for more details).
+
+    ![Scheduled Task 3](img/scheduled-task3.png)
+
+4. Click *OK* to save the changes.
+5. Activate the created task by clicking the corresponding button on Scheduled Tasks Screen.
 
 ## Enabling Scheduled Tasks
 
@@ -346,9 +367,13 @@ In order to register scheduled tasks in your application, follow the guidelines 
 ![Enabling Scheduling](img/enabling-scheduling.png)
 
 Once the scheduled tasks are created and scheduling is enabled, the system will check user sessions once in a specified 
-period of time. If there are any changes related to access groups, user roles or user status (i.e. activation/deactivation), 
+period of time. 
+
+If there are any changes related to access groups, user roles or user status (i.e. activation/deactivation), 
 the system will show a notification that the current session is about to expire and, after a configured period, the user 
-session will be killed.
+session will be killed. 
+
+If user details change on the LDAP server side, CUBA user details will be updated as well.
 
 # EventListeners to Interact with LDAP Addon Events
 
@@ -379,3 +404,90 @@ after user roles and an access group are assigned.
 *  *UserCreatedFromLdapEvent*: describes the state when a new CUBA user is created after logging in using LDAP credentials.
 *  *UserActivatedFromLdapEvent*: defines the state of a CUBA user that was previously inactive, and then activated.
 *  *UserDeactivatedFromLdapEvent*: defines the state of a CUBA user that was previously active, and then disabled.
+
+# Appendix A. Application Properties
+There is a set of application properties to be configured before working with the component. These properties should be 
+provided in the `app.properties` and `web-app.properties` files of your application.
+
+## `app.properties`
+
+#### ldap.contextSourceUrl
+
+* **Description:** defines a URL for reaching an LDAP server.
+* **Default value:** ldap://localhost:10389
+
+#### ldap.contextSourceBase
+
+* **Description:** defines a DN (distinguished name) that is considered to be a context source base.
+* **Default value:** dc=springframework,dc=org
+
+#### ldap.contextSourceUserName
+
+* **Description:** 
+* **Default value:** uid=admin,ou=system
+
+#### ldap.contextSourcePassword
+
+* **Description:** 
+* **Default value:** secret
+
+#### ldap.referral
+
+* **Description:** indicates how referrals should be handled.
+* **Default value:** follow
+
+#### ldap.sessionExpiringPeriodSec
+
+* **Description:** 
+* **Default value:** 30
+
+#### cuba.web.standardAuthenticationUsers
+
+* **Description:** defines users that can log in to the system using standard CUBA credentials.
+* **Default value:** admin,anonymous
+
+#### ldap.userSynchronizationBatchSize
+
+* **Description:** defines the number of users that can be synchronized during the execution of the 
+[`synchronizeUsersFromLdap()`](#scheduled-task-to-synchronize-users) scheduled task.
+* **Default value:** 100
+
+#### ldap.userSynchronizationOnlyActiveProperty
+
+* **Description:** if set to 'true', the [`synchronizeUsersFromLdap()`](#scheduled-task-to-synchronize-users) scheduled task 
+updates only the value of the *Active* attribute. Otherwise, all user details are updated.
+* **Default value:** true
+
+#### ldap.cubaGroupForSynchronization
+
+* **Description:** defines access groups that are checked when executing the [`synchronizeUsersFromLdap()`](#scheduled-task-to-synchronize-users) 
+scheduled task.
+* **Default value:** company
+
+#### ldap.cubaGroupForSynchronizationInverse
+
+* **Description:** if set to 'true', then all groups except for the ones specified in `ldap.cubaGroupForSynchronization`
+are checked executing the [`synchronizeUsersFromLdap()`](#scheduled-task-to-synchronize-users) scheduled task.
+* **Default value:** false
+
+## `web-app.properties`
+
+#### cuba.web.standardAuthenticationUsers
+
+* **Description:** defines users that can log in to the system using standard CUBA credentials.
+* **Default value:** admin,anonymous
+
+#### ldap.expiringSessionNotificationCron
+
+* **Description:** defines the cron expression for retrieving expired sessions from the middleware layer.
+* **Default value:** */10 * * * * *
+
+#### ldap.addonEnabled
+
+* **Description:** if set to 'true', then the LDAP addon is enabled. 
+* **Default value:** true
+
+#### ldap.expiringSessionsEnable
+
+* **Description:** if set to 'true', the system sends notifications to inform a user that his/her session is about to expire.
+* **Default value:** true

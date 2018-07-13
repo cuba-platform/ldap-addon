@@ -4,9 +4,6 @@ import com.haulmont.cuba.core.config.Config;
 import com.haulmont.cuba.core.config.Property;
 import com.haulmont.cuba.core.config.Source;
 import com.haulmont.cuba.core.config.SourceType;
-import com.haulmont.cuba.core.config.defaults.DefaultBoolean;
-import com.haulmont.cuba.core.config.defaults.DefaultInt;
-import com.haulmont.cuba.core.config.defaults.DefaultInteger;
 import com.haulmont.cuba.core.config.defaults.DefaultString;
 import com.haulmont.cuba.core.config.type.CommaSeparatedStringListTypeFactory;
 import com.haulmont.cuba.core.config.type.Factory;
@@ -33,7 +30,6 @@ public interface LdapPropertiesConfig extends Config {
 
     @Source(type = SourceType.APP)
     @Property("ldap.sessionExpiringPeriodSec")
-    @DefaultInt(60)
     int getSessionExpiringPeriodSec();
 
     @Source(type = SourceType.APP)
@@ -52,13 +48,24 @@ public interface LdapPropertiesConfig extends Config {
 
     @Source(type = SourceType.APP)
     @Property("ldap.userSynchronizationBatchSize")
-    @DefaultInteger(100)
     Integer getUserSynchronizationBatchSize();
 
     @Source(type = SourceType.APP)
     @Property("ldap.userSynchronizationOnlyActiveProperty")
-    @DefaultBoolean(true)
     Boolean getUserSynchronizationOnlyActiveProperty();
+
+    @Source(type = SourceType.APP)
+    @Property("ldap.cubaGroupForSynchronization")
+    @Factory(factory = CommaSeparatedStringListTypeFactory.class)
+    List<String> getCubaGroupForSynchronization();
+
+    @Source(type = SourceType.APP)
+    @Property("ldap.cubaGroupForSynchronizationInverse")
+    Boolean getCubaGroupForSynchronizationInverse();
+
+    @Source(type = SourceType.APP)
+    @Property("ldap.synchronizeCommonInfoFromLdap")
+    Boolean getSynchronizeCommonInfoFromLdap();
 
     void setContextSourceUrl(String contextSourceUrl);
 
@@ -79,5 +86,11 @@ public interface LdapPropertiesConfig extends Config {
     void setUserSynchronizationBatchSize(Integer userSynchronizationBatchSize);
 
     void setUserSynchronizationOnlyActiveProperty(Boolean userSynchronizationOnlyActiveProperty);
+
+    void setCubaGroupForSynchronization(List<String> cubaGroupForSynchronization);
+
+    void setCubaGroupForSynchronizationInverse(Boolean cubaGroupForSynchronizationInverse);
+
+    void setSynchronizeCommonInfoFromLdap(Boolean synchronizeCommonInfoFromLdap);
 
 }

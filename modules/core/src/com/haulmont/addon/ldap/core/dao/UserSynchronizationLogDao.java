@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -81,6 +82,16 @@ public class UserSynchronizationLogDao {
         userSynchronizationLog.setResult(USER_DISABLED_DURING_LDAP_SYNC);
         userSynchronizationLog.setLdapAttributes(getLdapAttributes(ldapUser.getUnmodifiableLdapAttributeMap()));
         userSynchronizationLog.setIsDeactivated(TRUE);
+        saveUserSynchronizationLog(userSynchronizationLog);
+    }
+
+    @Transactional
+    public void logEnabledDuringSync(LdapUser ldapUser) {
+        UserSynchronizationLog userSynchronizationLog = metadata.create(UserSynchronizationLog.class);
+        userSynchronizationLog.setLogin(ldapUser.getLogin());
+        userSynchronizationLog.setResult(USER_ENABLED_DURING_LDAP_SYNC);
+        userSynchronizationLog.setLdapAttributes(getLdapAttributes(ldapUser.getUnmodifiableLdapAttributeMap()));
+        userSynchronizationLog.setIsDeactivated(FALSE);
         saveUserSynchronizationLog(userSynchronizationLog);
     }
 
@@ -208,6 +219,7 @@ public class UserSynchronizationLogDao {
         if (SIMPLE == dbRule.getRuleType()) {
             SimpleMatchingRule smr = (SimpleMatchingRule) dbRule;
             sb.append(smr.getConditions().stream()
+                    .sorted(Comparator.comparing(SimpleRuleCondition::getAttribute))
                     .map(SimpleRuleCondition::getAttributePair)
                     .collect(Collectors.joining(",")));
         } else if (SCRIPTING == dbRule.getRuleType()) {
