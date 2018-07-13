@@ -16,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static com.haulmont.addon.ldap.core.dao.CubaUserDao.NAME;
 import static java.util.stream.Collectors.toList;
@@ -99,7 +98,8 @@ public class CubaUserDao {
         String queryString = "select cu.login from sec$User cu";
         TypedQuery<String> query;
         if (CollectionUtils.isNotEmpty(groups)) {
-            queryString = queryString + " inner join fetch cu.group cuGroup where upper(cuGroup.name) " + (inverseGroups ? "not in" : "in") + " :groups";
+            queryString = queryString + " inner join fetch cu.group cuGroup where upper(cuGroup.name) " +
+                                          (inverseGroups ? "not in" : "in") + " :groups";
             query = persistence.getEntityManager().createQuery(queryString, String.class);
             query.setParameter("groups", groups.stream().map(String::toUpperCase).collect(toList()));
         } else {

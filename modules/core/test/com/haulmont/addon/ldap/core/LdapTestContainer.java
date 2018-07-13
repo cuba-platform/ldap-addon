@@ -58,7 +58,7 @@ public class LdapTestContainer extends TestContainer {
         dbPassword = resourceElem.attributeValue("password");
     }
 
-    public static class Common extends LdapTestContainer {
+    public static final class Common extends LdapTestContainer {
 
         public static final LdapTestContainer.Common INSTANCE = new LdapTestContainer.Common();
 
