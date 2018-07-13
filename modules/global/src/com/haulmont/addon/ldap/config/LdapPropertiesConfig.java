@@ -63,6 +63,10 @@ public interface LdapPropertiesConfig extends Config {
     @Property("ldap.cubaGroupForSynchronizationInverse")
     Boolean getCubaGroupForSynchronizationInverse();
 
+    @Source(type = SourceType.APP)
+    @Property("ldap.synchronizeCommonInfoFromLdap")
+    Boolean getSynchronizeCommonInfoFromLdap();
+
     void setContextSourceUrl(String contextSourceUrl);
 
     void setContextSourceBase(String contextSourceBase);
@@ -86,5 +90,7 @@ public interface LdapPropertiesConfig extends Config {
     void setCubaGroupForSynchronization(List<String> cubaGroupForSynchronization);
 
     void setCubaGroupForSynchronizationInverse(Boolean cubaGroupForSynchronizationInverse);
+
+    void setSynchronizeCommonInfoFromLdap(Boolean synchronizeCommonInfoFromLdap);
 
 }

@@ -29,6 +29,8 @@
                   value="100"/>
         <property name="ldap.userSynchronizationOnlyActiveProperty"
                   value="true"/>
+        <property name="ldap.synchronizeCommonInfoFromLdap"
+                  value="true"/>
         <artifact classifier="db"
                   configuration="dbscripts"
                   ext="zip"
