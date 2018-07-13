@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -218,6 +219,7 @@ public class UserSynchronizationLogDao {
         if (SIMPLE == dbRule.getRuleType()) {
             SimpleMatchingRule smr = (SimpleMatchingRule) dbRule;
             sb.append(smr.getConditions().stream()
+                    .sorted(Comparator.comparing(SimpleRuleCondition::getAttribute))
                     .map(SimpleRuleCondition::getAttributePair)
                     .collect(Collectors.joining(",")));
         } else if (SCRIPTING == dbRule.getRuleType()) {
