@@ -12,6 +12,7 @@
     - [LDAP Log](#ldap-log)
 - [Scheduled Task Configuration](#scheduled-task-configuration)
 - [EventListeners to interact with LDAP addon events](#event-listeners)
+- [Appendix A. Application Properties](#appendix-a-application-properties)
 
 # Overview
 
@@ -65,7 +66,7 @@ To add the LDAP component to your project, the following steps should be taken:
     
 5. Before using the component as a part of your application, it is vital to configure initial values for connecting to
 the LDAP server, and to set up basic attribute names for the LDAP user in the `app.properties` file.
-An example of how to set up these properties is given below. Learn more about application properties [here](#appendix-a-application-properties).
+An example of how to set up these properties is given below. Learn more about the application properties [here](#appendix-a-application-properties).
 
 ```properties
 ldap.contextSourceUrl = ldap://localhost:10389
@@ -73,12 +74,13 @@ ldap.contextSourceBase = dc=example,dc=com
 ldap.contextSourceUserName = uid=admin,ou=system
 ldap.contextSourcePassword = secret
 ldap.referral = follow
-ldap.sessionExpiringPeriodSec = 30
-cuba.web.standardAuthenticationUsers = admin,anonymous
+ldap.sessionExpiringPeriodSec = 120
 ldap.userSynchronizationBatchSize = 100
 ldap.userSynchronizationOnlyActiveProperty = true
 ldap.cubaGroupForSynchronization = company
 ldap.cubaGroupForSynchronizationInverse = false
+ldap.synchronizeCommonInfoFromLdap = true
+cuba.web.standardAuthenticationUsers = admin,anonymous
 
 ```
 
@@ -418,27 +420,30 @@ provided in the `app.properties` and `web-app.properties` files of your applicat
 
 #### ldap.contextSourceBase
 
-* **Description:** defines a DN (distinguished name) that is considered to be a context source base.
+* **Description:** defines a base DN. If configured, all LDAP operations on contexts retrieved from this ContextSource 
+will be relative to this DN. Default is an empty distinguished name (i.e. all operations will be relative to the directory root).
 * **Default value:** dc=springframework,dc=org
 
 #### ldap.contextSourceUserName
 
-* **Description:** 
+* **Description:** indicates a username (principal) used for authentication. This is normally the distinguished name
+of an admin user.
 * **Default value:** uid=admin,ou=system
 
 #### ldap.contextSourcePassword
 
-* **Description:** 
+* **Description:** defines a password used for authentication.
 * **Default value:** secret
 
 #### ldap.referral
 
-* **Description:** indicates how referrals should be handled.
+* **Description:** defines the strategy to handle referrals, as described in [this documentation](http://docs.oracle.com/javase/jndi/tutorial/ldap/referral/jndi.html).
 * **Default value:** follow
 
 #### ldap.sessionExpiringPeriodSec
 
-* **Description:** 
+* **Description:** indicates a period in seconds after which a user session is killed, if a user has been deactivated or
+a new access groups or matching rules have been assigned to him/her.
 * **Default value:** 30
 
 #### cuba.web.standardAuthenticationUsers
@@ -469,6 +474,13 @@ scheduled task.
 * **Description:** if set to 'true', then all groups except for the ones specified in `ldap.cubaGroupForSynchronization`
 are checked executing the [`synchronizeUsersFromLdap()`](#scheduled-task-to-synchronize-users) scheduled task.
 * **Default value:** false
+
+#### ldap.synchronizeCommonInfoFromLdap
+
+* **Description:** if set to 'true', then the [`synchronizeUsersFromLdap()`](#scheduled-task-to-synchronize-users) scheduled task 
+updates the values of the following fields of the User entity in accordance with their state on the LDAP server side:
+ Email, Name, First name, Last name, Middle name, Position, Language).
+* **Default value:** true
 
 ## `web-app.properties`
 
