@@ -54,15 +54,17 @@ To add the LDAP component to your project, the following steps should be taken:
     
     * Artifact group: *com.haulmont.addon.ldap*
     * Artifact name: *ldap-global*
-    * Version: *1.1.0*
+    * Version: *1.2.0*
     
         When specifying the component version, you should select the one, which is compatible with the platform version used
     in your project.
     
     | Platform Version | Component Version |
     |------------------|-------------------|
-    | 6.8.x            | 1.0.1      |
+    | 6.10.x            | 1.2.0      |
     | 6.9.x            | 1.1.1      |
+    | 6.8.x            | 1.0.1      |
+    
     
 5. Before using the component as a part of your application, it is vital to configure initial values for connecting to
 the LDAP server, and to set up basic attribute names for the LDAP user in the `app.properties` file.
