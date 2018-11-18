@@ -3,6 +3,7 @@ package com.haulmont.addon.ldap.web.simplerulecondition;
 import com.haulmont.addon.ldap.entity.SimpleRuleCondition;
 import com.haulmont.addon.ldap.service.LdapService;
 import com.haulmont.cuba.core.entity.Entity;
+import com.haulmont.cuba.gui.UiComponents;
 import com.haulmont.cuba.gui.components.AbstractEditor;
 import com.haulmont.cuba.gui.components.FieldGroup;
 import com.haulmont.cuba.gui.components.LookupField;
@@ -22,7 +23,7 @@ public class SimpleRuleConditionEdit extends AbstractEditor<SimpleRuleCondition>
     private FieldGroup fieldGroup;
 
     @Inject
-    private ComponentsFactory componentsFactory;
+    private UiComponents componentsFactory;
 
     @Inject
     private LdapService ldapService;
@@ -41,7 +42,7 @@ public class SimpleRuleConditionEdit extends AbstractEditor<SimpleRuleCondition>
     protected void postInit() {
         super.postInit();
         FieldGroup.FieldConfig attributeField = fieldGroup.getField("attribute");
-        LookupField lookupField = componentsFactory.createComponent(LookupField.class);
+        LookupField lookupField = componentsFactory.create(LookupField.class);
         lookupField.setOptionsList(ldapService.getLdapUserAttributesNames());
         attributeField.setComponent(lookupField);
         String attribute = simpleRuleConditionDs.getItem().getAttribute();
@@ -51,7 +52,7 @@ public class SimpleRuleConditionEdit extends AbstractEditor<SimpleRuleCondition>
     @Override
     protected boolean preCommit() {
         FieldGroup.FieldConfig attributeField = fieldGroup.getField("attribute");
-        LookupField lookupField = (LookupField) attributeField.getComponent();
+        LookupField<String> lookupField = (LookupField) attributeField.getComponent();
         String val = lookupField.getValue();
         simpleRuleConditionDs.getItem().setAttribute(val);
         return true;

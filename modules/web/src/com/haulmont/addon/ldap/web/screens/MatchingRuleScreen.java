@@ -10,6 +10,7 @@ import com.haulmont.chile.core.datatypes.Datatypes;
 import com.haulmont.chile.core.model.MetaPropertyPath;
 import com.haulmont.cuba.core.entity.Entity;
 import com.haulmont.cuba.core.global.Metadata;
+import com.haulmont.cuba.gui.UiComponents;
 import com.haulmont.cuba.gui.WindowManager;
 import com.haulmont.cuba.gui.components.*;
 import com.haulmont.cuba.gui.components.actions.EditAction;
@@ -17,11 +18,13 @@ import com.haulmont.cuba.gui.components.actions.RemoveAction;
 import com.haulmont.cuba.gui.data.CollectionDatasource;
 import com.haulmont.cuba.gui.data.Datasource;
 import com.haulmont.cuba.gui.icons.CubaIcon;
-import com.haulmont.cuba.gui.xml.layout.ComponentsFactory;
 import com.haulmont.cuba.security.entity.Role;
+import com.haulmont.cuba.web.gui.components.table.TableItemWrapper;
 import com.haulmont.cuba.web.gui.data.ItemWrapper;
-import com.vaadin.event.ItemClickEvent;
-import org.apache.commons.lang.StringUtils;
+import com.haulmont.cuba.web.widgets.CubaTable;
+import com.vaadin.v7.event.ItemClickEvent;
+import org.apache.commons.lang3.StringUtils;
+
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -37,7 +40,7 @@ public class MatchingRuleScreen extends AbstractWindow {
     private Table<AbstractCommonMatchingRule> matchingRuleTable;
 
     @Inject
-    private ComponentsFactory componentsFactory;
+    private UiComponents componentsFactory;
 
     @Inject
     private Metadata metadata;
@@ -55,10 +58,10 @@ public class MatchingRuleScreen extends AbstractWindow {
     private CollectionDatasource<Role, UUID> appliedRolesDs;
 
     @Named("testRuleScreenLogin")
-    private TextField userLoginTextField;
+    private TextField<String> userLoginTextField;
 
     @Named("testRuleScreenAppliedGroup")
-    private TextField appliedGroupTextField;
+    private TextField<String> appliedGroupTextField;
 
     @Inject
     private UserSynchronizationService userSynchronizationService;
@@ -101,10 +104,10 @@ public class MatchingRuleScreen extends AbstractWindow {
 
         matchingRuleTable.setSortable(false);
 
-        com.vaadin.ui.Table matchingRuleTableUi = matchingRuleTable.unwrap(com.vaadin.ui.Table.class);
-        matchingRuleTableUi.addItemClickListener((ItemClickEvent.ItemClickListener) event -> {
-                    ItemWrapper iw = ((ItemWrapper) event.getItem());
-                    AbstractCommonMatchingRule rule = (AbstractCommonMatchingRule) iw.getItem();
+        CubaTable matchingRuleTableUi = matchingRuleTable.unwrap(CubaTable.class);
+        matchingRuleTableUi.addItemClickListener(event -> {
+                    TableItemWrapper  iw = ((TableItemWrapper) event.getItem());
+                    AbstractCommonMatchingRule rule = (AbstractCommonMatchingRule)((CubaTable)event.getSource()).getValue();
                     boolean editEnable =  CUSTOM != rule.getRuleType();
                     boolean removeEnable =  CUSTOM != rule.getRuleType() && DEFAULT != rule.getRuleType();
                     ruleEditButton.setEnabled(editEnable);
@@ -235,15 +238,12 @@ public class MatchingRuleScreen extends AbstractWindow {
     }
 
     public Component generateMatchingRuleTableStatusColumnCell(AbstractCommonMatchingRule entity) {
-        CheckBox checkBox = componentsFactory.createComponent(CheckBox.class);
+        CheckBox checkBox = componentsFactory.create(CheckBox.class);
         checkBox.setValue(entity.getStatus().getIsActive());
-        checkBox.addValueChangeListener(new ValueChangeListener() {
-            @Override
-            public void valueChanged(ValueChangeEvent e) {
+        checkBox.addValueChangeListener(e->{
                 AbstractCommonMatchingRule mr = matchingRuleTable.getSingleSelected();
-                Boolean value = (Boolean) e.getValue();
+                Boolean value = e.getValue();
                 mr.getStatus().setIsActive(value);
-            }
         });
         if ((DEFAULT == entity.getRuleType())) {
             checkBox.setEditable(false);
@@ -348,25 +348,25 @@ public class MatchingRuleScreen extends AbstractWindow {
     }
 
     public Component generateMatchingRuleTableOrderColumnCell(AbstractCommonMatchingRule entity) {
-        TextField textField = componentsFactory.createComponent(TextField.class);
+        TextField<String> textField = componentsFactory.create(TextField.TYPE_DEFAULT);
         textField.setValue(matchingRuleUtils.generateMatchingRuleTableOrderColumn(entity));
         textField.setWidth("50");
         if (DEFAULT == entity.getRuleType()) {
             textField.setEditable(false);
             textField.setEnabled(false);
             textField.setValue(getMessage("matchingRuleTableDefaultRuleOrder"));
-        } else {
+        } /*else {
             textField.setDatatype(Datatypes.get(Integer.class));
-        }
+        }*/
         textField.addValueChangeListener(e -> {
-            if (!matchingRuleUtils.validateRuleOrder((Integer) e.getValue())) {
+            String order = e.getValue();
+            if (!matchingRuleUtils.validateRuleOrder(Integer.valueOf(order))) {
                 textField.setValue(e.getPrevValue());
                 return;
             }
             AbstractCommonMatchingRule mr = matchingRuleTable.getSingleSelected();
-            Integer order = (Integer) e.getValue();
             MatchingRuleOrder matchingRuleOrder = mr.getOrder();
-            matchingRuleOrder.setOrder(order);
+            matchingRuleOrder.setOrder(Integer.valueOf(order));
             sortDsByOrder();
         });
 
@@ -442,17 +442,14 @@ public class MatchingRuleScreen extends AbstractWindow {
 
 
     public Component generateMatchingRuleTableTerminalColumnCell(AbstractCommonMatchingRule entity) {
-        CheckBox checkBox = componentsFactory.createComponent(CheckBox.class);
+        CheckBox checkBox = componentsFactory.create(CheckBox.class);
         if ((!(CUSTOM == entity.getRuleType()))) {
             AbstractDbStoredMatchingRule dbRule = (AbstractDbStoredMatchingRule) entity;
             checkBox.setValue(dbRule.getIsTerminalRule());
-            checkBox.addValueChangeListener(new ValueChangeListener() {
-                @Override
-                public void valueChanged(ValueChangeEvent e) {
+            checkBox.addValueChangeListener(e->{
                     AbstractDbStoredMatchingRule mr = (AbstractDbStoredMatchingRule) matchingRuleTable.getSingleSelected();
                     Boolean value = (Boolean) e.getValue();
                     mr.setIsTerminalRule(value);
-                }
             });
         } else {
             checkBox.setEditable(false);

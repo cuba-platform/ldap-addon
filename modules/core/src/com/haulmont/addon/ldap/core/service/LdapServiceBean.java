@@ -16,8 +16,8 @@ import com.haulmont.addon.ldap.service.LdapService;
 import com.haulmont.cuba.core.global.Messages;
 import com.haulmont.cuba.core.global.Scripting;
 import com.haulmont.cuba.security.entity.User;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.exception.ExceptionUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.codehaus.groovy.control.CompilationFailedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -164,10 +164,10 @@ public class LdapServiceBean implements LdapService {
             scriptExecutionResult = scripting.evaluateGroovy(groovyScript.replace("{ldapContext}", "__context__"), context);
         } catch (CompilationFailedException e) {
             logger.error(messages.formatMessage(LdapServiceBean.class, "errorDuringGroovyScriptEvaluation", login), e);
-            return new GroovyScriptTestResultDto(COMPILATION_ERROR, ExceptionUtils.getFullStackTrace(e));
+            return new GroovyScriptTestResultDto(COMPILATION_ERROR, ExceptionUtils.getStackTrace(e));
         } catch (Exception e) {
             logger.error(messages.formatMessage(LdapServiceBean.class, "errorDuringGroovyScriptEvaluation", login), e);
-            return new GroovyScriptTestResultDto(OTHER_ERROR, ExceptionUtils.getFullStackTrace(e));
+            return new GroovyScriptTestResultDto(OTHER_ERROR, ExceptionUtils.getStackTrace(e));
         }
 
         if (scriptExecutionResult instanceof Boolean) {
