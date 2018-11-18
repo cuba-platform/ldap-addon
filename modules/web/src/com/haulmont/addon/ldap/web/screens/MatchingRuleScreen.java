@@ -104,26 +104,25 @@ public class MatchingRuleScreen extends AbstractWindow {
 
         matchingRuleTable.setSortable(false);
 
-        CubaTable matchingRuleTableUi = matchingRuleTable.unwrap(CubaTable.class);
-        matchingRuleTableUi.addItemClickListener(event -> {
-                    TableItemWrapper  iw = ((TableItemWrapper) event.getItem());
-                    AbstractCommonMatchingRule rule = (AbstractCommonMatchingRule)((CubaTable)event.getSource()).getValue();
-                    boolean editEnable =  CUSTOM != rule.getRuleType();
-                    boolean removeEnable =  CUSTOM != rule.getRuleType() && DEFAULT != rule.getRuleType();
-                    ruleEditButton.setEnabled(editEnable);
-                    ruleEditButton.setAction(editEnable ? matchingRuleTable.getAction("edit") : null);
-                    ruleRemoveButton.setEnabled(removeEnable);
-                    ruleRemoveButton.setAction(removeEnable ? matchingRuleTable.getAction("remove") : null);
+        matchingRuleTable.getDatasource().addItemChangeListener(e -> {
+                    AbstractCommonMatchingRule rule = (AbstractCommonMatchingRule) e.getItem();
+                    if (rule!=null){
+                        boolean editEnable = CUSTOM != rule.getRuleType();
+                        boolean removeEnable = CUSTOM != rule.getRuleType() && DEFAULT != rule.getRuleType();
+                        ruleEditButton.setEnabled(editEnable);
+                        ruleEditButton.setAction(editEnable ? matchingRuleTable.getAction("edit") : null);
+                        ruleRemoveButton.setEnabled(removeEnable);
+                        ruleRemoveButton.setAction(removeEnable ? matchingRuleTable.getAction("remove") : null);
 
-                    if (!editEnable) {
-                        ruleEditButton.setIconFromSet(CubaIcon.EDIT_ACTION);
-                        ruleEditButton.setCaption(getMessage("ruleEditButton"));
+                        if (!editEnable) {
+                            ruleEditButton.setIconFromSet(CubaIcon.EDIT_ACTION);
+                            ruleEditButton.setCaption(getMessage("ruleEditButton"));
+                        }
+                        if (!removeEnable) {
+                            ruleRemoveButton.setIconFromSet(CubaIcon.REMOVE_ACTION);
+                            ruleRemoveButton.setCaption(getMessage("ruleRemoveButton"));
+                        }
                     }
-                    if (!removeEnable) {
-                        ruleRemoveButton.setIconFromSet(CubaIcon.REMOVE_ACTION);
-                        ruleRemoveButton.setCaption(getMessage("ruleRemoveButton"));
-                    }
-
                 }
         );
 
@@ -240,10 +239,10 @@ public class MatchingRuleScreen extends AbstractWindow {
     public Component generateMatchingRuleTableStatusColumnCell(AbstractCommonMatchingRule entity) {
         CheckBox checkBox = componentsFactory.create(CheckBox.class);
         checkBox.setValue(entity.getStatus().getIsActive());
-        checkBox.addValueChangeListener(e->{
-                AbstractCommonMatchingRule mr = matchingRuleTable.getSingleSelected();
-                Boolean value = e.getValue();
-                mr.getStatus().setIsActive(value);
+        checkBox.addValueChangeListener(e -> {
+            AbstractCommonMatchingRule mr = matchingRuleTable.getSingleSelected();
+            Boolean value = e.getValue();
+            mr.getStatus().setIsActive(value);
         });
         if ((DEFAULT == entity.getRuleType())) {
             checkBox.setEditable(false);
@@ -446,10 +445,10 @@ public class MatchingRuleScreen extends AbstractWindow {
         if ((!(CUSTOM == entity.getRuleType()))) {
             AbstractDbStoredMatchingRule dbRule = (AbstractDbStoredMatchingRule) entity;
             checkBox.setValue(dbRule.getIsTerminalRule());
-            checkBox.addValueChangeListener(e->{
-                    AbstractDbStoredMatchingRule mr = (AbstractDbStoredMatchingRule) matchingRuleTable.getSingleSelected();
-                    Boolean value = (Boolean) e.getValue();
-                    mr.setIsTerminalRule(value);
+            checkBox.addValueChangeListener(e -> {
+                AbstractDbStoredMatchingRule mr = (AbstractDbStoredMatchingRule) matchingRuleTable.getSingleSelected();
+                Boolean value = (Boolean) e.getValue();
+                mr.setIsTerminalRule(value);
             });
         } else {
             checkBox.setEditable(false);
