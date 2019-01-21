@@ -33,7 +33,7 @@ public class LdapTestContainer extends TestContainer {
                 "com/haulmont/addon/ldap/core/resources/ldap-test-app.properties");
 
         dbDriver = "org.hsqldb.jdbc.JDBCDriver";
-        dbUrl = "jdbc:hsqldb:hsql://localhost/ldap-test";
+        dbUrl = "jdbc:hsqldb:hsql://localhost/ldap";
         dbUser = "sa";
         dbPassword = "";
 
