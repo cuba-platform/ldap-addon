@@ -6,7 +6,6 @@ import com.haulmont.addon.ldap.service.MatchingRuleService;
 import com.haulmont.addon.ldap.service.UserSynchronizationService;
 import com.haulmont.addon.ldap.utils.MatchingRuleUtils;
 import com.haulmont.addon.ldap.web.screens.datasources.MatchingRuleDatasource;
-import com.haulmont.chile.core.datatypes.Datatypes;
 import com.haulmont.chile.core.model.MetaPropertyPath;
 import com.haulmont.cuba.core.entity.Entity;
 import com.haulmont.cuba.core.global.Metadata;
@@ -19,19 +18,15 @@ import com.haulmont.cuba.gui.data.CollectionDatasource;
 import com.haulmont.cuba.gui.data.Datasource;
 import com.haulmont.cuba.gui.icons.CubaIcon;
 import com.haulmont.cuba.security.entity.Role;
-import com.haulmont.cuba.web.gui.components.table.TableItemWrapper;
-import com.haulmont.cuba.web.gui.data.ItemWrapper;
-import com.haulmont.cuba.web.widgets.CubaTable;
-import com.vaadin.v7.event.ItemClickEvent;
 import org.apache.commons.lang3.StringUtils;
-
 
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.haulmont.addon.ldap.entity.MatchingRuleType.*;
+import static com.haulmont.addon.ldap.entity.MatchingRuleType.CUSTOM;
+import static com.haulmont.addon.ldap.entity.MatchingRuleType.DEFAULT;
 import static com.haulmont.cuba.gui.components.Frame.NotificationType.HUMANIZED;
 
 public class MatchingRuleScreen extends AbstractWindow {
