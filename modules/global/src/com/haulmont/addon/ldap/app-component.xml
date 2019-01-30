@@ -5,6 +5,7 @@
             name="global">
         <artifact appJar="true"
                   name="ldap-global"/>
+        <artifact name="ldap-core" classifier="db" ext="zip" configuration="dbscripts"/>
         <property name="cuba.persistenceConfig"
                   value="+com/haulmont/addon/ldap/persistence.xml"/>
         <property name="cuba.metadataConfig"

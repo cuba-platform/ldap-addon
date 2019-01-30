@@ -4,6 +4,7 @@ import com.google.common.base.Strings;
 import com.haulmont.addon.ldap.dto.GroovyScriptTestResultDto;
 import com.haulmont.addon.ldap.entity.ScriptingMatchingRule;
 import com.haulmont.addon.ldap.service.LdapService;
+import com.haulmont.cuba.gui.UiComponents;
 import com.haulmont.cuba.gui.components.*;
 import com.haulmont.cuba.gui.data.Datasource;
 import com.haulmont.cuba.gui.xml.layout.ComponentsFactory;
@@ -19,13 +20,13 @@ import static com.haulmont.cuba.gui.components.Frame.NotificationType.WARNING_HT
 public class ScriptingMatchingRuleEdit extends AbstractEditor<ScriptingMatchingRule> {
 
     @Named("userLoginTextField")
-    private TextField userLoginTextField;
+    private TextField<String> userLoginTextField;
 
     @Inject
     private LdapService ldapService;
 
     @Inject
-    private ComponentsFactory componentsFactory;
+    private UiComponents componentsFactory;
 
     @Inject
     private Table<Role> rolesTable;
@@ -62,8 +63,8 @@ public class ScriptingMatchingRuleEdit extends AbstractEditor<ScriptingMatchingR
     }
 
     public Component generateScriptingConditionField(Datasource datasource, String fieldId) {
-        FlowBoxLayout fb = componentsFactory.createComponent(FlowBoxLayout.class);
-        LinkButton lb = componentsFactory.createComponent(LinkButton.class);
+        FlowBoxLayout fb = componentsFactory.create(FlowBoxLayout.class);
+        LinkButton lb = componentsFactory.create(LinkButton.class);
         Action action = new EmptyGroovyScriptHelpAction("") {
             @Override
             public void actionPerform(Component component) {
@@ -74,7 +75,7 @@ public class ScriptingMatchingRuleEdit extends AbstractEditor<ScriptingMatchingR
             }
         };
         lb.setAction(action);
-        SourceCodeEditor sourceCodeEditor = componentsFactory.createComponent(SourceCodeEditor.class);
+        SourceCodeEditor sourceCodeEditor = componentsFactory.create(SourceCodeEditor.class);
         sourceCodeEditor.setDatasource(datasource, fieldId);
         sourceCodeEditor.setRequired(true);
         sourceCodeEditor.setMode(SourceCodeEditor.Mode.Groovy);

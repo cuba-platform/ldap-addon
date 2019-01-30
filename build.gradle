@@ -1,5 +1,5 @@
 buildscript {
-    ext.cubaVersion = '6.10.2'
+    ext.cubaVersion = '7.0.0'
     repositories {
 
         maven {
@@ -26,7 +26,6 @@ def webModule = project(":${modulePrefix}-web" )
 def servletApi = 'org.apache.tomcat:tomcat-servlet-api:8.0.26'
 
 
-apply(plugin: 'idea')
 apply(plugin: 'cuba')
 
 cuba {
@@ -57,7 +56,6 @@ def dbTestNameParam = 'ldap-test'
 configure([globalModule, coreModule, guiModule, webModule]) {
     apply(plugin: 'java')
     apply(plugin: 'maven')
-    apply(plugin: 'idea')
     apply(plugin: 'cuba')
     apply(plugin: 'checkstyle')
 
@@ -128,14 +126,14 @@ configure(coreModule) {
 
     dependencies {
         compile(globalModule)
-        provided(servletApi)
+        compileOnly(servletApi)
         jdbc(hsql)
         testRuntime(hsql)
     }
 
     task cleanConf(description: 'Cleans up conf directory') {
         doLast {
-            def dir = new File(cuba.tomcat.dir, "/conf/${modulePrefix}-core" )
+            def dir = new File(cuba.tomcat.dir, '/conf/${modulePrefix}-core')
             if (dir.isDirectory()) {
                 ant.delete(includeemptydirs: true) {
                     fileset(dir: dir, includes: '**/*', excludes: 'local.app.properties')
@@ -216,7 +214,7 @@ configure(webModule) {
     }
 
     dependencies {
-        provided(servletApi)
+        compileOnly(servletApi)
         compile(guiModule)
 
     }
@@ -244,7 +242,7 @@ configure(webModule) {
 
     task cleanConf(description: 'Cleans up conf directory') {
         doLast {
-            def dir = new File(cuba.tomcat.dir, "/conf/${modulePrefix}" )
+            def dir = new File(cuba.tomcat.dir, '/conf/${modulePrefix}')
             if (dir.isDirectory()) {
                 ant.delete(includeemptydirs: true) {
                     fileset(dir: dir, includes: '**/*', excludes: 'local.app.properties')
@@ -280,8 +278,5 @@ task restart(dependsOn: ['stop', ":${modulePrefix}-core:deploy" , ":${modulePref
     }
 }
 
-task wrapper(type: Wrapper) {
-    gradleVersion = '4.3.1'
-}
 
 apply from: 'extra.gradle'

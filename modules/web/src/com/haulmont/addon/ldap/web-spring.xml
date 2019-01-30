@@ -4,7 +4,8 @@
        xmlns:context="http://www.springframework.org/schema/context"
        xmlns:task="http://www.springframework.org/schema/task"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
-        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd">
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd"
+       xmlns:gui="http://schemas.haulmont.com/cuba/spring/cuba-gui.xsd">
 
     <!-- Annotation-based beans -->
     <context:component-scan base-package="com.haulmont.addon.ldap"/>
@@ -26,5 +27,6 @@
     <task:scheduled-tasks scheduler="scheduler">
         <task:scheduled ref="ldap_ExpiredSessionWatcher" method="notifyExpiringSessions" cron="${ldap.expiringSessionNotificationCron?:*/30 * * * * *}"/>
     </task:scheduled-tasks>
+    <gui:screens base-packages="com.haulmont.addon.ldap.web"/>
 
 </beans>

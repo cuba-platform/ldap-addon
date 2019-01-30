@@ -1,6 +1,6 @@
 package com.haulmont.addon.ldap.core.spring;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.ldap.core.support.LdapContextSource;
 
 import javax.naming.directory.DirContext;

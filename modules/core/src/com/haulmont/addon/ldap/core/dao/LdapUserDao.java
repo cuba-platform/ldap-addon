@@ -7,7 +7,7 @@ import com.haulmont.addon.ldap.entity.LdapConfig;
 import com.haulmont.addon.ldap.entity.SimpleRuleCondition;
 import com.haulmont.cuba.core.global.Messages;
 import com.haulmont.cuba.security.global.LoginException;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;

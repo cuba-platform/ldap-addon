@@ -10,8 +10,8 @@ import com.haulmont.cuba.core.global.PersistenceHelper;
 import com.haulmont.cuba.security.entity.Role;
 import com.haulmont.cuba.security.entity.User;
 import com.haulmont.cuba.security.entity.UserRole;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.exception.ExceptionUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -100,7 +100,7 @@ public class UserSynchronizationLogDao {
         UserSynchronizationLog userSynchronizationLog = metadata.create(UserSynchronizationLog.class);
         userSynchronizationLog.setLogin(login);
         userSynchronizationLog.setResult(ERROR_SYNC);
-        userSynchronizationLog.setErrorText(ExceptionUtils.getFullStackTrace(e));
+        userSynchronizationLog.setErrorText(ExceptionUtils.getStackTrace(e));
         saveUserSynchronizationLog(userSynchronizationLog);
     }
 
