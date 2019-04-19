@@ -23,7 +23,7 @@ buildscript {
     }
     dependencies {
         classpath "com.haulmont.gradle:cuba-plugin:$cubaVersion"
-        classpath "com.haulmont.gradle:addon-gradle-plugin:1.0.3"
+        classpath "com.haulmont.gradle:addon-gradle-plugin:1.0.7"
     }
 }
 
@@ -60,7 +60,7 @@ dependencies {
 
 }
 
-def hsql = 'org.hsqldb:hsqldb:2.2.9'
+def hsql = 'org.hsqldb:hsqldb:2.4.1'
 
 def dbNameParam = 'ldap'
 def dbTestNameParam = 'ldap-test'
