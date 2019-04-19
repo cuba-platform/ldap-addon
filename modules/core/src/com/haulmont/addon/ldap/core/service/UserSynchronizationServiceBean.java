@@ -1,13 +1,29 @@
+/*
+ * Copyright (c) 2008-2019 Haulmont.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.haulmont.addon.ldap.core.service;
 
 import com.haulmont.addon.ldap.config.LdapPropertiesConfig;
 import com.haulmont.addon.ldap.core.dao.*;
-import com.haulmont.addon.ldap.dto.LdapUser;
 import com.haulmont.addon.ldap.core.rule.LdapMatchingRuleContext;
 import com.haulmont.addon.ldap.core.rule.appliers.MatchingRuleApplier;
 import com.haulmont.addon.ldap.core.rule.custom.CustomLdapMatchingRuleWrapper;
 import com.haulmont.addon.ldap.core.spring.events.*;
 import com.haulmont.addon.ldap.dto.ExpiredSession;
+import com.haulmont.addon.ldap.dto.LdapUser;
 import com.haulmont.addon.ldap.dto.TestUserSynchronizationDto;
 import com.haulmont.addon.ldap.dto.UserSynchronizationResultDto;
 import com.haulmont.addon.ldap.entity.AbstractCommonMatchingRule;
@@ -27,7 +43,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static com.haulmont.addon.ldap.entity.MatchingRuleType.CUSTOM;
