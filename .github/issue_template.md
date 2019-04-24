@@ -1,6 +1,6 @@
 <!-- 
-Please use https://www.cuba-platform.com/discuss for discussion, support, and reporting problems about Ldap-addon.
-This repository is only for issues of the Ldap-addon.
+Please use https://www.cuba-platform.com/discuss for discussion, support, and reporting problems about LDAP-addon.
+This repository is only for issues of the LDAP-addon.
 
 When creating an issue, provide as much as possible of the following information: 
 -->
