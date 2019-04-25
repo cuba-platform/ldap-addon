@@ -3,7 +3,7 @@ jdk: openjdk8
 
 before_install:
   - chmod +x ./gradlew
-  - ./gradlew --no-daemon startDb createTestDb
+  - ./gradlew --no-daemon startDb createDb
 
 install:
   - ./gradlew --no-daemon assemble
