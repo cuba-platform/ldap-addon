@@ -15,9 +15,9 @@
  */
 
 buildscript {
-    ext.cubaVersion = '7.0.0'
+    ext.cubaVersion = '7.0.4'
     repositories {
-
+        mavenLocal()
         if (System.getenv('HAULMONT_REPOSITORY_URL')) {
             maven {
                 credentials {
@@ -39,16 +39,16 @@ buildscript {
     }
     dependencies {
         classpath "com.haulmont.gradle:cuba-plugin:$cubaVersion"
-        classpath "com.haulmont.gradle:addon-gradle-plugin:1.0.7"
+        classpath "com.haulmont.gradle:addon-gradle-plugin:1.0.8"
     }
 }
 
 def modulePrefix = 'ldap'
 
-def globalModule = project(":${modulePrefix}-global" )
-def coreModule = project(":${modulePrefix}-core" )
-def guiModule = project(":${modulePrefix}-gui" )
-def webModule = project(":${modulePrefix}-web" )
+def globalModule = project(":${modulePrefix}-global")
+def coreModule = project(":${modulePrefix}-core")
+def guiModule = project(":${modulePrefix}-gui")
+def webModule = project(":${modulePrefix}-web")
 
 def servletApi = 'org.apache.tomcat:tomcat-servlet-api:8.0.26'
 
@@ -92,7 +92,6 @@ dependencies {
 def hsql = 'org.hsqldb:hsqldb:2.4.1'
 
 def dbNameParam = 'ldap'
-def dbTestNameParam = 'ldap-test'
 
 configure([globalModule, coreModule, guiModule, webModule]) {
     apply(plugin: 'java')
@@ -102,7 +101,7 @@ configure([globalModule, coreModule, guiModule, webModule]) {
 
     dependencies {
         testCompile('junit:junit:4.12')
-        testCompile ('org.springframework.ldap:spring-ldap-test:2.3.2.RELEASE')
+        testCompile('org.springframework.ldap:spring-ldap-test:2.3.2.RELEASE')
         testCompile "org.apache.directory.server:apacheds-core:1.5.5",
                 "org.apache.directory.server:apacheds-core-entry:1.5.5",
                 "org.apache.directory.server:apacheds-protocol-shared:1.5.5",
@@ -250,16 +249,13 @@ configure(webModule) {
 }
 
 
-
-
-
-task undeploy(type: Delete, dependsOn: ":${modulePrefix}-web:cleanConf" ) {
+task undeploy(type: Delete, dependsOn: ":${modulePrefix}-web:cleanConf") {
     delete("$cuba.tomcat.dir/shared")
-    delete("$cuba.tomcat.dir/webapps/${modulePrefix}-core" )
-    delete("$cuba.tomcat.dir/webapps/${modulePrefix}" )
+    delete("$cuba.tomcat.dir/webapps/${modulePrefix}-core")
+    delete("$cuba.tomcat.dir/webapps/${modulePrefix}")
 }
 
-task restart(dependsOn: ['stop', ":${modulePrefix}-core:deploy" , ":${modulePrefix}-web:deploy" ], description: 'Redeploys applications and restarts local Tomcat') {
+task restart(dependsOn: ['stop', ":${modulePrefix}-core:deploy", ":${modulePrefix}-web:deploy"], description: 'Redeploys applications and restarts local Tomcat') {
     doLast {
         ant.waitfor(maxwait: 6, maxwaitunit: 'second', checkevery: 2, checkeveryunit: 'second') {
             not {
