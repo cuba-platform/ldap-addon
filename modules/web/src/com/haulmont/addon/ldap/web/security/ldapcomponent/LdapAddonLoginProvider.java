@@ -90,7 +90,9 @@ public class LdapAddonLoginProvider implements LoginProvider, Ordered {
         LoginPasswordCredentials loginPasswordCredentials = (LoginPasswordCredentials) credentials;
 
         authUserService.ldapAuth(
-                loginPasswordCredentials.getLogin(), loginPasswordCredentials.getPassword(), loginPasswordCredentials.getLocale());
+                loginPasswordCredentials.getLogin(),
+                loginPasswordCredentials.getPassword(),
+                loginPasswordCredentials.getLocale());
         UserSynchronizationResultDto userSynchronizationResult
                 = userSynchronizationService.synchronizeUser(loginPasswordCredentials.getLogin(), true, null, null, null);
         if (userSynchronizationResult.isInactiveUser()) {
