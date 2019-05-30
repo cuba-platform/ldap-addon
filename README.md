@@ -3,8 +3,6 @@
     <a href="https://travis-ci.org/cuba-platform/ldap-addon"><img src="https://travis-ci.org/cuba-platform/ldap-addon.svg?branch=master" alt="Build Status" title=""></a>
 </p>
 
-# Table of Contents
-
 - [Overview](#overview)
 - [Getting Started](#getting-started)
     - [Prerequisites](#prerequisites)
@@ -16,7 +14,7 @@
     - [Testing LDAP Matching Rules](#testing-ldap-matching-rules)
     - [LDAP Log](#ldap-log)
 - [Scheduled Task Configuration](#scheduled-task-configuration)
-- [EventListeners to interact with LDAP addon events](#event-listeners)
+- [EventListeners to Interact with LDAP Add-on Events](#eventlisteners)
 - [Appendix A. Application Properties](#appendix-a-application-properties)
 
 # Overview
@@ -37,8 +35,7 @@ The component provides the following functionalities:
 
 ## Prerequisites
 
-Before enabling the component, it is required to configure a directory server, so that it was accessible for the
-component features.
+Before enabling the add-on, it is required to configure a directory server, so that it will be accessible for the add-on features.
 
 ## Installation
 
@@ -52,13 +49,13 @@ To add the LDAP component to your project, the following steps should be taken:
 
     ![Adding the component](img/adding_component1.png)
 
-4. Specify the coordinates of the component in the corresponding field as follows: `group:name:version`.
+4. Specify the coordinates of the component in the corresponding field as follows: group:name:version.
 
    * Artifact group: *com.haulmont.addon.ldap*
    * Artifact name: *ldap-global*
    * Version: *add-on version*
 
-    ![Adding the component in Studio](img/adding-component-in-studio.png)
+    ![Adding the component in Studio](img/adding_component2.png)
 
   When specifying the component version, you should select the one, which is compatible with the platform version used
     in your project.
@@ -75,7 +72,7 @@ To add the LDAP component to your project, the following steps should be taken:
 
 6. Before using the component as a part of your application, it is vital to configure initial values for connecting to
 the LDAP server, and to set up basic attribute names for the LDAP user in the `app.properties` file.
-An example of how to set up these properties is given below. Learn more about the application properties [here](#appendix-a-application-properties).
+An example of how to set up these properties is given below. Learn more about the application properties in  [Aappendix A](#appendix-a-application-properties).
 
 ```properties
 ldap.contextSourceUrl = ldap://localhost:10389
@@ -116,7 +113,7 @@ its functionalities.
 ## LDAP Config
 
 Once you have successfully installed the component, check that all configured property values are displayed properly
-on *LDAP Config* Screen (Menu: *LDAP Component → LDAP Config*).
+on *LDAP Config* screen (Menu: *LDAP Component → LDAP Config*).
 
 ![LDAP-component-menu](img/ldap-component-menu.png)
 
@@ -136,10 +133,9 @@ successfully established, the corresponding message is displayed.
 
 ### Attribute Settings
 
-When a user logs in using LDAP credentials for the first time, a new user entity is created in the CUBA application.
+When a user logs in using LDAP credentials for the first time, a new `User` entity is created in the CUBA application.
 All details about the user are taken from the LDAP server side (configuring these details is a part of preparation
-activities). In order to match LDAP attributes and the fields of the User entity, use the *Attribute Settings* section
-of *Load Config Screen*.
+activities). In order to match LDAP attributes and the fields of the `User` entity, use the *Attribute Settings* section.
 
 ![LDAP-Config-Basic-Attributes](img/ldap-config-basic-attributes.png)
 
@@ -162,7 +158,7 @@ user object class. However, it is possible to add attributes manually by using t
 
 LDAP matching rules are special rules for configuring access rights for new application users (those created after
 logging in via LDAP). There are four rule types intended for this purpose: custom, default, simple and scripting.
-Creating and managing LDAP matching rules is available from *LDAP Matching Rule Screen* (Menu: *LDAP Component →
+Creating and managing LDAP matching rules is available from *LDAP Matching Rule* screen (Menu: *LDAP Component →
 LDAP Matching Rules*).
 
 ![LDAP Matching Rules Screen](img/ldap-matching-rules.png)
@@ -214,7 +210,7 @@ When launching your application for the first time after the component installat
 created in the system.
 
 It is used if none of other rules were applied, i.e. conditions for applying existing rules were not met.
-That is why it contains the 'LAST' value in the *Order* field.
+That is why it contains the `LAST` value in the *Order* field.
 
 The default rule can be amended by clicking the *Edit* button. All fields and settings present in *Default
 Matching Rule Editor* are described in the section below.
@@ -223,12 +219,12 @@ Matching Rule Editor* are described in the section below.
 
 ![Default Rule Editor](img/default-rule-editor.png)
 
-* *Description* - a short description of the default rule.
-* *Terminal rule* - if checked, then rules coming after the current one (according to the rule order) are not applied.
-* *Access group* - an access group to be assigned to a user, if the default rule is applied.
-* *Override existing access group* - if checked, then an access group that was previously assigned to a user is removed
-and the group specified in the 'Access group' field is used instead.
-* *Override existing roles* - if checked, then all roles that were previously assigned to a user are removed and the ones
+* *Description* — a short description of the default rule.
+* *Terminal rule* — if checked, then rules coming after the current one (according to the rule order) are not applied.
+* *Access group* — an access group to be assigned to a user, if the default rule is applied.
+* *Override existing access group* — if checked, then an access group that was previously assigned to a user is removed
+and the group specified in the *Access group* field is used instead.
+* *Override existing roles* — if checked, then all roles that were previously assigned to a user are removed and the ones
 specified in the 'Roles' section are used instead.
 
 The *Roles* table allows creating a set of roles, which are assigned to a user, if the default rule is used.
@@ -253,12 +249,12 @@ the *Create* button opens *Simple Rule Condition Editor*.
 
 The editor contains the following fields:
 
-* *Attribute* - defines an LDAP attribute, which will be checked before applying a current simple rule.
+* *Attribute* — defines an LDAP attribute, which will be checked before applying a current simple rule.
 
  **Note:** Before creating conditions it is required to add them to the existing LDAP Schema (for more details, please
 refer to [LDAP Schema](#ldap-schema)).
 
-* *Attribute Value* - defines a value of the selected attribute. The rule will be applied to those user entities, which
+* *Attribute Value* — defines a value of the selected attribute. The rule will be applied to those user entities, which
 have the specified value of the selected attribute.
 
 
@@ -282,13 +278,13 @@ and a table of roles.
 An entered condition is evaluated using LDAP matching rule context. Note that the `{ldapContext}` placeholder should
 be used as an alias of the LDAP matching rule context. The `{ldapContext}` provides the following fields:
 
-* *ldapUser* - defines the main LDAP person properties (login, cn, sn, email, memberOf, accessGroups, isDisabled, position,
+* *ldapUser* — defines the main LDAP person properties (login, cn, sn, email, memberOf, accessGroups, isDisabled, position,
 language, ou).
-* *appliedRules* - matching rules, which were previously applied to the context.
-* *roles* - roles, which were previously assigned to a user.
-* *group* - a current access group that a user belongs to.
-* *cubaUser* - a CUBA user, to whom a current matching rule is applied.
-* *isTerminalRuleApply* - signals that a current rule is a terminal one, i.e. once it is used, no other rules can be applied.
+* *appliedRules* — matching rules, which were previously applied to the context.
+* *roles* — roles, which were previously assigned to a user.
+* *group* — a current access group that a user belongs to.
+* *cubaUser* — a CUBA user, to whom a current matching rule is applied.
+* *isTerminalRuleApply* — signals that a current rule is a terminal one, i.e. once it is used, no other rules can be applied.
 
 ## Testing LDAP Matching Rules
 
@@ -309,7 +305,7 @@ features are used.
 
 In order to view any log entry, just double-click it or select it in the table and click the *View* button.
 
-Clicking the *Excel* button enables to download details of the selected rows (or all rows if required) to an *.XLS file.
+Clicking the *Excel* button enables to download details of the selected rows (or all rows if required) to an `*.XLS` file.
 
 # Scheduled Task Configuration
 
@@ -332,7 +328,7 @@ In order to register scheduled tasks in your application, follow the guidelines 
     * *Bean Name:* `ldap_UserSynchronizationSchedulerService`
     * *Method Name:* `checkExpiredSessions()`
     * *Scheduling Type:* Cron
-    * *Cron Expression:* specify a required cron expression (see [this documentation](https://doc.cuba-platform.com/manual-latest/scheduled_tasks_cuba_reg.html) for more details)
+    * *Cron Expression:* specify a required cron expression (see [documentation](https://doc.cuba-platform.com/manual-latest/scheduled_tasks_cuba_reg.html) for more details)
 
   ![Scheduled Task 1](img/scheduled-task1.png)
 
@@ -347,7 +343,7 @@ In order to register scheduled tasks in your application, follow the guidelines 
     * *Bean Name:* `ldap_UserSynchronizationSchedulerService`
     * *Method Name:* `killExpiredSessions()`
     * *Scheduling Type:* Cron
-    * *Cron Expression:* specify a required cron expression (see [this documentation](https://doc.cuba-platform.com/manual-latest/scheduled_tasks_cuba_reg.html) for more details)
+    * *Cron Expression:* specify a required cron expression (see [documentation](https://doc.cuba-platform.com/manual-latest/scheduled_tasks_cuba_reg.html) for more details)
 
   ![Scheduled Task 2](img/scheduled-task2.png)
 
@@ -362,7 +358,7 @@ In order to register scheduled tasks in your application, follow the guidelines 
     * *Bean Name:* `ldap_UserSynchronizationSchedulerService`
     * *Method Name:* `synchronizeUsersFromLdap()`
     * *Scheduling Type:* Cron
-    * *Cron Expression:* specify a required cron expression (see [this documentation](https://doc.cuba-platform.com/manual-latest/scheduled_tasks_cuba_reg.html) for more details)
+    * *Cron Expression:* specify a required cron expression (see [documentation](https://doc.cuba-platform.com/manual-latest/scheduled_tasks_cuba_reg.html) for more details)
 
   ![Scheduled Task 3](img/scheduled-task3.png)
 
@@ -385,7 +381,7 @@ session will be killed.
 
 If user details change on the LDAP server side, CUBA user details will be updated as well.
 
-# EventListeners to Interact with LDAP Addon Events
+# EventListeners to Interact with LDAP Add-on Events
 
 In order to make your application react to events related to the LDAP component, you can register the `@Component` methods
 as event listeners using the `@EventListener` annotation. The example of how to configure an event listener is given below:
@@ -407,13 +403,13 @@ public class LdapEventListener {
 
 The application component supports the following LDAP event types:
 
-*  *BeforeUserRolesAndAccessGroupUpdatedFromLdapEvent* - defines the state of a CUBA user before matching rules are applied, i.e.
+*  `BeforeUserRolesAndAccessGroupUpdatedFromLdapEvent` — defines the state of a CUBA user before matching rules are applied, i.e.
 before user roles and an access group are assigned.
-*  *AfterUserRolesAndAccessGroupUpdatedFromLdapEvent* - defines the state of a CUBA user after matching rules are applied, i.e.
+*  `AfterUserRolesAndAccessGroupUpdatedFromLdapEvent` — defines the state of a CUBA user after matching rules are applied, i.e.
 after user roles and an access group are assigned.
-*  *UserCreatedFromLdapEvent* - describes the state when a new CUBA user is created after logging in using LDAP credentials.
-*  *UserActivatedFromLdapEvent* - defines the state of a CUBA user that was previously inactive, and then activated.
-*  *UserDeactivatedFromLdapEvent* - defines the state of a CUBA user that was previously active, and then disabled.
+*  `UserCreatedFromLdapEvent` — describes the state when a new CUBA user is created after logging in using LDAP credentials.
+*  `UserActivatedFromLdapEvent` — defines the state of a CUBA user that was previously inactive, and then activated.
+*  `UserDeactivatedFromLdapEvent` — defines the state of a CUBA user that was previously active, and then disabled.
 
 # Appendix A. Application Properties
 There is a set of application properties to be configured before working with the component. These properties should be
@@ -445,7 +441,7 @@ of an admin user.
 
 #### ldap.referral
 
-* **Description:** defines the strategy to handle referrals, as described in [this documentation](http://docs.oracle.com/javase/jndi/tutorial/ldap/referral/jndi.html).
+* **Description:** defines the strategy to handle referrals, as described in [documentation](http://docs.oracle.com/javase/jndi/tutorial/ldap/referral/jndi.html).
 * **Default value:** follow
 
 #### ldap.sessionExpiringPeriodSec
@@ -504,7 +500,7 @@ updates the values of the following fields of the User entity in accordance with
 
 #### ldap.addonEnabled
 
-* **Description:** if set to `true`, then the LDAP addon is enabled.
+* **Description:** if set to `true`, then the LDAP add-on is enabled.
 * **Default value:** true
 
 #### ldap.expiringSessionsEnable
