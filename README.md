@@ -14,7 +14,7 @@
     - [Testing LDAP Matching Rules](#testing-ldap-matching-rules)
     - [LDAP Log](#ldap-log)
 - [Scheduled Task Configuration](#scheduled-task-configuration)
-- [EventListeners to Interact with LDAP Add-on Events](#eventlisteners)
+- [EventListeners to Interact with LDAP Add-on Events](#eventlisteners-to-interact-with-ldap-add-on-events)
 - [Appendix A. Application Properties](#appendix-a-application-properties)
 
 # Overview
