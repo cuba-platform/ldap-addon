@@ -96,21 +96,9 @@ public class MatchingRuleScreen extends AbstractWindow {
     public void init(Map<String, Object> params) {
         super.init(params);
 
-        addBeforeCloseWithCloseButtonListener(event -> {
+        addBeforeWindowCloseListener(event -> {
             event.preventWindowClose();
-            showOptionDialog(
-                    getMessage("closeWindowTitle"),
-                    getMessage("closeWindow"),
-                    MessageType.CONFIRMATION,
-                    new Action[]{
-                            new DialogAction(DialogAction.Type.YES) {
-                                public void actionPerform(Component component) {
-                                    close("");
-                                }
-                            },
-                            new DialogAction(DialogAction.Type.NO)
-                    }
-            );
+            showConfirmCloseDialog();
         });
 
         matchingRuleTable.setSortable(false);
@@ -471,6 +459,10 @@ public class MatchingRuleScreen extends AbstractWindow {
 
 
     public void onCancelButtonClick() {
+        showConfirmCloseDialog();
+    }
+
+    private void showConfirmCloseDialog() {
         showOptionDialog(
                 getMessage("closeWindowTitle"),
                 getMessage("closeWindow"),
@@ -478,7 +470,7 @@ public class MatchingRuleScreen extends AbstractWindow {
                 new Action[]{
                         new DialogAction(DialogAction.Type.YES) {
                             public void actionPerform(Component component) {
-                                close("");
+                                closeWithDiscard();
                             }
                         },
                         new DialogAction(DialogAction.Type.NO)
