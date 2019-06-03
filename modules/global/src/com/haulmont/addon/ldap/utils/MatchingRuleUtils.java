@@ -19,11 +19,14 @@ package com.haulmont.addon.ldap.utils;
 import com.haulmont.addon.ldap.dto.CustomLdapMatchingRuleDto;
 import com.haulmont.addon.ldap.entity.*;
 import com.haulmont.cuba.security.entity.Role;
+import com.haulmont.cuba.security.entity.User;
+import com.haulmont.cuba.security.entity.UserRole;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.haulmont.addon.ldap.entity.MatchingRuleType.CUSTOM;
 import static com.haulmont.addon.ldap.utils.MatchingRuleUtils.NAME;
@@ -124,5 +127,9 @@ public class MatchingRuleUtils {
         return true;
     }
 
-
+    public static List<Role> getRoles(User user) {
+        return user.getUserRoles().stream()
+                .map(UserRole::getRole)
+                .collect(Collectors.toList());
+    }
 }
