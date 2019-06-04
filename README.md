@@ -31,6 +31,8 @@ The component provides the following functionalities:
 * Population of user details from the LDAP server;
 * Logging LDAP synchronization details.
 
+See [sample application](https://github.com/cuba-platform/ldap-addon-demo), using this add-on.
+
 # Getting Started
 
 ## Prerequisites
