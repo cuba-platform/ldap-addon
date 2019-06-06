@@ -117,11 +117,8 @@ public class UserSynchronizationServiceBean implements UserSynchronizationServic
             cubaUser.getUserRoles().clear();//user get roles only from LDAP
 
             // Create matching rule context
-            LdapMatchingRuleContext ldapMatchingRuleContext = new LdapMatchingRuleContext(ldapUser, cubaUser);
-            // Copy original user roles and group.
-            // They should not be overridden unless some matching rule has 'override (roles|group)' property.
-            ldapMatchingRuleContext.getRoles().addAll(MatchingRuleUtils.getRoles(originalCubaUser));
-            ldapMatchingRuleContext.setGroup(originalCubaUser.getGroup());
+            LdapMatchingRuleContext ldapMatchingRuleContext = new LdapMatchingRuleContext(ldapUser, cubaUser,
+                    MatchingRuleUtils.getRoles(originalCubaUser), originalCubaUser.getGroup());
 
             // Get user enabled status
             boolean ldapUserEnabled = !ldapUser.getDisabled();
