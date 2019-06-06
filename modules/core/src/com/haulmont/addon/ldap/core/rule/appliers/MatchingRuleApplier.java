@@ -55,6 +55,7 @@ public class MatchingRuleApplier {
 
         User cubaUser = ldapMatchingRuleContext.getCubaUser();
         cubaUser.setGroup(ldapMatchingRuleContext.getGroup());
+        cubaUser.getUserRoles().clear(); //all roles that user should have are now in matching rule context
         applyUserRoles(cubaUser, ldapMatchingRuleContext.getRoles(), beforeRulesApplyUserState.getUserRoles());
     }
 
