@@ -30,12 +30,10 @@ import com.haulmont.addon.ldap.entity.AbstractCommonMatchingRule;
 import com.haulmont.addon.ldap.entity.AbstractDbStoredMatchingRule;
 import com.haulmont.addon.ldap.entity.CommonMatchingRule;
 import com.haulmont.addon.ldap.service.UserSynchronizationService;
-import com.haulmont.addon.ldap.utils.MatchingRuleUtils;
 import com.haulmont.cuba.core.global.Events;
 import com.haulmont.cuba.core.global.Messages;
 import com.haulmont.cuba.core.global.MetadataTools;
 import com.haulmont.cuba.core.global.PersistenceHelper;
-import com.haulmont.cuba.security.entity.Role;
 import com.haulmont.cuba.security.entity.User;
 import com.haulmont.cuba.security.entity.UserRole;
 import org.slf4j.Logger;
@@ -44,11 +42,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import static com.haulmont.addon.ldap.entity.MatchingRuleType.CUSTOM;
+import static com.haulmont.addon.ldap.utils.MatchingRuleUtils.*;
 
 @Service(UserSynchronizationService.NAME)
 public class UserSynchronizationServiceBean implements UserSynchronizationService {
@@ -107,18 +109,15 @@ public class UserSynchronizationServiceBean implements UserSynchronizationServic
             logger.info(messages.formatMessage(UserSynchronizationServiceBean.class, "userSyncStart", login, modeMessage));
 
             // get related CUBA user entity that will be synchronized then
-            User cubaUser = orElseGet(cachedCubaUser, () -> cubaUserDao.getCubaUserByLogin(login));
+            User cubaUser = orElseGet(cachedCubaUser, () -> cubaUserDao.getOrCreateCubaUser(login));
 
             // copy CUBA user state before sync
             User originalCubaUser = metadataTools.copy(cubaUser);
             originalCubaUser.setUserRoles(new ArrayList<>(cubaUser.getUserRoles()));
 
-
-            cubaUser.getUserRoles().clear();//user get roles only from LDAP
-
             // Create matching rule context
             LdapMatchingRuleContext ldapMatchingRuleContext = new LdapMatchingRuleContext(ldapUser, cubaUser,
-                    MatchingRuleUtils.getRoles(originalCubaUser), originalCubaUser.getGroup());
+                    getRoles(originalCubaUser), originalCubaUser.getGroup());
 
             // Get user enabled status
             boolean ldapUserEnabled = !ldapUser.getDisabled();
@@ -144,7 +143,7 @@ public class UserSynchronizationServiceBean implements UserSynchronizationServic
             }
 
             logger.info(messages.formatMessage(UserSynchronizationServiceBean.class, "userSyncEnd", login, modeMessage));
-            return userPrivilegesChanged(originalCubaUser, cubaUser);
+            return createSyncResult(originalCubaUser, cubaUser);
         } catch (Exception e) {
             userSynchronizationLogDao.logSynchronizationError(login, e);
             throw new RuntimeException(messages.formatMessage(UserSynchronizationServiceBean.class, "errorDuringLdapSync", login), e);
@@ -162,7 +161,7 @@ public class UserSynchronizationServiceBean implements UserSynchronizationServic
         if (ldapUser == null) return testUserSynchronizationDto;
 
         testUserSynchronizationDto.setUserExistsInLdap(true);
-        User cubaUser = cubaUserDao.getCubaUserByLogin(login);
+        User cubaUser = cubaUserDao.getOrCreateCubaUser(login);
 
         List<CommonMatchingRule> result = rulesToApply.stream()
                 .filter(r -> !(CUSTOM == r.getRuleType()))
@@ -266,33 +265,15 @@ public class UserSynchronizationServiceBean implements UserSynchronizationServic
         logger.info(messages.formatMessage(UserSynchronizationServiceBean.class, "userGetCommonInfoFromLdap", login, modeMessage));
     }
 
-    private UserSynchronizationResultDto userPrivilegesChanged(User beforeSyncUser, User afterSyncUser) {
+    private UserSynchronizationResultDto createSyncResult(User beforeSyncUser, User afterSyncUser) {
+        boolean activeBefore = beforeSyncUser.getActive();
+        boolean activeAfter = afterSyncUser.getActive();
+
         UserSynchronizationResultDto result = new UserSynchronizationResultDto();
-        if (!afterSyncUser.getActive()) {
-            result.setInactiveUser(true);
-        }
-        if ((beforeSyncUser.getActive() == null && afterSyncUser.getActive() != null) ||
-                (beforeSyncUser.getActive() != null && !beforeSyncUser.getActive().equals(afterSyncUser.getActive()))) {
-            result.setUserPrivilegesChanged(true);
-        }
-
-        if ((beforeSyncUser.getGroup() == null && afterSyncUser.getGroup() != null) ||
-                (beforeSyncUser.getGroup() != null && !beforeSyncUser.getGroup().equals(afterSyncUser.getGroup()))) {
-            result.setUserPrivilegesChanged(true);
-        }
-
-        List<Role> rolesBeforeSync = beforeSyncUser.getUserRoles().stream()
-                .map(UserRole::getRole)
-                .sorted(Comparator.comparing(Role::getName))
-                .collect(Collectors.toList());
-        List<Role> rolesAfterSync = afterSyncUser.getUserRoles().stream()
-                .map(UserRole::getRole)
-                .sorted(Comparator.comparing(Role::getName))
-                .collect(Collectors.toList());
-
-        if (!rolesAfterSync.equals(rolesBeforeSync)) {
-            result.setUserPrivilegesChanged(true);
-        }
+        result.setInactiveUser(!activeAfter);
+        result.setUserPrivilegesChanged(activeBefore != activeAfter
+                || !isEqualGroups(beforeSyncUser, afterSyncUser)
+                || !isEqualRoles(beforeSyncUser, afterSyncUser));
 
         return result;
     }

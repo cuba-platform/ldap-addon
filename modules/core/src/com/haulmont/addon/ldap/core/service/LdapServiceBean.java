@@ -169,7 +169,7 @@ public class LdapServiceBean implements LdapService {
         if (ldapUser == null) {
             return new GroovyScriptTestResultDto(NO_USER, null);
         }
-        User cubaUser = cubaUserDao.getCubaUserByLogin(login);
+        User cubaUser = cubaUserDao.getOrCreateCubaUser(login);
         LdapMatchingRuleContext ldapMatchingRuleContext =
                 new LdapMatchingRuleContext(ldapUser, cubaUser);
 

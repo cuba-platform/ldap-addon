@@ -26,10 +26,12 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static com.haulmont.addon.ldap.entity.MatchingRuleType.CUSTOM;
 import static com.haulmont.addon.ldap.utils.MatchingRuleUtils.NAME;
+import static org.apache.commons.collections4.CollectionUtils.isEqualCollection;
 
 @Component(NAME)
 public class MatchingRuleUtils {
@@ -131,5 +133,13 @@ public class MatchingRuleUtils {
         return user.getUserRoles().stream()
                 .map(UserRole::getRole)
                 .collect(Collectors.toList());
+    }
+
+    public static boolean isEqualRoles(User first, User second) {
+        return isEqualCollection(getRoles(first), getRoles(second));
+    }
+
+    public static boolean isEqualGroups(User first, User second) {
+        return Objects.equals(first.getGroup(), second.getGroup());
     }
 }

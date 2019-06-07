@@ -107,13 +107,13 @@ public class SimpleAddonTest {
             persistence.getEntityManager().getDelegate().detach(testUserRole);
 
 
-            User newUser = cubaUserDao.getCubaUserByLogin("test");
+            User newUser = cubaUserDao.getOrCreateCubaUser("test");
             assertNotNull(newUser);
             assertNotNull(newUser.getUserRoles());
             assertTrue(PersistenceHelper.isNew(newUser));
             assertEquals("test", newUser.getLogin());
 
-            User dbUser = cubaUserDao.getCubaUserByLogin("testAdmin");
+            User dbUser = cubaUserDao.getOrCreateCubaUser("testAdmin");
             assertNotNull(dbUser);
             assertFalse(PersistenceHelper.isNew(dbUser));
             assertEquals("testAdmin", dbUser.getLogin());
