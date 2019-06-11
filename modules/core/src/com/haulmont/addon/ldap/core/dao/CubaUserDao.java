@@ -56,7 +56,7 @@ public class CubaUserDao {
     private LdapPropertiesConfig ldapPropertiesConfig;
 
     @Transactional(readOnly = true)
-    public User getCubaUserByLogin(String login) {
+    public User getOrCreateCubaUser(String login) {
         TypedQuery<User> query = persistence.getEntityManager()
                 .createQuery("select cu from sec$User cu where cu.login = :login", User.class);
         query.setParameter("login", login);
@@ -81,17 +81,15 @@ public class CubaUserDao {
 
     @Transactional
     public void saveCubaUser(User cubaUser, User beforeRulesApplyUserState, LdapMatchingRuleContext ldapMatchingRuleContext) {
-        if (beforeRulesApplyUserState.getActive() || cubaUser.getActive()) {
-            EntityManager entityManager = persistence.getEntityManager();
-            User mergedUser = daoHelper.persistOrMerge(cubaUser);
-            List<Role> newRoles = mergedUser.getUserRoles().stream()
-                    .map(UserRole::getRole)
-                    .collect(toList());
-            beforeRulesApplyUserState.getUserRoles().stream()
-                    .filter(ur -> !newRoles.contains(ur.getRole()))
-                    .forEach(entityManager::remove);
-            mergedUser.getUserRoles().forEach(entityManager::persist);
-        }
+        EntityManager entityManager = persistence.getEntityManager();
+        User mergedUser = daoHelper.persistOrMerge(cubaUser);
+        List<Role> newRoles = mergedUser.getUserRoles().stream()
+                .map(UserRole::getRole)
+                .collect(toList());
+        beforeRulesApplyUserState.getUserRoles().stream()
+                .filter(ur -> !newRoles.contains(ur.getRole()))
+                .forEach(entityManager::remove);
+        mergedUser.getUserRoles().forEach(entityManager::persist);
         userSynchronizationLogDao.logUserSynchronization(ldapMatchingRuleContext, beforeRulesApplyUserState);
     }
 

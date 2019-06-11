@@ -28,10 +28,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.haulmont.addon.ldap.core.rule.appliers.MatchingRuleApplier.NAME;
@@ -47,44 +44,52 @@ public class MatchingRuleApplier {
     @Inject
     private Metadata metadata;
 
-    public void applyMatchingRules(List<CommonMatchingRule> matchingRules, LdapMatchingRuleContext ldapMatchingRuleContext,
+    /**
+     * Collects all user roles and group that should be applied for user into LdapMatchingRuleContext
+     * then applies them for user specified in LdapMatchingRuleContext
+     */
+    public void applyMatchingRules(List<CommonMatchingRule> allMatchingRules,
+                                   LdapMatchingRuleContext ldapMatchingRuleContext,
                                    User beforeRulesApplyUserState) {
-        List<CommonMatchingRule> activeMatchingRules = matchingRules.stream()
-                .filter(cmr -> cmr.getStatus().getIsActive())
-                .sorted(Comparator.comparing(mr -> mr.getOrder().getOrder()))
-                .collect(Collectors.toList());
+        collectActiveMatchingRulesToContext(getOrderedRulesToApply(allMatchingRules), ldapMatchingRuleContext);
 
-        for (CommonMatchingRule commonMatchingRule : activeMatchingRules) {
+        User cubaUser = ldapMatchingRuleContext.getCubaUser();
+        cubaUser.setGroup(ldapMatchingRuleContext.getGroup());
+        cubaUser.getUserRoles().clear(); //all roles that user should have are now in matching rule context
+        applyUserRoles(cubaUser, ldapMatchingRuleContext.getRoles(), beforeRulesApplyUserState.getUserRoles());
+    }
+
+    private void collectActiveMatchingRulesToContext(List<CommonMatchingRule> matchingRules,
+                                                     LdapMatchingRuleContext ldapMatchingRuleContext) {
+        for (CommonMatchingRule commonMatchingRule : matchingRules) {
             matchingRuleProcessors.get(commonMatchingRule.getRuleType()).applyMatchingRule(commonMatchingRule, ldapMatchingRuleContext);
             if (ldapMatchingRuleContext.isTerminalRuleApply()) {
                 break;
             }
         }
-        applyContextToUser(ldapMatchingRuleContext, beforeRulesApplyUserState);
     }
 
-
-    private void applyContextToUser(LdapMatchingRuleContext ldapMatchingRuleContext, User beforeRulesApplyUserState) {
-        User cubaUser = ldapMatchingRuleContext.getCubaUser();
-        cubaUser.setGroup(ldapMatchingRuleContext.getGroup());
-        List<Role> existingRoles = beforeRulesApplyUserState.getUserRoles().stream()
-                .map(UserRole::getRole)
+    private static List<CommonMatchingRule> getOrderedRulesToApply(List<CommonMatchingRule> allMatchingRules) {
+        return allMatchingRules.stream()
+                .filter(cmr -> cmr.getStatus().getIsActive())
+                .sorted(Comparator.comparing(mr -> mr.getOrder().getOrder()))
                 .collect(Collectors.toList());
+    }
 
-        for (Role role : ldapMatchingRuleContext.getRoles()) {
-            if (existingRoles.contains(role)) {
-                UserRole existingUserRole = beforeRulesApplyUserState.getUserRoles().stream()
+    private void applyUserRoles(User cubaUser, Collection<Role> rolesToApply, Collection<UserRole> rolesBeforeApply) {
+        rolesToApply.stream()
+                .map(role -> rolesBeforeApply.stream()
                         .filter(ur -> ur.getRole().equals(role))
                         .findFirst()
-                        .get();
-                cubaUser.getUserRoles().add(existingUserRole);
-            } else {
-                UserRole userRole = metadata.create(UserRole.class);
-                userRole.setUser(cubaUser);
-                userRole.setRole(role);
-                cubaUser.getUserRoles().add(userRole);
-            }
-        }
+                        .orElse(createUserRole(cubaUser, role)))
+                .forEach(cubaUser.getUserRoles()::add);
+    }
+
+    private UserRole createUserRole(User user, Role role) {
+        UserRole userRole = metadata.create(UserRole.class);
+        userRole.setUser(user);
+        userRole.setRole(role);
+        return userRole;
     }
 
     @EventListener
@@ -93,7 +98,5 @@ public class MatchingRuleApplier {
         for (Map.Entry<String, MatchingRuleProcessor> mrp : processorMap.entrySet()) {
             matchingRuleProcessors.put(mrp.getValue().getMatchingRuleType(), mrp.getValue());
         }
-
     }
-
 }

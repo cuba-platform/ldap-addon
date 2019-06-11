@@ -21,8 +21,11 @@ import com.haulmont.addon.ldap.entity.CommonMatchingRule;
 import com.haulmont.cuba.security.entity.Group;
 import com.haulmont.cuba.security.entity.Role;
 import com.haulmont.cuba.security.entity.User;
+import org.apache.commons.collections4.CollectionUtils;
+import org.springframework.lang.Nullable;
 
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -62,8 +65,16 @@ public class LdapMatchingRuleContext {
     private boolean isTerminalRuleApply = false;
 
     public LdapMatchingRuleContext(LdapUser ldapUser, User cubaUser) {
+        this(ldapUser, cubaUser, null, null);
+    }
+
+    public LdapMatchingRuleContext(LdapUser ldapUser, User cubaUser, @Nullable List<Role> initialRoles, @Nullable Group initialGroup) {
         this.ldapUser = ldapUser;
         this.cubaUser = cubaUser;
+        if (CollectionUtils.isNotEmpty(initialRoles)) {
+            roles.addAll(initialRoles);
+        }
+        this.group = initialGroup;
     }
 
     public LdapUser getLdapUser() {
