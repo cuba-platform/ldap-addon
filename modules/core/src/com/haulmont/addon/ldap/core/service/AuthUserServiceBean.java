@@ -33,6 +33,5 @@ public class AuthUserServiceBean implements AuthUserService {
     @Override
     public void ldapAuth(String login, String password, Locale messagesLocale) throws LoginException {
         ldapUserDao.authenticateLdapUser(login, password, messagesLocale);
-
     }
 }
