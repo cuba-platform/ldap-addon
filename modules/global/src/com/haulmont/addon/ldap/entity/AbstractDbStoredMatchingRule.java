@@ -16,6 +16,8 @@
 
 package com.haulmont.addon.ldap.entity;
 
+import com.haulmont.chile.core.annotations.Composition;
+import com.haulmont.chile.core.annotations.NamePattern;
 import com.haulmont.cuba.security.entity.Group;
 import com.haulmont.cuba.security.entity.Role;
 
@@ -26,6 +28,7 @@ import java.util.List;
 /**
  * Fields for matching rules stored in the DB.
  */
+@NamePattern("%s|description")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "RULE_TYPE", discriminatorType = DiscriminatorType.STRING)
 @Table(name = "LDAP_MATCHING_RULE")
@@ -41,6 +44,7 @@ public abstract class AbstractDbStoredMatchingRule extends AbstractCommonMatchin
             joinColumns = @JoinColumn(name = "MATCHING_RULE_ID"),
             inverseJoinColumns = @JoinColumn(name = "ROLE_ID"))
     @ManyToMany
+    @Composition
     private List<Role> roles = new ArrayList<>();
 
     @Column(name = "IS_TERMINAL_RULE")
