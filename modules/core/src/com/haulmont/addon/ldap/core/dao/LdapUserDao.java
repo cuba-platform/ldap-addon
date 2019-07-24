@@ -75,37 +75,37 @@ public class LdapUserDao {
     @Inject
     private LdapConfigDao ldapConfigDao;
 
-	@Inject
+    @Inject
     private LdapPropertiesConfig ldapPropertiesConfig;
 
     private Map<String, ActiveDirectoryDomain> adDomainsCache = new HashMap<>();
 
     public LdapUser getLdapUser(String login) {
-		List<LdapUser> userSearchResult = PreWindows2000Login.match(login) ?
-				searchUserInDomain(login) : searchUserContextSourceBase(login);
-		return userSearchResult.stream()
-				.reduce(createOnlyOneObjectReducer(createMultipleLoginsException(login)))
-				.orElse(null);
-	}
+        List<LdapUser> userSearchResult = PreWindows2000Login.match(login) ?
+                searchUserInDomain(login) : searchUserContextSourceBase(login);
+        return userSearchResult.stream()
+                .reduce(createOnlyOneObjectReducer(createMultipleLoginsException(login)))
+                .orElse(null);
+    }
 
     private List<LdapUser> searchUserInDomain(String login) {
-		PreWindows2000Login oldStyleLogin = new PreWindows2000Login(login);
-		return getActiveDirectoryDomain(oldStyleLogin.domainNetBiosName, LdapUserDao::throwWrongDomainNameException)
-				.searchUser(samAccountNameFilter(oldStyleLogin.samAccountName));
-	}
+        PreWindows2000Login oldStyleLogin = new PreWindows2000Login(login);
+        return getActiveDirectoryDomain(oldStyleLogin.domainNetBiosName, LdapUserDao::throwWrongDomainNameException)
+                .searchUser(samAccountNameFilter(oldStyleLogin.samAccountName));
+    }
 
-	private List<LdapUser> searchUserContextSourceBase(String login) {
-		LdapQuery query = LdapQueryBuilder.query()
-				.searchScope(SearchScope.SUBTREE)
-				.timeLimit(10_000)
-				.countLimit(1)
-				.filter(createUserBaseAndLoginFilter(login));
+    private List<LdapUser> searchUserContextSourceBase(String login) {
+        LdapQuery query = LdapQueryBuilder.query()
+                .searchScope(SearchScope.SUBTREE)
+                .timeLimit(10_000)
+                .countLimit(1)
+                .filter(createUserBaseAndLoginFilter(login));
 
-		return ldapTemplate.search(query, new LdapUserMapper(ldapConfigDao.getLdapConfig()));
-	}
+        return ldapTemplate.search(query, new LdapUserMapper(ldapConfigDao.getLdapConfig()));
+    }
 
     public LdapUser findLdapUserByFilter(List<SimpleRuleCondition> conditions, String login) {
-    	LdapConfig ldapConfig = ldapConfigDao.getLdapConfig();
+        LdapConfig ldapConfig = ldapConfigDao.getLdapConfig();
         Filter filter = parseSimpleRuleConditions(conditions);
         if (filter == null) {
             return null;
@@ -121,26 +121,29 @@ public class LdapUserDao {
 
     public void authenticateLdapUser(String login, String password, Locale messagesLocale) throws LoginException {
         try {
-        	boolean authenticated;
+            boolean authenticated;
 
             if (PreWindows2000Login.match(login)) {
                 PreWindows2000Login oldStyleLogin = new PreWindows2000Login(login);
 
-				authenticated =
-						getActiveDirectoryDomain(oldStyleLogin.domainNetBiosName, LdapUserDao::throwWrongDomainNameException)
-						.authenticate(samAccountNameFilter(oldStyleLogin.samAccountName), password);
+                authenticated =
+                        getActiveDirectoryDomain(oldStyleLogin.domainNetBiosName, LdapUserDao::throwWrongDomainNameException)
+                        .authenticate(samAccountNameFilter(oldStyleLogin.samAccountName), password);
             } else {
-				authenticated = ldapTemplate.authenticate(LdapUtils.emptyLdapName(), createUserBaseAndLoginFilter(login).encode(), password);
-			}
+                authenticated = ldapTemplate.authenticate(
+                        LdapUtils.emptyLdapName(),
+                        createUserBaseAndLoginFilter(login).encode(),
+                        password);
+            }
 
-			if (authenticated) {
-				String loginSuccessMessage = messages.formatMessage(LdapUserDao.class, "successLdapLogin", messagesLocale, login);
-				logger.warn(loginSuccessMessage);
-			} else {
-				String loginFailedMessage = messages.formatMessage(LdapUserDao.class, "LoginException.InvalidLoginOrPassword", messagesLocale, login);
-				logger.warn(loginFailedMessage);
-				throw new LoginException(loginFailedMessage);
-			}
+            if (authenticated) {
+                String loginSuccessMessage = messages.formatMessage(LdapUserDao.class, "successLdapLogin", messagesLocale, login);
+                logger.warn(loginSuccessMessage);
+            } else {
+                String loginFailedMessage = messages.formatMessage(LdapUserDao.class, "LoginException.InvalidLoginOrPassword", messagesLocale, login);
+                logger.warn(loginFailedMessage);
+                throw new LoginException(loginFailedMessage);
+            }
         } catch (CommunicationException e) {
             if (e.getRootCause() instanceof UnknownHostException) {
                 String unknownHost = e.getRootCause().getMessage();
@@ -157,46 +160,46 @@ public class LdapUserDao {
     }
 
     private RuntimeException createMultipleLoginsException(String login) {
-		return new RuntimeException(messages.formatMessage(LdapUserDao.class, "multipleUsersWithLogin", login));
-	}
+        return new RuntimeException(messages.formatMessage(LdapUserDao.class, "multipleUsersWithLogin", login));
+    }
 
     private static <T, X extends RuntimeException> BinaryOperator<T> createOnlyOneObjectReducer(X multipleResultException) {
-    	return (l, r) -> {
-			if (l != null) {
-				throw multipleResultException;
-			} else {
-				return r;
-			}
-		};
-	}
+        return (l, r) -> {
+            if (l != null) {
+                throw multipleResultException;
+            } else {
+                return r;
+            }
+        };
+    }
 
     private static String samAccountNameFilter(String samAccountName) {
-    	return new EqualsFilter("sAMAccountName", samAccountName).encode();
-	}
+        return new EqualsFilter("sAMAccountName", samAccountName).encode();
+    }
 
     private static void throwWrongDomainNameException(String domainName) throws LoginException {
-		throw new LoginException(String.format("Wrong '%s' domain name", domainName));
-	}
+        throw new LoginException(String.format("Wrong '%s' domain name", domainName));
+    }
 
     /**
      * Collect Active Directory domain info by it's NetBIOS name
      */
     private ActiveDirectoryDomain getActiveDirectoryDomain(String domainNetBiosName,
-														   @Nullable Consumer<String> notFoundCallback) {
-		ActiveDirectoryDomain foundDomain = adDomainsCache.computeIfAbsent(domainNetBiosName, key -> {
-			List<ActiveDirectoryDomain> searchResult = ldapTemplate.search(
-					LdapUtils.newLdapName("CN=Partitions,CN=Configuration"),
-					new EqualsFilter("CN", key).encode(),
-					ActiveDirectoryDomain::new);
-			return searchResult.isEmpty() ? null : searchResult.get(0);
-		});
+                                                           @Nullable Consumer<String> notFoundCallback) {
+        ActiveDirectoryDomain foundDomain = adDomainsCache.computeIfAbsent(domainNetBiosName, key -> {
+            List<ActiveDirectoryDomain> searchResult = ldapTemplate.search(
+                    LdapUtils.newLdapName("CN=Partitions,CN=Configuration"),
+                    new EqualsFilter("CN", key).encode(),
+                    ActiveDirectoryDomain::new);
+            return searchResult.isEmpty() ? null : searchResult.get(0);
+        });
 
-		if (foundDomain == null && notFoundCallback != null) {
-			notFoundCallback.accept(domainNetBiosName);
-		}
+        if (foundDomain == null && notFoundCallback != null) {
+            notFoundCallback.accept(domainNetBiosName);
+        }
 
-		return foundDomain;
-	}
+        return foundDomain;
+    }
 
     public List<LdapUser> getLdapUsers(List<String> logins) {
         LdapConfig ldapConfig = ldapConfigDao.getLdapConfig();
@@ -300,68 +303,68 @@ public class LdapUserDao {
         }
     }
 
-	/**
-	 * A class for operations on AD domain
-	 */
-	class ActiveDirectoryDomain {
+    /**
+     * A class for operations on AD domain
+     */
+    class ActiveDirectoryDomain {
 
-		private static final String CN_USERS = "CN=Users";
+        private static final String CN_USERS = "CN=Users";
 
-		final String nETBIOSName;
-		final String nCName;
-		final String dnsRoot;
+        final String nETBIOSName;
+        final String nCName;
+        final String dnsRoot;
 
-		private LdapContextSource ldapContextSource;
-		private LdapTemplate ldapTemplate;
+        private LdapContextSource ldapContextSource;
+        private LdapTemplate ldapTemplate;
 
-		ActiveDirectoryDomain(Attributes domainAttributes) throws NamingException {
-			this.nETBIOSName = domainAttributes.get("nETBIOSName").get().toString();
-			this.nCName = domainAttributes.get("nCName").get().toString();
-			this.dnsRoot = domainAttributes.get("dnsRoot").get().toString();
-		}
+        ActiveDirectoryDomain(Attributes domainAttributes) throws NamingException {
+            this.nETBIOSName = domainAttributes.get("nETBIOSName").get().toString();
+            this.nCName = domainAttributes.get("nCName").get().toString();
+            this.dnsRoot = domainAttributes.get("dnsRoot").get().toString();
+        }
 
-		String getUrl() {
-			return "ldap://" + dnsRoot;
-		}
+        String getUrl() {
+            return "ldap://" + dnsRoot;
+        }
 
-		LdapContextSource getLdapContextSource() {
-			if (ldapContextSource == null) {
-				ldapContextSource = new LdapContextSource();
-				ldapContextSource.setUserDn(ldapPropertiesConfig.getContextSourceUserName());
-				ldapContextSource.setPassword(ldapPropertiesConfig.getContextSourcePassword());
-				ldapContextSource.setUrl(getUrl());
-				ldapContextSource.setBase(nCName);
-				ldapContextSource.afterPropertiesSet();
-			}
-			return ldapContextSource;
-		}
+        LdapContextSource getLdapContextSource() {
+            if (ldapContextSource == null) {
+                ldapContextSource = new LdapContextSource();
+                ldapContextSource.setUserDn(ldapPropertiesConfig.getContextSourceUserName());
+                ldapContextSource.setPassword(ldapPropertiesConfig.getContextSourcePassword());
+                ldapContextSource.setUrl(getUrl());
+                ldapContextSource.setBase(nCName);
+                ldapContextSource.afterPropertiesSet();
+            }
+            return ldapContextSource;
+        }
 
-		LdapTemplate getLdapTemplate() {
-			if (ldapTemplate == null) {
-				ldapTemplate = new LdapTemplate(getLdapContextSource());
-			}
-			return ldapTemplate;
-		}
+        LdapTemplate getLdapTemplate() {
+            if (ldapTemplate == null) {
+                ldapTemplate = new LdapTemplate(getLdapContextSource());
+            }
+            return ldapTemplate;
+        }
 
-		List<LdapUser> searchUser(String query) {
-			return searchUser(query, null);
-		}
+        List<LdapUser> searchUser(String query) {
+            return searchUser(query, null);
+        }
 
-		List<LdapUser> searchUser(String query, @Nullable SearchControls searchControls) {
-			if (searchControls == null) {
-				searchControls = new SearchControls();
-				searchControls.setSearchScope(SUBTREE_SCOPE);
-				searchControls.setCountLimit(1);
-			}
+        List<LdapUser> searchUser(String query, @Nullable SearchControls searchControls) {
+            if (searchControls == null) {
+                searchControls = new SearchControls();
+                searchControls.setSearchScope(SUBTREE_SCOPE);
+                searchControls.setCountLimit(1);
+            }
 
-			return getLdapTemplate().search(CN_USERS, query, new LdapUserMapper(ldapConfigDao.getLdapConfig()));
-		}
+            return getLdapTemplate().search(CN_USERS, query, new LdapUserMapper(ldapConfigDao.getLdapConfig()));
+        }
 
-		boolean authenticate(String filter, String password) throws LoginException {
-			return getLdapTemplate().authenticate(CN_USERS, filter, password,
-					(ctx, ldapEntryIdentification) -> {},
-					e -> logger.error(String.format("Could not auth user by query: %s", filter), e));
-		}
-	}
+        boolean authenticate(String filter, String password) throws LoginException {
+            return getLdapTemplate().authenticate(CN_USERS, filter, password,
+                    (ctx, ldapEntryIdentification) -> {},
+                    e -> logger.error(String.format("Could not auth user by query: %s", filter), e));
+        }
+    }
 }
 

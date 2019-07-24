@@ -38,39 +38,39 @@ import java.util.Optional;
 @ConditionalOnAppProperty(property = "ldap.userSubstitutionCheckerEnabled", value = "true")
 public class UserSubstitutionChecker {
 
-	private static final Logger log = LoggerFactory.getLogger(UserSubstitutionChecker.class);
+    private static final Logger log = LoggerFactory.getLogger(UserSubstitutionChecker.class);
 
-	@Inject
-	private LdapUserDao ldapUserDao;
+    @Inject
+    private LdapUserDao ldapUserDao;
 
-	@Inject
-	protected UserSessionSource userSessionSource;
+    @Inject
+    protected UserSessionSource userSessionSource;
 
-	@Pointcut("execution(* com.haulmont.cuba.security.auth.AuthenticationServiceBean.substituteUser(..))")
-	public void substituteUserPointcut() { }
+    @Pointcut("execution(* com.haulmont.cuba.security.auth.AuthenticationServiceBean.substituteUser(..))")
+    public void substituteUserPointcut() { }
 
-	@Around("substituteUserPointcut()")
-	public Object beforeUserSubstitution(ProceedingJoinPoint pjp) throws Throwable {
-		Optional<User> userArg = getUserArg(pjp.getArgs());
+    @Around("substituteUserPointcut()")
+    public Object beforeUserSubstitution(ProceedingJoinPoint pjp) throws Throwable {
+        Optional<User> userArg = getUserArg(pjp.getArgs());
 
-		if (userArg.isPresent()) {
-			User cubaUser = userArg.get();
-			String userLogin = cubaUser.getLogin();
-			LdapUser ldapUser = ldapUserDao.getLdapUser(userLogin);
+        if (userArg.isPresent()) {
+            User cubaUser = userArg.get();
+            String userLogin = cubaUser.getLogin();
+            LdapUser ldapUser = ldapUserDao.getLdapUser(userLogin);
 
-			if (ldapUser != null && ldapUser.getDisabled()) {
-				log.warn(String.format("Unable to switch to user '%s': the user is disabled", userLogin));
-				return userSessionSource.getUserSession();
-			}
-		}
+            if (ldapUser != null && ldapUser.getDisabled()) {
+                log.warn(String.format("Unable to switch to user '%s': the user is disabled", userLogin));
+                return userSessionSource.getUserSession();
+            }
+        }
 
-		return pjp.proceed();
-	}
+        return pjp.proceed();
+    }
 
-	private static Optional<User> getUserArg(Object[] args) {
-		return Arrays.stream(args)
-				.filter(arg -> arg instanceof User)
-				.map(user -> (User) user)
-				.findFirst();
-	}
+    private static Optional<User> getUserArg(Object[] args) {
+        return Arrays.stream(args)
+                .filter(arg -> arg instanceof User)
+                .map(user -> (User) user)
+                .findFirst();
+    }
 }
