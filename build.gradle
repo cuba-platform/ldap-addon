@@ -59,7 +59,7 @@ apply(plugin: 'addon-gradle-plugin')
 cuba {
     artifact {
         group = 'com.haulmont.addon.ldap'
-        version = '1.3'
+        version = '1.4'
         isSnapshot = true
     }
     tomcat {
