@@ -18,6 +18,7 @@ package com.haulmont.addon.ldap.core;
 
 import com.haulmont.bali.util.Dom4j;
 import com.haulmont.cuba.testsupport.TestContainer;
+import org.apache.commons.lang3.StringUtils;
 import org.dom4j.Document;
 import org.dom4j.Element;
 
@@ -47,13 +48,16 @@ public class LdapTestContainer extends TestContainer {
                 // or add another one in the end.
 //                "test-app.properties",
                 "com/haulmont/addon/ldap/core/resources/ldap-test-app.properties");
+        initDbProperties();
+    }
 
-        dbDriver = "org.hsqldb.jdbc.JDBCDriver";
-        dbUrl = "jdbc:hsqldb:hsql://localhost/ldap";
-        dbUser = "sa";
-        dbPassword = "";
-
-        //initDbProperties();
+    @Override
+    protected void initAppProperties() {
+        super.initAppProperties();
+        String dbmsType = System.getProperty("test.db.dbmsType");
+        if (dbmsType != null) {
+            getAppProperties().put("cuba.dbmsType", dbmsType);
+        }
     }
 
     private void initDbProperties() {
@@ -68,10 +72,15 @@ public class LdapTestContainer extends TestContainer {
         Document contextXmlDoc = Dom4j.readDocument(contextXmlFile);
         Element resourceElem = contextXmlDoc.getRootElement().element("Resource");
 
-        dbDriver = resourceElem.attributeValue("driverClassName");
-        dbUrl = resourceElem.attributeValue("url");
-        dbUser = resourceElem.attributeValue("username");
-        dbPassword = resourceElem.attributeValue("password");
+        dbDriver = getDbConfigurationValue(resourceElem, "driverClassName");
+        dbUrl = getDbConfigurationValue(resourceElem, "url");
+        dbUser = getDbConfigurationValue(resourceElem, "username");
+        dbPassword = getDbConfigurationValue(resourceElem, "password");
+    }
+
+    protected String getDbConfigurationValue(Element resourceElem, String attributeName) {
+        String externalValue = System.getProperty("test.db." + attributeName);
+        return StringUtils.isNotBlank(externalValue) ? externalValue : resourceElem.attributeValue(attributeName);
     }
 
     public static final class Common extends LdapTestContainer {
