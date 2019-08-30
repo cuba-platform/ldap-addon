@@ -198,7 +198,8 @@ public class SampleIntegrationTest {
             assertEquals(1, logs.size());
             assertEquals(UserSynchronizationResultEnum.SUCCESS_SYNC, logs.get(0).getResult());
             assertEquals("Initial role\n", logs.get(0).getRolesBefore());
-            assertEquals("Administrators\n" +
+            assertEquals("Initial role\n" +
+                    "Administrators\n" +
                     "Simple role\n" +
                     "Scripting role\n", logs.get(0).getRolesAfter());
             assertEquals("Test group 1", logs.get(0).getAccessGroupBefore());
