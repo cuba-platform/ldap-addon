@@ -189,7 +189,7 @@ public class SampleIntegrationTest {
             assertEquals(true, updated.getActive());
 
             assertEquals("Company", updated.getGroup().getName());
-            assertEquals(3, updated.getUserRoles().size());
+            assertEquals(4, updated.getUserRoles().size());
             assertEquals(true, updated.getUserRoles().stream().anyMatch(ur -> ur.getRole().getName().equals("Administrators")));
             assertEquals(true, updated.getUserRoles().stream().anyMatch(ur -> ur.getRole().getName().equals("Simple role")));
             assertEquals(true, updated.getUserRoles().stream().anyMatch(ur -> ur.getRole().getName().equals("Scripting role")));
