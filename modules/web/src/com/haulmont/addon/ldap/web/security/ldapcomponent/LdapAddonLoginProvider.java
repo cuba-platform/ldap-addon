@@ -25,6 +25,7 @@ import com.haulmont.cuba.core.global.ClientType;
 import com.haulmont.cuba.core.global.Messages;
 import com.haulmont.cuba.core.sys.ConditionalOnAppProperty;
 import com.haulmont.cuba.security.auth.*;
+import com.haulmont.cuba.security.entity.User;
 import com.haulmont.cuba.security.global.LoginException;
 import com.haulmont.cuba.web.auth.WebAuthConfig;
 import com.haulmont.cuba.web.security.LoginProvider;
@@ -38,6 +39,7 @@ import javax.inject.Inject;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import static com.haulmont.cuba.web.security.ExternalUserCredentials.EXTERNAL_AUTH_USER_SESSION_ATTRIBUTE;
 
@@ -93,11 +95,18 @@ public class LdapAddonLoginProvider implements LoginProvider, Ordered {
                 loginPasswordCredentials.getLogin(),
                 loginPasswordCredentials.getPassword(),
                 loginPasswordCredentials.getLocale());
-        UserSynchronizationResultDto userSynchronizationResult
-                = userSynchronizationService.synchronizeUser(loginPasswordCredentials.getLogin(), true, null, null, null);
-        if (userSynchronizationResult.isInactiveUser()) {
-            throw new LoginException(messages.formatMessage(LdapAddonLoginProvider.class,
-                    "LoginException.InactiveUserLoginAttempt", loginPasswordCredentials.getLocale()));
+
+        if (ldapPropertiesConfig.getSynchronizeInfoAfterLogin()) {
+            UserSynchronizationResultDto userSynchronizationResult = userSynchronizationService.synchronizeUser(loginPasswordCredentials.getLogin(), true, null, null, null);
+            if (userSynchronizationResult.isInactiveUser()) {
+                throw new LoginException(messages.formatMessage(LdapAddonLoginProvider.class,
+                        "LoginException.InactiveUserLoginAttempt", loginPasswordCredentials.getLocale()));
+            }
+        } else {
+            final User cubaUser = userSynchronizationService.getExistingCubaUser(loginPasswordCredentials.getLogin());
+            if (Objects.isNull(cubaUser))
+                throw new LoginException(messages.formatMessage(LdapAddonLoginProvider.class,
+                        "LoginException.UserNotRegistered", loginPasswordCredentials.getLocale()));
         }
 
         TrustedClientCredentials tcCredentials = new TrustedClientCredentials(

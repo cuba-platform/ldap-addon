@@ -68,4 +68,5 @@ public interface UserSynchronizationService {
      */
     void synchronizeUsersFromLdap(List<User> cubaUsers, List<LdapUser> ldapUsers, List<CommonMatchingRule> matchingRules);
 
+    User getExistingCubaUser(String login);
 }

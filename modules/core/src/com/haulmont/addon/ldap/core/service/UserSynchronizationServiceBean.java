@@ -42,10 +42,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -230,6 +227,12 @@ public class UserSynchronizationServiceBean implements UserSynchronizationServic
             }
         }
 
+    }
+
+    @Override
+    public User getExistingCubaUser(String login){
+        return cubaUserDao.getCubaUsersByLogin(Collections.singletonList(login)).stream()
+                .findFirst().orElse(null);
     }
 
     private void copyLdapAttributesToCubaUser(LdapMatchingRuleContext ldapMatchingRuleContext,
