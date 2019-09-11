@@ -9,3 +9,4 @@ modules/*/build/*
 out
 test-run
 .idea
+/gradle.properties
