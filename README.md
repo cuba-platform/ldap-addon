@@ -1,3 +1,5 @@
+# LDAP
+
 <p>
     <a href="http://www.apache.org/licenses/LICENSE-2.0"><img src="https://img.shields.io/badge/license-Apache%20License%202.0-blue.svg?style=flat" alt="license" title=""></a>
     <a href="https://travis-ci.org/cuba-platform/ldap-addon"><img src="https://travis-ci.org/cuba-platform/ldap-addon.svg?branch=master" alt="Build Status" title=""></a>
@@ -7,6 +9,9 @@
 - [Getting Started](#getting-started)
     - [Prerequisites](#prerequisites)
     - [Installation](#installation)
+      - [From the Marketplace](#from-the-marketplace)
+      - [By Coordinates](#by-coordinates)
+    - [Configuration](#configuration)
     - [Additional Information](#additional-information)
 - [Component Functionalities](#component-functionalities)
     - [LDAP Config](#ldap-config)
@@ -15,7 +20,7 @@
     - [LDAP Log](#ldap-log)
 - [Scheduled Task Configuration](#scheduled-task-configuration)
 - [EventListeners to Interact with LDAP Add-on Events](#eventlisteners-to-interact-with-ldap-add-on-events)
-- [Appendix A. Application Properties](#appendix-a-application-properties)
+- [Appendix A. Application Properties](#appendix-a)
 
 # Overview
 
@@ -40,28 +45,40 @@ Before enabling the add-on, configure your directory server.
 
 ## Installation
 
-To add the LDAP component to your CUBA project:
+The add-on can be added to your project in one of the ways described below. Installation from the Marketplace is the simplest way. The last version of the add-on compatible with the used version of the platform will be installed.
+Also, you can install the add-on by coordinates choosing the required version of the add-on from the table.
 
-1. Open your application in CUBA Studio.
+In case you want to install the add-on by manual editing or by building from sources see the complete add-ons installation guide in [CUBA Platform documentation](https://doc.cuba-platform.com/manual-latest/manual.html#app_components_usage).
 
-2. Edit *Project properties*.
+## From the Marketplace
 
-3. Click the plus button in the *App components* section of the *Main* tab.
+1. Open your application in CUBA Studio. Check the latest version of CUBA Studio on the [CUBA Platform site](https://www.cuba-platform.com/download/previous-studio/).
+2. Go to *CUBA -> Marketplace* in the main menu.
 
-    ![Adding the component](img/adding_component1.png)
+ ![marketplace](img/marketplace.png)
 
-4. Specify the coordinates of the component in the corresponding field as follows: group:name:version.
+3. Find the *LDAP* add-on there.
 
-   * Artifact group: *com.haulmont.addon.ldap*
-   * Artifact name: *ldap-global*
-   * Version: *add-on version*
+![addons](img/addons.png)
 
-    ![Adding the component in Studio](img/adding_component2.png)
+4. Click *Install* and apply the changes.
+The add-on corresponding to the used platform version will be installed.
 
-  When specifying the component version, you should select the one, which is compatible with the platform version used
-    in your project.
+## By Coordinates
 
-| Platform Version | Component Version |
+1. Open your application in CUBA Studio. Check the latest version of CUBA Studio on the [CUBA Platform site](https://www.cuba-platform.com/download/previous-studio/).
+2. Go to *CUBA -> Marketplace* in the main menu.
+3. Click the icon in the upper-right corner.
+
+ ![by-coordinates](img/by-coordinates.png)
+
+4. Paste the add-on coordinates in the corresponding field as follows:
+
+ `com.haulmont.addon.ldap:ldap-global:<add-on version>`
+
+ where `<add-on version>` is compatible with the used version of the CUBA platform.
+
+ | Platform Version | Add-on Version   |
 |------------------|-------------------|
 | 7.1.x            | 1.4.0             |
 | 7.0.x            | 1.3.2             |
@@ -69,12 +86,12 @@ To add the LDAP component to your CUBA project:
 | 6.9.x            | 1.1.1             |
 | 6.8.x            | 1.0.1             |
 
+5. Click *Install* and apply the changes. The add-on will be installed to your project.
 
-5. Click *OK* to confirm the operation.
+## Configuration
 
-6. Before using the component as a part of your application, configure initial values for connecting to
-the LDAP server and set up basic attribute names of the LDAP user in the `app.properties` file.
-An example of how to set up these properties is given below. Learn more about the application properties in  [Aappendix A](#appendix-a-application-properties).
+Before using the add-on as a part of your application, configure initial values for connecting to the LDAP server and set up basic attribute names of the LDAP user in the `app.properties` file.
+An example of how to set up these properties is given below. Learn more about the application properties in  [Aappendix A](#appendix-a).
 
 ```properties
 ldap.contextSourceUrl = ldap://localhost:10389
@@ -92,7 +109,7 @@ cuba.web.standardAuthenticationUsers = admin,anonymous
 
 ```
 
-7. Specify the following properties in the `web-app.properties` file:
+Then, specify the following properties in the `web-app.properties` file:
 
 ```properties
 cuba.web.standardAuthenticationUsers = admin,anonymous
@@ -101,9 +118,7 @@ ldap.addonEnabled = true
 ldap.expiringSessionsEnable = true
 ```
 
-**Note:** If the component is enabled, users cannot log in to the application using CUBA credentials. However,
-you can permit particular users (e.g. system administrators) to log in using CUBA credentials by specifying their usernames
-as values of the `cuba.web.standardAuthenticationUsers` property.
+**Note:** If the component is enabled, users cannot log in to the application using CUBA credentials. However, you can permit particular users (e.g. system administrators) to log in using CUBA credentials by specifying their usernames as values of the `cuba.web.standardAuthenticationUsers` property.
 
 ## Additional Information
 
@@ -154,7 +169,7 @@ user object class. You can add attributes manually by using the *Create* button.
 ## LDAP Matching Rules
 
 LDAP matching rules are special rules to configure access rights for new application users (those created after
-logging in via LDAP). There are four rule types intended for this purpose: 
+logging in via LDAP). There are four rule types intended for this purpose:
 - Custom
 - Default
 - Simple
@@ -172,7 +187,7 @@ Matching rules have order numbers defining the sequence of their application.
 
 ### Custom Rule
 
-The LDAP component provides the means to process programmatically defined custom rules. You can create custom rules by 
+The LDAP component provides the means to process programmatically defined custom rules. You can create custom rules by
 adding new classes to the classpath of your application. They have to be implemented as Spring beans and
 provided with the `@LdapMatchingRule` annotation.
 Custom rules can be viewed from the application UI. However, you cannot configure or edit them there.
@@ -237,7 +252,7 @@ To create a simple rule, select the *Create Simple Rule* option from the menu of
 
 1. __General details and settings__. The fields are similar to the ones described in [Default Matching
 Rule Editor](#default-matching-rule-editor).
-2. __Conditions__. The section enables you to add conditions to be met for successful rule application. Click 
+2. __Conditions__. The section enables you to add conditions to be met for successful rule application. Click
 the *Create* button to open *Simple Rule Condition Editor*.
 
 ![Simple Rule Condition Editor](img/simple-rule-condition-editor.png)
@@ -246,7 +261,7 @@ The editor contains the following fields:
 
 * *Attribute*: an LDAP attribute to be checked before applying the current simple rule.
 
- **Note:** Before creating conditions it is required to add them to the existing LDAP Schema (for more details, 
+ **Note:** Before creating conditions it is required to add them to the existing LDAP Schema (for more details,
 refer to [LDAP Schema](#ldap-schema)).
 
 * *Attribute Value*: a value of the selected attribute. The system applies the rule to those user entities having the specified value of the selected attribute.
@@ -299,7 +314,7 @@ Clicking the *Excel* button enables you to download details of the selected rows
 
 # Scheduled Task Configuration
 
-Before setting up scheduled tasks, make sure that [application properties](#appendix-a-application-properties) are
+Before setting up scheduled tasks, make sure that [application properties](#appendix-a) are
 configured in the `web-app.properties` and `app.properties` files.
 
 There are several scheduled tasks that you can configure for the LDAP component:
@@ -400,7 +415,7 @@ after the system assigns user roles and an access group to them.
 *  `UserActivatedFromLdapEvent`: defines the state of the CUBA user that was previously inactive and then activated.
 *  `UserDeactivatedFromLdapEvent`: defines the state of the CUBA user that was previously active and then deactivated.
 
-# Appendix A. Application Properties
+# Appendix A. Application Properties <a name='appendix-a'></a>
 Before working with the component you need to configure application properties. Specify them in the `app.properties` and `web-app.properties` files of your application.
 
 ## `app.properties`
