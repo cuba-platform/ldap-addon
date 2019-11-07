@@ -112,10 +112,10 @@ public class CubaUserDao {
         String queryString = "select cu.login from sec$User cu";
         TypedQuery<String> query;
         if (CollectionUtils.isNotEmpty(groups)) {
-            queryString = queryString + " inner join fetch cu.group cuGroup where upper(cuGroup.name) " +
+            queryString = queryString + " inner join cu.group cuGroup where cuGroup.name " +
                                           (inverseGroups ? "not in" : "in") + " :groups";
             query = persistence.getEntityManager().createQuery(queryString, String.class);
-            query.setParameter("groups", groups.stream().map(String::toUpperCase).collect(toList()));
+            query.setParameter("groups", groups);
         } else {
             query = persistence.getEntityManager().createQuery(queryString, String.class);
         }

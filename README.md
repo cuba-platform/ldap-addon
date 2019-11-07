@@ -84,7 +84,7 @@ ldap.referral = follow
 ldap.sessionExpiringPeriodSec = 120
 ldap.userSynchronizationBatchSize = 100
 ldap.userSynchronizationOnlyActiveProperty = true
-ldap.cubaGroupForSynchronization = company
+ldap.cubaGroupForSynchronization = Company
 ldap.cubaGroupForSynchronizationInverse = false
 ldap.synchronizeCommonInfoFromLdap = true
 cuba.web.standardAuthenticationUsers = admin,anonymous
@@ -457,7 +457,7 @@ updates only the value of the *Active* attribute. Otherwise, the system updates 
 #### ldap.cubaGroupForSynchronization
 
 * **Description:** defines access groups that are checked when the system executes the [`synchronizeUsersFromLdap()`](#scheduled-task-to-synchronize-users) scheduled task.
-* **Default value:** company
+* **Default value:** Company
 
 #### ldap.cubaGroupForSynchronizationInverse
 
