@@ -9,7 +9,7 @@ values
 
 update LDAP_MATCHING_RULE set access_group_id = (select id from sec_group where name='Company') where id = 'ff2ebe74-3836-465b-9185-60141a6a0548';
 
-insert into LDAP_MATCHING_RULE_ROLE_LINK (matching_rule_id, role_id) values ('ff2ebe74-3836-465b-9185-60141a6a0548', (select id from sec_role where name='Administrators'));
+--insert into LDAP_MATCHING_RULE_ROLE_LINK (matching_rule_id, role_id) values ('ff2ebe74-3836-465b-9185-60141a6a0548', (select id from sec_role where name='Administrators'));
 
 --add ldap configuration
 INSERT INTO LDAP_LDAP_CONFIG (id,version,update_ts,updated_by,SCHEMA_BASE,LDAP_USER_OBJECT_CLASSES,OBJECT_CLASS_PROPERTY_NAME,ATTRIBUTE_PROPERTY_NAMES,
