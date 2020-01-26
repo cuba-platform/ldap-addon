@@ -476,7 +476,9 @@ public class MatchingRuleTest {
             List<UserSynchronizationLog> logs = userSynchronizationLogDao.getByLogin("barts");
             assertEquals(1, logs.size());
             assertEquals(UserSynchronizationResultEnum.SUCCESS_SYNC, logs.get(0).getResult());
-            assertEquals("Initial role\nsystem-minimal\n", logs.get(0).getRolesBefore());
+            assertEquals("Initial role\n" +
+                    "system-minimal\n",
+                    logs.get(0).getRolesBefore());
             assertEquals("Initial role\n" +
                     "ldap-administrator\n" +
                     "Simple role\n" +
