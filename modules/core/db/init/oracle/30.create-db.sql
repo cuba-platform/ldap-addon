@@ -8,13 +8,13 @@ values
 
 update LDAP_MATCHING_RULE set access_group_id = (select id from sec_group where name='Company') where id = 'ff2ebe743836465b918560141a6a0548'^
 
---insert into SEC_ROLE
---(ID, VERSION, CREATE_TS, CREATED_BY, UPDATE_TS, UPDATED_BY, DELETE_TS, DELETED_BY, NAME, LOC_NAME, DESCRIPTION, ROLE_TYPE, IS_DEFAULT_ROLE, SYS_TENANT_ID, SECURITY_SCOPE, DEFAULT_SCREEN_ACCESS, DEFAULT_ENTITY_CREATE_ACCESS, DEFAULT_ENTITY_READ_ACCESS, DEFAULT_ENTITY_UPDATE_ACCESS, DEFAULT_ENTITY_DELETE_ACCESS, DEFAULT_ENTITY_ATTR_ACCESS, DEFAULT_SPECIFIC_ACCESS)
---values ('096f7cef92b0f354d96a1da0d654f95b', 1, '2020-01-26 15:12:42', 'admin', '2020-01-26 15:12:42', null, null, null, 'ldap-administrator', 'Ldap administrator', null, 0, null, null, 'GENERIC_UI', 0, 0, 0, 0, 0, 0, 0)^
---
---insert into SEC_USER_ROLE
---(ID, VERSION, CREATE_TS, CREATED_BY, UPDATE_TS, UPDATED_BY, DELETE_TS, DELETED_BY, USER_ID, ROLE_ID, ROLE_NAME)
---values ('9eaf6af4-53b3-43f9-cbaf-dc6e90cd6872', 1, '2020-01-26 15:48:55', 'admin', '2020-01-26 15:48:55', null, null, null, '608859871b61424794c7dff348347f93', '096f7cef92b0f354d96a1da0d654f95b', null)^
+
+insert into SEC_ROLE (ID, VERSION, CREATE_TS, CREATED_BY, UPDATE_TS, UPDATED_BY, DELETE_TS, DELETED_BY, NAME, LOC_NAME, DESCRIPTION, ROLE_TYPE, IS_DEFAULT_ROLE, SYS_TENANT_ID, SECURITY_SCOPE)
+values ('096f7cef92b0f354d96a1da0d654f95b', 1, sysdate, 'admin', sysdate, null, null, null, 'ldap-administrator', 'Ldap administrator', null, 0, null, null, 'GENERIC_UI')^
+
+insert into SEC_USER_ROLE
+(ID, VERSION, CREATE_TS, CREATED_BY, UPDATE_TS, UPDATED_BY, DELETE_TS, DELETED_BY, USER_ID, ROLE_ID, ROLE_NAME)
+values ('9eaf6af453b343f9cbafdc6e90cd6872', 1, sysdate, 'admin',sysdate, null, null, null, '608859871b61424794c7dff348347f93', '096f7cef92b0f354d96a1da0d654f95b', null)^
 
 insert into LDAP_MATCHING_RULE_ROLE_LINK (matching_rule_id, role_id) values ('ff2ebe743836465b918560141a6a0548', (select id from sec_role where name='ldap-administrator'))^
 
