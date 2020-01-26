@@ -119,7 +119,9 @@ public class SimpleAddonTest {
             assertEquals("testAdmin", dbUser.getLogin());
             assertEquals("Test group", dbUser.getGroup().getName());
             assertEquals(2, dbUser.getUserRoles().size());
-            assertEquals("Test role", dbUser.getUserRoles().get(0).getRole().getName());
+            assertEquals("Test role", dbUser.getUserRoles().stream()
+                    .filter(ur -> ur.getRole() != null)
+                    .findFirst().get().getRole().getName());
 
         }
     }
