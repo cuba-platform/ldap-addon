@@ -164,7 +164,7 @@ public class MatchingRuleTest {
             assertTrue(ldapMatchingRuleContext.isTerminalRuleApply());
 
             cubaUserDao.saveCubaUser(joes, joes, ldapMatchingRuleContext);
-
+            persistence.getEntityManager().flush();
             prepareTerminalAttributeTest(false, "bena", false);
 
             User bena = cubaUserDao.getOrCreateCubaUser("bena");
@@ -359,9 +359,7 @@ public class MatchingRuleTest {
         daoHelper.persistOrMerge(scriptingRole2);
         daoHelper.persistOrMerge(scriptingMatchingRule2);
 
-
         persistence.getEntityManager().flush();
-
     }
 
     private void createRulesForOverrideAttributeTest(boolean override, String login, boolean createCustom) {
@@ -471,16 +469,16 @@ public class MatchingRuleTest {
             assertEquals("Company", syncedUser.getGroup().getName());
             assertEquals(4, syncedUser.getUserRoles().size());
             assertTrue(syncedUser.getUserRoles().stream().anyMatch(ur -> ur.getRole().getName().equals("Initial role")));
-            assertTrue(syncedUser.getUserRoles().stream().anyMatch(ur -> ur.getRole().getName().equals("Administrators")));
+            assertTrue(syncedUser.getUserRoles().stream().anyMatch(ur -> ur.getRole().getName().equals("ldap-administrator")));
             assertTrue(syncedUser.getUserRoles().stream().anyMatch(ur -> ur.getRole().getName().equals("Simple role")));
             assertTrue(syncedUser.getUserRoles().stream().anyMatch(ur -> ur.getRole().getName().equals("Scripting role")));
 
             List<UserSynchronizationLog> logs = userSynchronizationLogDao.getByLogin("barts");
             assertEquals(1, logs.size());
             assertEquals(UserSynchronizationResultEnum.SUCCESS_SYNC, logs.get(0).getResult());
-            assertEquals("Initial role\n", logs.get(0).getRolesBefore());
+            assertEquals("Initial role\nsystem-minimal\n", logs.get(0).getRolesBefore());
             assertEquals("Initial role\n" +
-                    "Administrators\n" +
+                    "ldap-administrator\n" +
                     "Simple role\n" +
                     "Scripting role\n", logs.get(0).getRolesAfter());
             assertEquals("Test group 1", logs.get(0).getAccessGroupBefore());
@@ -597,7 +595,7 @@ public class MatchingRuleTest {
             User updatedUser = cubaUserDao.getOrCreateCubaUser("joes");
             assertFalse(updatedUser.getActive());
             assertEquals(initialGroup.getName(), updatedUser.getGroup().getName());
-            assertEquals(1, updatedUser.getUserRoles().size());
+            assertEquals(2, updatedUser.getUserRoles().size());
             assertTrue(hasRole(updatedUser, initialRole.getName()));
 
             List<UserSynchronizationLog> logs = userSynchronizationLogDao.getByLogin("joes");

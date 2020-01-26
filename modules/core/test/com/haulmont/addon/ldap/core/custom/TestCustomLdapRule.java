@@ -43,7 +43,9 @@ public class TestCustomLdapRule implements CustomLdapMatchingRule {
     public boolean applyCustomMatchingRule(LdapMatchingRuleContext ldapMatchingRuleContext) {
         if (ldapMatchingRuleContext.getLdapUser() != null && ldapMatchingRuleContext.getLdapUser().getLogin().equalsIgnoreCase("barts")) {
             User admin = cubaUserDao.getOrCreateCubaUser("admin");
-            ldapMatchingRuleContext.getRoles().add(admin.getUserRoles().get(0).getRole());
+            admin.getUserRoles().stream()
+                    .filter(ur -> ur.getRole() != null)
+                    .findFirst().ifPresent(adminRole -> ldapMatchingRuleContext.getRoles().add(adminRole.getRole()));
             ldapMatchingRuleContext.setGroup(admin.getGroup());
             return true;
         }

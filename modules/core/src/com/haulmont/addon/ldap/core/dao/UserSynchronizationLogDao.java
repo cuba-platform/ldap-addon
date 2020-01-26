@@ -131,7 +131,7 @@ public class UserSynchronizationLogDao {
     private String getRolesField(List<UserRole> originalRoles) {
         StringBuilder sb = new StringBuilder();
         for (UserRole ur : originalRoles) {
-            sb.append(ur.getRole().getName());
+            sb.append(ur.getRole() != null ? ur.getRole().getName() : ur.getRoleName());
             sb.append("\n");
         }
         return sb.toString();
