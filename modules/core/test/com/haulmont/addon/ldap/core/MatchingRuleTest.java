@@ -234,7 +234,7 @@ public class MatchingRuleTest {
     private void prepareSimpleTest() {
         Group testGroup = metadata.create(Group.class);
         testGroup.setName("Test group simple");
-        daoHelper.persistOrMerge(testGroup);
+        testGroup = daoHelper.persistOrMerge(testGroup);
 
         //Custom
         MatchingRuleOrder customOrder = metadata.create(MatchingRuleOrder.class);
