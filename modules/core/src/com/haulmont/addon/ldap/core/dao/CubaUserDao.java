@@ -10,6 +10,7 @@ import com.haulmont.cuba.security.entity.Role;
 import com.haulmont.cuba.security.entity.User;
 import com.haulmont.cuba.security.entity.UserRole;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,6 +42,7 @@ public class CubaUserDao {
 
     @Transactional(readOnly = true)
     public User getCubaUserByLogin(String login) {
+        login = StringUtils.lowerCase(login);
         TypedQuery<User> query = persistence.getEntityManager()
                 .createQuery("select cu from sec$User cu where cu.login = :login", User.class);
         query.setParameter("login", login);
