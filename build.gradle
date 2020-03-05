@@ -15,7 +15,7 @@
  */
 
 buildscript {
-    ext.cubaVersion = rootProject.hasProperty('cubaVersion') ? rootProject['cubaVersion'] : '7.2-SNAPSHOT'
+    ext.cubaVersion = rootProject.hasProperty('cubaVersion') ? rootProject['cubaVersion'] : '7.2.0'
     repositories {
         mavenLocal()
         if (System.getenv('HAULMONT_REPOSITORY_URL')) {
