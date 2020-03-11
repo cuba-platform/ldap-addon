@@ -20,9 +20,11 @@ import com.google.common.base.Strings;
 import com.haulmont.addon.ldap.dto.GroovyScriptTestResultDto;
 import com.haulmont.addon.ldap.entity.ScriptingMatchingRule;
 import com.haulmont.addon.ldap.service.LdapService;
+import com.haulmont.addon.ldap.web.datasource.RuleRolesDatasource;
 import com.haulmont.cuba.gui.UiComponents;
 import com.haulmont.cuba.gui.components.*;
 import com.haulmont.cuba.gui.data.Datasource;
+import com.haulmont.cuba.gui.screen.Subscribe;
 import com.haulmont.cuba.security.entity.Role;
 
 import javax.inject.Inject;
@@ -45,6 +47,15 @@ public class ScriptingMatchingRuleEdit extends AbstractEditor<ScriptingMatchingR
 
     @Inject
     private Table<Role> rolesTable;
+
+    @Inject
+    private RuleRolesDatasource rolesDs;
+
+    @Subscribe
+    public void onBeforeShow(BeforeShowEvent event) {
+        rolesDs.init(getItem());
+        rolesDs.refresh();
+    }
 
     @Override
     protected void postValidate(ValidationErrors errors) {

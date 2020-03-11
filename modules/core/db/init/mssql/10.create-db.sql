@@ -14,6 +14,7 @@ create table LDAP_MATCHING_RULE (
     DESCRIPTION varchar(1500),
     --
     ACCESS_GROUP_ID uniqueidentifier,
+    ROLES_LIST varchar(max),
     IS_TERMINAL_RULE tinyint,
     IS_OVERRIDE_EXISTING_ROLES tinyint,
     IS_OVERRIDE_EXIST_ACCESS_GRP tinyint,
@@ -141,10 +142,3 @@ create table LDAP_LDAP_CONFIG (
     primary key nonclustered (ID)
 )^
 -- end LDAP_LDAP_CONFIG
--- begin LDAP_MATCHING_RULE_ROLE_LINK
-create table LDAP_MATCHING_RULE_ROLE_LINK (
-    MATCHING_RULE_ID uniqueidentifier,
-    ROLE_ID uniqueidentifier,
-    primary key (MATCHING_RULE_ID, ROLE_ID)
-)^
--- end LDAP_MATCHING_RULE_ROLE_LINK

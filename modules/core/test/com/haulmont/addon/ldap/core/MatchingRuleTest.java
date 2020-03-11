@@ -269,6 +269,7 @@ public class MatchingRuleTest {
         simpleMatchingRule.getConditions().add(simpleRuleCondition);
         simpleMatchingRule.setAccessGroup(testGroup);
         simpleMatchingRule.getRoles().add(simpleRole);
+        simpleMatchingRule.updateRolesList();
 
         daoHelper.persistOrMerge(simpleRole);
         daoHelper.persistOrMerge(simpleMatchingRule);
@@ -289,6 +290,7 @@ public class MatchingRuleTest {
         scriptingMatchingRule.setOrder(scriptingOrder);
         scriptingMatchingRule.setScriptingCondition("{ldapContext}.ldapUser.login=='admin'");
         scriptingMatchingRule.getRoles().add(scriptingRole);
+        scriptingMatchingRule.updateRolesList();
         daoHelper.persistOrMerge(scriptingRole);
         daoHelper.persistOrMerge(scriptingMatchingRule);
 
@@ -336,6 +338,7 @@ public class MatchingRuleTest {
         scriptingMatchingRule1.setOrder(scriptingOrder1);
         scriptingMatchingRule1.setScriptingCondition("{ldapContext}.ldapUser.login=='" + login + "'");
         scriptingMatchingRule1.getRoles().add(scriptingRole1);
+        scriptingMatchingRule1.updateRolesList();
         scriptingMatchingRule1.setIsTerminalRule(terminal);
         daoHelper.persistOrMerge(scriptingRole1);
         daoHelper.persistOrMerge(scriptingMatchingRule1);
@@ -356,6 +359,7 @@ public class MatchingRuleTest {
         scriptingMatchingRule2.setOrder(scriptingOrder2);
         scriptingMatchingRule2.setScriptingCondition("{ldapContext}.ldapUser.login=='" + login + "'");
         scriptingMatchingRule2.getRoles().add(scriptingRole2);
+        scriptingMatchingRule2.updateRolesList();
         daoHelper.persistOrMerge(scriptingRole2);
         daoHelper.persistOrMerge(scriptingMatchingRule2);
 
@@ -649,6 +653,7 @@ public class MatchingRuleTest {
             simpleMatchingRule.getConditions().add(simpleRuleCondition2);
             simpleMatchingRule.setAccessGroup(testGroup1);
             simpleMatchingRule.getRoles().add(role);
+            simpleMatchingRule.updateRolesList();
 
             daoHelper.persistOrMerge(simpleMatchingRule);
 
@@ -768,6 +773,7 @@ public class MatchingRuleTest {
 
         simpleMatchingRule.setAccessGroup(group);
         simpleMatchingRule.getRoles().add(role);
+        simpleMatchingRule.updateRolesList();
         return simpleMatchingRule;
     }
 
@@ -790,6 +796,7 @@ public class MatchingRuleTest {
         matchingRule.setOrder(order);
         matchingRule.setScriptingCondition(conditionExpr);
         matchingRule.getRoles().addAll(Arrays.asList(roles));
+        matchingRule.updateRolesList();
         return matchingRule;
     }
 

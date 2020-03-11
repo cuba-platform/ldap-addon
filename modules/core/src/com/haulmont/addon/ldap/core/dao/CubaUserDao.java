@@ -22,9 +22,9 @@ import com.haulmont.cuba.core.EntityManager;
 import com.haulmont.cuba.core.Persistence;
 import com.haulmont.cuba.core.TypedQuery;
 import com.haulmont.cuba.core.global.Metadata;
-import com.haulmont.cuba.security.entity.Role;
 import com.haulmont.cuba.security.entity.User;
 import com.haulmont.cuba.security.entity.UserRole;
+import com.haulmont.cuba.security.role.RolesService;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
@@ -52,6 +52,9 @@ public class CubaUserDao {
 
     @Inject
     private DaoHelper daoHelper;
+
+    @Inject
+    private RolesService rolesService;
 
     @Inject
     private LdapPropertiesConfig ldapPropertiesConfig;
@@ -85,13 +88,21 @@ public class CubaUserDao {
     public void saveCubaUser(User cubaUser, User beforeRulesApplyUserState, LdapMatchingRuleContext ldapMatchingRuleContext) {
         EntityManager entityManager = persistence.getEntityManager();
         User mergedUser = daoHelper.persistOrMerge(cubaUser);
-        List<Role> newRoles = mergedUser.getUserRoles().stream()
-                .map(UserRole::getRole)
+        List<String> newRoles = mergedUser.getUserRoles().stream()
+                .map(UserRole::getRoleName)
                 .collect(toList());
         beforeRulesApplyUserState.getUserRoles().stream()
-                .filter(ur -> !newRoles.contains(ur.getRole()))
+                .filter(ur -> !newRoles.contains(ur.getRoleName()))
                 .forEach(entityManager::remove);
-        mergedUser.getUserRoles().forEach(entityManager::persist);
+        mergedUser.getUserRoles().stream()
+                .peek(ur -> {
+                    if (rolesService.getRoleDefinitionByName(ur.getRoleName()) != null) {
+                        ur.setRole(null);
+                    } else {
+                        ur.setRoleName(null);
+                    }
+                })
+                .forEach(entityManager::persist);
         userSynchronizationLogDao.logUserSynchronization(ldapMatchingRuleContext, beforeRulesApplyUserState);
     }
 
@@ -115,7 +126,7 @@ public class CubaUserDao {
         TypedQuery<String> query;
         if (CollectionUtils.isNotEmpty(groups)) {
             queryString = queryString + " inner join cu.group cuGroup where cuGroup.name " +
-                                          (inverseGroups ? "not in" : "in") + " :groups";
+                    (inverseGroups ? "not in" : "in") + " :groups";
             query = persistence.getEntityManager().createQuery(queryString, String.class);
             query.setParameter("groups", groups);
         } else {

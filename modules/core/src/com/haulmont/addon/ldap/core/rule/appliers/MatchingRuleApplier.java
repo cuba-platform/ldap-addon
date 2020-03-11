@@ -89,6 +89,7 @@ public class MatchingRuleApplier {
     private UserRole createUserRole(User user, Role role) {
         UserRole userRole = metadata.create(UserRole.class);
         userRole.setUser(user);
+        userRole.setRoleName(role.getName());
         userRole.setRole(role);
         return userRole;
     }

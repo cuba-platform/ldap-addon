@@ -25,9 +25,11 @@
         <datasource id="scriptingMatchingRuleDs"
                     class="com.haulmont.addon.ldap.entity.ScriptingMatchingRule"
                     view="scriptingMatchingRule-view-status-order-group-roles">
-            <collectionDatasource id="rolesDs"
-                                  property="roles"/>
         </datasource>
+        <collectionDatasource id="rolesDs"
+                              allowCommit="false"
+                              class="com.haulmont.cuba.security.entity.Role"
+                              datasourceClass="com.haulmont.addon.ldap.web.datasource.RuleRolesDatasource"/>
     </dsContext>
     <dialogMode height="600"
                 width="800"/>

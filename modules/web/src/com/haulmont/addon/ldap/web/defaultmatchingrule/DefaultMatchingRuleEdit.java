@@ -17,17 +17,29 @@
 package com.haulmont.addon.ldap.web.defaultmatchingrule;
 
 import com.haulmont.addon.ldap.entity.DefaultMatchingRule;
+import com.haulmont.addon.ldap.web.datasource.RuleRolesDatasource;
 import com.haulmont.cuba.gui.components.AbstractEditor;
 import com.haulmont.cuba.gui.components.Table;
 import com.haulmont.cuba.gui.components.ValidationErrors;
+import com.haulmont.cuba.gui.screen.Subscribe;
 import com.haulmont.cuba.security.entity.Role;
 
+import javax.inject.Inject;
 import javax.inject.Named;
 
 public class DefaultMatchingRuleEdit extends AbstractEditor<DefaultMatchingRule> {
 
     @Named("rolesTable")
     private Table<Role> roleTable;
+
+    @Inject
+    private RuleRolesDatasource rolesDs;
+
+    @Subscribe
+    public void onBeforeShow(BeforeShowEvent event) {
+        rolesDs.init(getItem());
+        rolesDs.refresh();
+    }
 
     @Override
     protected void postValidate(ValidationErrors errors) {

@@ -75,7 +75,7 @@
                                 generator="generateMatchingRuleTableConditionColumnCell"/>
                     </columns>
                     <rows datasource="abstractMatchingRulesDs"/>
-                    <buttonsPanel height="29px">
+                    <buttonsPanel>
                         <popupButton caption="msg://createMatchingRule">
                             <actions>
                                 <action id="createSimpleRule"
