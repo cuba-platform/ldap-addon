@@ -16,12 +16,14 @@
 
 package com.haulmont.addon.ldap.core.dao;
 
+import com.haulmont.addon.ldap.core.spring.events.LdapFailedAuthenticationEvent;
 import com.haulmont.addon.ldap.config.LdapPropertiesConfig;
 import com.haulmont.addon.ldap.core.utils.LdapConstants;
 import com.haulmont.addon.ldap.core.utils.LdapUserMapper;
 import com.haulmont.addon.ldap.dto.LdapUser;
 import com.haulmont.addon.ldap.entity.LdapConfig;
 import com.haulmont.addon.ldap.entity.SimpleRuleCondition;
+import com.haulmont.cuba.core.global.Events;
 import com.haulmont.cuba.core.global.Messages;
 import com.haulmont.cuba.security.global.LoginException;
 import org.apache.commons.lang3.StringUtils;
@@ -74,6 +76,8 @@ public class LdapUserDao {
 
     @Inject
     private LdapConfigDao ldapConfigDao;
+    @Inject
+    private Events events;
 
     @Inject
     private LdapPropertiesConfig ldapPropertiesConfig;
@@ -142,6 +146,7 @@ public class LdapUserDao {
             } else {
                 String loginFailedMessage = messages.formatMessage(LdapUserDao.class, "LoginException.InvalidLoginOrPassword", messagesLocale, login);
                 logger.warn(loginFailedMessage);
+                events.publish(new LdapFailedAuthenticationEvent(this, StringUtils.lowerCase(login)));
                 throw new LoginException(loginFailedMessage);
             }
         } catch (CommunicationException e) {

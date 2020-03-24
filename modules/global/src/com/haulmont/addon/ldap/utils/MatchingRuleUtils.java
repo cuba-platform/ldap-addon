@@ -132,6 +132,7 @@ public class MatchingRuleUtils {
     public static List<Role> getRoles(User user) {
         return user.getUserRoles().stream()
                 .map(UserRole::getRole)
+                .filter(Objects::nonNull)
                 .collect(Collectors.toList());
     }
 

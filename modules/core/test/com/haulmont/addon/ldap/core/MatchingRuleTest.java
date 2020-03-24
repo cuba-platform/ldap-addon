@@ -164,7 +164,7 @@ public class MatchingRuleTest {
             assertTrue(ldapMatchingRuleContext.isTerminalRuleApply());
 
             cubaUserDao.saveCubaUser(joes, joes, ldapMatchingRuleContext);
-
+            persistence.getEntityManager().flush();
             prepareTerminalAttributeTest(false, "bena", false);
 
             User bena = cubaUserDao.getOrCreateCubaUser("bena");
@@ -234,7 +234,7 @@ public class MatchingRuleTest {
     private void prepareSimpleTest() {
         Group testGroup = metadata.create(Group.class);
         testGroup.setName("Test group simple");
-        daoHelper.persistOrMerge(testGroup);
+        testGroup = daoHelper.persistOrMerge(testGroup);
 
         //Custom
         MatchingRuleOrder customOrder = metadata.create(MatchingRuleOrder.class);
@@ -269,6 +269,7 @@ public class MatchingRuleTest {
         simpleMatchingRule.getConditions().add(simpleRuleCondition);
         simpleMatchingRule.setAccessGroup(testGroup);
         simpleMatchingRule.getRoles().add(simpleRole);
+        simpleMatchingRule.updateRolesList();
 
         daoHelper.persistOrMerge(simpleRole);
         daoHelper.persistOrMerge(simpleMatchingRule);
@@ -289,6 +290,7 @@ public class MatchingRuleTest {
         scriptingMatchingRule.setOrder(scriptingOrder);
         scriptingMatchingRule.setScriptingCondition("{ldapContext}.ldapUser.login=='admin'");
         scriptingMatchingRule.getRoles().add(scriptingRole);
+        scriptingMatchingRule.updateRolesList();
         daoHelper.persistOrMerge(scriptingRole);
         daoHelper.persistOrMerge(scriptingMatchingRule);
 
@@ -336,6 +338,7 @@ public class MatchingRuleTest {
         scriptingMatchingRule1.setOrder(scriptingOrder1);
         scriptingMatchingRule1.setScriptingCondition("{ldapContext}.ldapUser.login=='" + login + "'");
         scriptingMatchingRule1.getRoles().add(scriptingRole1);
+        scriptingMatchingRule1.updateRolesList();
         scriptingMatchingRule1.setIsTerminalRule(terminal);
         daoHelper.persistOrMerge(scriptingRole1);
         daoHelper.persistOrMerge(scriptingMatchingRule1);
@@ -356,12 +359,11 @@ public class MatchingRuleTest {
         scriptingMatchingRule2.setOrder(scriptingOrder2);
         scriptingMatchingRule2.setScriptingCondition("{ldapContext}.ldapUser.login=='" + login + "'");
         scriptingMatchingRule2.getRoles().add(scriptingRole2);
+        scriptingMatchingRule2.updateRolesList();
         daoHelper.persistOrMerge(scriptingRole2);
         daoHelper.persistOrMerge(scriptingMatchingRule2);
 
-
         persistence.getEntityManager().flush();
-
     }
 
     private void createRulesForOverrideAttributeTest(boolean override, String login, boolean createCustom) {
@@ -471,16 +473,18 @@ public class MatchingRuleTest {
             assertEquals("Company", syncedUser.getGroup().getName());
             assertEquals(4, syncedUser.getUserRoles().size());
             assertTrue(syncedUser.getUserRoles().stream().anyMatch(ur -> ur.getRole().getName().equals("Initial role")));
-            assertTrue(syncedUser.getUserRoles().stream().anyMatch(ur -> ur.getRole().getName().equals("Administrators")));
+            assertTrue(syncedUser.getUserRoles().stream().anyMatch(ur -> ur.getRole().getName().equals("ldap-administrator")));
             assertTrue(syncedUser.getUserRoles().stream().anyMatch(ur -> ur.getRole().getName().equals("Simple role")));
             assertTrue(syncedUser.getUserRoles().stream().anyMatch(ur -> ur.getRole().getName().equals("Scripting role")));
 
             List<UserSynchronizationLog> logs = userSynchronizationLogDao.getByLogin("barts");
             assertEquals(1, logs.size());
             assertEquals(UserSynchronizationResultEnum.SUCCESS_SYNC, logs.get(0).getResult());
-            assertEquals("Initial role\n", logs.get(0).getRolesBefore());
             assertEquals("Initial role\n" +
-                    "Administrators\n" +
+                    "system-minimal\n",
+                    logs.get(0).getRolesBefore());
+            assertEquals("Initial role\n" +
+                    "ldap-administrator\n" +
                     "Simple role\n" +
                     "Scripting role\n", logs.get(0).getRolesAfter());
             assertEquals("Test group 1", logs.get(0).getAccessGroupBefore());
@@ -597,7 +601,7 @@ public class MatchingRuleTest {
             User updatedUser = cubaUserDao.getOrCreateCubaUser("joes");
             assertFalse(updatedUser.getActive());
             assertEquals(initialGroup.getName(), updatedUser.getGroup().getName());
-            assertEquals(1, updatedUser.getUserRoles().size());
+            assertEquals(2, updatedUser.getUserRoles().size());
             assertTrue(hasRole(updatedUser, initialRole.getName()));
 
             List<UserSynchronizationLog> logs = userSynchronizationLogDao.getByLogin("joes");
@@ -649,6 +653,7 @@ public class MatchingRuleTest {
             simpleMatchingRule.getConditions().add(simpleRuleCondition2);
             simpleMatchingRule.setAccessGroup(testGroup1);
             simpleMatchingRule.getRoles().add(role);
+            simpleMatchingRule.updateRolesList();
 
             daoHelper.persistOrMerge(simpleMatchingRule);
 
@@ -768,6 +773,7 @@ public class MatchingRuleTest {
 
         simpleMatchingRule.setAccessGroup(group);
         simpleMatchingRule.getRoles().add(role);
+        simpleMatchingRule.updateRolesList();
         return simpleMatchingRule;
     }
 
@@ -790,6 +796,7 @@ public class MatchingRuleTest {
         matchingRule.setOrder(order);
         matchingRule.setScriptingCondition(conditionExpr);
         matchingRule.getRoles().addAll(Arrays.asList(roles));
+        matchingRule.updateRolesList();
         return matchingRule;
     }
 

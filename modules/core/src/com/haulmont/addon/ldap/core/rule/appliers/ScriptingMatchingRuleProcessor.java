@@ -31,10 +31,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static com.haulmont.addon.ldap.core.rule.appliers.ScriptingMatchingRuleProcessor.NAME;
 import static com.haulmont.addon.ldap.entity.MatchingRuleType.CUSTOM;
@@ -85,7 +82,7 @@ public class ScriptingMatchingRuleProcessor extends DbStoredMatchingRuleProcesso
         LdapMatchingRuleContext tempContext = new LdapMatchingRuleContext(
                 new LdapUser(source.getLdapUser()),
                 metadataTools.deepCopy(source.getCubaUser()),
-                source.getRoles().stream()
+                source.getRoles().stream().filter(Objects::nonNull)
                         .map(cmr -> metadataTools.deepCopy(cmr))
                         .collect(toList()),
                 source.getGroup() == null ? null : metadataTools.deepCopy(source.getGroup()));

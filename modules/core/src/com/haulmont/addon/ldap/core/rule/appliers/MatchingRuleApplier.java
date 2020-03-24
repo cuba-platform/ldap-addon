@@ -79,6 +79,7 @@ public class MatchingRuleApplier {
     private void applyUserRoles(User cubaUser, Collection<Role> rolesToApply, Collection<UserRole> rolesBeforeApply) {
         rolesToApply.stream()
                 .map(role -> rolesBeforeApply.stream()
+                        .filter(ur -> ur.getRole() != null)
                         .filter(ur -> ur.getRole().equals(role))
                         .findFirst()
                         .orElse(createUserRole(cubaUser, role)))
@@ -88,6 +89,7 @@ public class MatchingRuleApplier {
     private UserRole createUserRole(User user, Role role) {
         UserRole userRole = metadata.create(UserRole.class);
         userRole.setUser(user);
+        userRole.setRoleName(role.getName());
         userRole.setRole(role);
         return userRole;
     }

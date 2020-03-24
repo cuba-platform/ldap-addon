@@ -16,15 +16,6 @@
 
 <Context>
     <!-- Database connection -->
-    <Resource driverClassName="org.hsqldb.jdbc.JDBCDriver"
-              maxIdle="2"
-              maxTotal="20"
-              maxWaitMillis="5000"
-              name="jdbc/CubaDS"
-              password=""
-              type="javax.sql.DataSource"
-              url="jdbc:hsqldb:hsql://localhost/ldap"
-              username="sa"/>
     <!-- Switch off session serialization -->
     <Manager pathname=""/>
     <!--<Resource driverClassName="org.hsqldb.jdbc.JDBCDriver"
@@ -36,4 +27,13 @@
           type="javax.sql.DataSource"
           url="jdbc:hsqldb:hsql://localhost/ldap"
           username="sa"/>-->
+    <Resource driverClassName="org.hsqldb.jdbc.JDBCDriver"
+              maxIdle="2"
+              maxTotal="20"
+              maxWaitMillis="5000"
+              name="jdbc/CubaDS"
+              password=""
+              type="javax.sql.DataSource"
+              url="jdbc:hsqldb:hsql://localhost:9010/ldap"
+              username="sa"/>
 </Context>

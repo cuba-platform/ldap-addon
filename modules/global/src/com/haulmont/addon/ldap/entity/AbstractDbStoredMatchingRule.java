@@ -16,19 +16,31 @@
 
 package com.haulmont.addon.ldap.entity;
 
-import com.haulmont.chile.core.annotations.Composition;
 import com.haulmont.chile.core.annotations.NamePattern;
+import com.haulmont.cuba.core.entity.annotation.Listeners;
+import com.haulmont.cuba.core.entity.annotation.PublishEntityChangedEvents;
+import com.haulmont.cuba.core.global.AppBeans;
+import com.haulmont.cuba.core.global.DataManager;
+import com.haulmont.cuba.core.global.LoadContext;
+import com.haulmont.cuba.core.global.View;
 import com.haulmont.cuba.security.entity.Group;
 import com.haulmont.cuba.security.entity.Role;
+import com.haulmont.cuba.security.role.RolesService;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * Fields for matching rules stored in the DB.
  */
+@PublishEntityChangedEvents
 @NamePattern("%s|description")
+@Listeners("ldap_RuleDetachListener")
+@DiscriminatorValue("ABSTRACT")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "RULE_TYPE", discriminatorType = DiscriminatorType.STRING)
 @Table(name = "LDAP_MATCHING_RULE")
@@ -40,12 +52,9 @@ public abstract class AbstractDbStoredMatchingRule extends AbstractCommonMatchin
     @JoinColumn(name = "ACCESS_GROUP_ID")
     private Group accessGroup;
 
-    @JoinTable(name = "LDAP_MATCHING_RULE_ROLE_LINK",
-            joinColumns = @JoinColumn(name = "MATCHING_RULE_ID"),
-            inverseJoinColumns = @JoinColumn(name = "ROLE_ID"))
-    @ManyToMany
-    @Composition
-    private List<Role> roles = new ArrayList<>();
+    @Lob
+    @Column(name = "ROLES_LIST")
+    protected String rolesList;
 
     @Column(name = "IS_TERMINAL_RULE")
     private Boolean isTerminalRule = false;
@@ -55,6 +64,17 @@ public abstract class AbstractDbStoredMatchingRule extends AbstractCommonMatchin
 
     @Column(name = "IS_OVERRIDE_EXIST_ACCESS_GRP")
     private Boolean isOverrideExistingAccessGroup = false;
+
+    @Transient
+    private List<Role> roles = new ArrayList<>();
+
+    public String getRolesList() {
+        return rolesList;
+    }
+
+    public void setRolesList(String rolesList) {
+        this.rolesList = rolesList;
+    }
 
     @Override
     public Group getAccessGroup() {
@@ -101,4 +121,33 @@ public abstract class AbstractDbStoredMatchingRule extends AbstractCommonMatchin
         isOverrideExistingAccessGroup = overrideExistingAccessGroup;
     }
 
+    public void updateRolesList() {
+        setRolesList(getRoles().stream().map(Role::getName).collect(Collectors.joining(";")));
+    }
+
+    public void postLoad() {
+        setRoles(getRolesList() != null ? Arrays.stream(getRolesList().split(";"))
+                .filter(Objects::nonNull)
+                .map(String::trim)
+                .distinct()
+                .filter(s -> !s.isEmpty())
+                .map(s -> {
+                            Role role = AppBeans.get(RolesService.class).getRoleDefinitionAndTransformToRole(s);
+                            if (role == null) {
+                                LoadContext<Role> roleLoadContext = new LoadContext<>(Role.class);
+                                roleLoadContext
+                                        .setView(View.LOCAL)
+                                        .setQueryString("select r from sec$Role r where r.name=:name")
+                                        .setParameter("name", s)
+                                        .setMaxResults(1);
+                                role = AppBeans.get(DataManager.class).load(roleLoadContext);
+                            }
+                            return role;
+                        }
+                )
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList())
+                : new ArrayList<>()
+        );
+    }
 }

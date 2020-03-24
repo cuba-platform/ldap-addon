@@ -15,7 +15,7 @@
  */
 
 buildscript {
-    ext.cubaVersion = '7.1.0'
+    ext.cubaVersion = rootProject.hasProperty('cubaVersion') ? rootProject['cubaVersion'] : '7.2-SNAPSHOT'
     repositories {
         mavenLocal()
         if (System.getenv('HAULMONT_REPOSITORY_URL')) {
@@ -31,15 +31,15 @@ buildscript {
         maven {
             url 'https://repo.cuba-platform.com/content/groups/work'
             credentials {
-                username(rootProject.hasProperty('repoUser') ? rootProject['repoUser'] : 'cuba')
-                password(rootProject.hasProperty('repoPass') ? rootProject['repoPass'] : 'cuba123')
+                username('cuba')
+                password('cuba123')
             }
         }
 
     }
     dependencies {
         classpath "com.haulmont.gradle:cuba-plugin:$cubaVersion"
-        classpath "com.haulmont.gradle:addon-gradle-plugin:1.1.1"
+        classpath "com.haulmont.gradle:addon-gradle-plugin:1.1.2"
     }
 }
 
@@ -59,7 +59,7 @@ apply(plugin: 'addon-gradle-plugin')
 cuba {
     artifact {
         group = 'com.haulmont.addon.ldap'
-        version = '1.4'
+        version = '1.5'
         isSnapshot = true
     }
     tomcat {
@@ -153,15 +153,8 @@ configure(coreModule) {
         testRuntime(hsql)
     }
 
-    task cleanConf(description: 'Cleans up conf directory') {
-        doLast {
-            def dir = new File(cuba.tomcat.dir, '/conf/${modulePrefix}-core')
-            if (dir.isDirectory()) {
-                ant.delete(includeemptydirs: true) {
-                    fileset(dir: dir, includes: '**/*', excludes: 'local.app.properties')
-                }
-            }
-        }
+    task cleanConf(description: 'Cleans up conf directory', type: Delete) {
+        delete "$cuba.appHome/${modulePrefix}-core/conf"
     }
 
     task deploy(dependsOn: [assemble, cleanConf], type: CubaDeployment) {
@@ -171,16 +164,16 @@ configure(coreModule) {
 
     task createDb(dependsOn: assembleDbScripts, description: 'Creates local database', type: CubaDbCreation) {
         dbms = 'hsql'
-        host = 'localhost'
-        dbName = dbNameParam
+        host = 'localhost:9010'
+        dbName = 'ldap'
         dbUser = 'sa'
         dbPassword = ''
     }
 
     task updateDb(dependsOn: assembleDbScripts, description: 'Updates local database', type: CubaDbUpdate) {
         dbms = 'hsql'
-        host = 'localhost'
-        dbName = dbNameParam
+        host = 'localhost:9010'
+        dbName = 'ldap'
         dbUser = 'sa'
         dbPassword = ''
     }
@@ -195,7 +188,7 @@ configure(guiModule) {
     task deployConf(type: Copy) {
         from file('src')
         include "com/haulmont/addon/ldap/**"
-        into "$cuba.tomcat.dir/conf/${modulePrefix}"
+        into "$cuba.appHome/${modulePrefix}/conf"
     }
 }
 
@@ -223,7 +216,7 @@ configure(webModule) {
     task deployConf(type: Copy) {
         from file('src')
         include "com/haulmont/addon/ldap/**"
-        into "$cuba.tomcat.dir/conf/${modulePrefix}"
+        into "$cuba.appHome/${modulePrefix}/conf"
     }
 
     task clearMessagesCache(type: CubaClearMessagesCache) {
@@ -231,15 +224,8 @@ configure(webModule) {
     }
     deployConf.dependsOn clearMessagesCache
 
-    task cleanConf(description: 'Cleans up conf directory') {
-        doLast {
-            def dir = new File(cuba.tomcat.dir, '/conf/${modulePrefix}')
-            if (dir.isDirectory()) {
-                ant.delete(includeemptydirs: true) {
-                    fileset(dir: dir, includes: '**/*', excludes: 'local.app.properties')
-                }
-            }
-        }
+    task cleanConf(description: 'Cleans up conf directory', type: Delete) {
+        delete "$cuba.appHome/${modulePrefix}/conf"
     }
 
     task deploy(dependsOn: [assemble, cleanConf], type: CubaDeployment) {
@@ -262,9 +248,9 @@ task restart(dependsOn: ['stop', ":${modulePrefix}-core:deploy", ":${modulePrefi
                 socket(server: 'localhost', port: '8787')
             }
         }
-        start.execute()
     }
 }
+restart.finalizedBy start
 
 
 apply from: 'extra.gradle'

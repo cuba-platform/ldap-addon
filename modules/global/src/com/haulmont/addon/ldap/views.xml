@@ -21,8 +21,8 @@
           name="defaultMatchingRule-with-group-roles-order-status">
         <property name="accessGroup"
                   view="_minimal"/>
-        <property name="roles"
-                  view="_minimal"/>
+<!--        <property name="roles"-->
+<!--                  view="_minimal"/>-->
         <property name="order"
                   view="_minimal"/>
         <property name="status"
@@ -33,10 +33,10 @@
           name="simpleMatchingRule-view-with-group-roles-conditions-order-status">
         <property name="accessGroup"
                   view="_minimal"/>
-        <property name="roles"
-                  view="_minimal">
-            <property name="description"/>
-        </property>
+<!--        <property name="roles"-->
+<!--                  view="_minimal">-->
+<!--            <property name="description"/>-->
+<!--        </property>-->
         <property name="conditions"
                   view="_local">
             <property name="simpleMatchingRule"
@@ -73,10 +73,10 @@
                   view="_minimal"/>
         <property name="accessGroup"
                   view="_minimal"/>
-        <property name="roles"
-                  view="_minimal">
-            <property name="description"/>
-        </property>
+<!--        <property name="roles"-->
+<!--                  view="_minimal">-->
+<!--            <property name="description"/>-->
+<!--        </property>-->
     </view>
     <view class="com.haulmont.addon.ldap.entity.UserSynchronizationLog"
           extends="_local"
@@ -88,9 +88,9 @@
         <property fetch="JOIN"
                   name="accessGroup"
                   view="_local"/>
-        <property fetch="JOIN"
-                  name="roles"
-                  view="_local"/>
+<!--        <property fetch="JOIN"-->
+<!--                  name="roles"-->
+<!--                  view="_local"/>-->
         <property fetch="JOIN"
                   name="status"
                   view="_local"/>

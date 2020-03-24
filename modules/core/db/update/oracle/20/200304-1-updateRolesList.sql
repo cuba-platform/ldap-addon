@@ -1,0 +1,1 @@
+update LDAP_MATCHING_RULE mr set ROLES_LIST = (select listagg(r.name,';') from LDAP_MATCHING_RULE_ROLE_LINK mrl inner join SEC_ROLE r on r.id = mrl.ROLE_ID where mrl.MATCHING_RULE_ID = mr.id)
