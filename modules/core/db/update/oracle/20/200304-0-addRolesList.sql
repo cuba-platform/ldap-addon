@@ -1,0 +1,1 @@
+alter table LDAP_MATCHING_RULE add ROLES_LIST clob

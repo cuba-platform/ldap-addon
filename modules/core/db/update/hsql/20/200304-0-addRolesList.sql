@@ -1,0 +1,1 @@
+alter table LDAP_MATCHING_RULE add column ROLES_LIST longvarchar;
