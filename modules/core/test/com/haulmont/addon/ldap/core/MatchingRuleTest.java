@@ -471,9 +471,8 @@ public class MatchingRuleTest {
             assertEquals("Manager", syncedUser.getPosition());
             assertEquals(true, syncedUser.getActive());
             assertEquals("Company", syncedUser.getGroup().getName());
-            assertEquals(4, syncedUser.getUserRoles().size());
+            assertEquals(3, syncedUser.getUserRoles().size());
             assertTrue(syncedUser.getUserRoles().stream().anyMatch(ur -> ur.getRole().getName().equals("Initial role")));
-            assertTrue(syncedUser.getUserRoles().stream().anyMatch(ur -> ur.getRole().getName().equals("ldap-administrator")));
             assertTrue(syncedUser.getUserRoles().stream().anyMatch(ur -> ur.getRole().getName().equals("Simple role")));
             assertTrue(syncedUser.getUserRoles().stream().anyMatch(ur -> ur.getRole().getName().equals("Scripting role")));
 
@@ -481,12 +480,11 @@ public class MatchingRuleTest {
             assertEquals(1, logs.size());
             assertEquals(UserSynchronizationResultEnum.SUCCESS_SYNC, logs.get(0).getResult());
             assertEquals("Initial role\n" +
-                    "system-minimal\n",
+                    "system-minimal",
                     logs.get(0).getRolesBefore());
             assertEquals("Initial role\n" +
-                    "ldap-administrator\n" +
                     "Simple role\n" +
-                    "Scripting role\n", logs.get(0).getRolesAfter());
+                    "Scripting role", logs.get(0).getRolesAfter());
             assertEquals("Test group 1", logs.get(0).getAccessGroupBefore());
             assertEquals("Company", logs.get(0).getAccessGroupAfter());
             assertEquals("1)Custom. Test custom Rule(com.haulmont.addon.ldap.core.custom.TestCustomLdapRule)\n" +
