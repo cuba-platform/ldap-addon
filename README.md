@@ -127,6 +127,11 @@ If you want to use the component functionality in several CUBA applications, you
 
 # Component Functionalities
 
+## Predefined roles
+
+- **LDAP Admin role** - LDAP configuration role
+- **Default LDAP role** - Default LDAP role, allows user to login with LDAP credentials
+
 ## LDAP Config
 
 After installation, check that all configured property values are displayed properly
