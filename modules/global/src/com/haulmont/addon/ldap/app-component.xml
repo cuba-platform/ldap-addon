@@ -28,6 +28,8 @@
                   value="+com/haulmont/addon/ldap/metadata.xml"/>
         <property name="cuba.viewsConfig"
                   value="+com/haulmont/addon/ldap/views.xml"/>
+        <property name="cuba.creditsConfig"
+                  value="+com/haulmont/addon/ldap/credits.xml"/>
     </module>
     <module blocks="core"
             dependsOn="global"
