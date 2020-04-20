@@ -152,6 +152,8 @@ public class MatchingRuleTest {
             testGroup.setName("Test group");
             daoHelper.persistOrMerge(testGroup);
 
+            persistence.getEntityManager().flush();
+
             prepareTerminalAttributeTest(testGroup, true, "joes", true);
 
             User joes = cubaUserDao.getOrCreateCubaUser("joes");
