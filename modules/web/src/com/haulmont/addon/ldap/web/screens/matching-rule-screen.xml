@@ -26,8 +26,10 @@
                               datasourceClass="com.haulmont.addon.ldap.web.screens.datasources.MatchingRuleDatasource"/>
         <collectionDatasource id="appliedMatchingRulesDs"
                               allowCommit="false"
+                              refreshMode="NEVER"
                               class="com.haulmont.addon.ldap.entity.AbstractCommonMatchingRule"/>
         <collectionDatasource id="appliedRolesDs"
+                              refreshMode="NEVER"
                               allowCommit="false"
                               class="com.haulmont.cuba.security.entity.Role"
                               view="_local"/>
