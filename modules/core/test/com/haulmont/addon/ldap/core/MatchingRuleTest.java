@@ -147,14 +147,7 @@ public class MatchingRuleTest {
     @Test
     public void testTerminalAttribute() {
         try (Transaction ignored = persistence.createTransaction()) {
-
-            Group testGroup = metadata.create(Group.class);
-            testGroup.setName("Test group");
-            daoHelper.persistOrMerge(testGroup);
-
-            persistence.getEntityManager().flush();
-
-            prepareTerminalAttributeTest(testGroup, true, "joes", true);
+            prepareTerminalAttributeTest(true, "joes", true);
 
             User joes = cubaUserDao.getOrCreateCubaUser("joes");
 
@@ -165,14 +158,14 @@ public class MatchingRuleTest {
 
             assertEquals(1, ldapMatchingRuleContext.getAppliedRules().size());
             assertTrue(ldapMatchingRuleContext.getAppliedRules().stream().allMatch(mr -> MatchingRuleType.SCRIPTING == mr.getRuleType()));
-            assertEquals("Test group", joes.getGroup().getName());
+            assertEquals("Test group joes", joes.getGroup().getName());
             assertEquals(1, joes.getUserRoles().size());
-            assertEquals("Scripting role 1", joes.getUserRoles().get(0).getRole().getName());
+            assertEquals("Scripting role 1 joes", joes.getUserRoles().get(0).getRole().getName());
             assertTrue(ldapMatchingRuleContext.isTerminalRuleApply());
 
             cubaUserDao.saveCubaUser(joes, joes, ldapMatchingRuleContext);
             persistence.getEntityManager().flush();
-            prepareTerminalAttributeTest(testGroup, false, "bena", false);
+            prepareTerminalAttributeTest(false, "bena", false);
 
             User bena = cubaUserDao.getOrCreateCubaUser("bena");
 
@@ -184,10 +177,10 @@ public class MatchingRuleTest {
 
             assertEquals(2, ldapMatchingRuleContext.getAppliedRules().size());
             assertTrue(ldapMatchingRuleContext.getAppliedRules().stream().allMatch(mr -> MatchingRuleType.SCRIPTING == mr.getRuleType()));
-            assertEquals("Test group", bena.getGroup().getName());
+            assertEquals("Test group bena", bena.getGroup().getName());
             assertEquals(2, bena.getUserRoles().size());
-            assertTrue(bena.getUserRoles().stream().anyMatch(ur -> ur.getRole().getName().equals("Scripting role 1")));
-            assertTrue(bena.getUserRoles().stream().anyMatch(ur -> ur.getRole().getName().equals("Scripting role 2")));
+            assertTrue(bena.getUserRoles().stream().anyMatch(ur -> ur.getRole().getName().equals("Scripting role 1 bena")));
+            assertTrue(bena.getUserRoles().stream().anyMatch(ur -> ur.getRole().getName().equals("Scripting role 2 bena")));
             assertFalse(ldapMatchingRuleContext.isTerminalRuleApply());
 
             cubaUserDao.saveCubaUser(bena, bena, ldapMatchingRuleContext);
@@ -307,9 +300,13 @@ public class MatchingRuleTest {
 
     }
 
-    private void prepareTerminalAttributeTest(Group testGroup, boolean terminal, String login, boolean createCustom) {
+    private void prepareTerminalAttributeTest(boolean terminal, String login, boolean createCustom) {
 
         persistence.getEntityManager().getDelegate().clear();
+
+        Group testGroup = metadata.create(Group.class);
+        testGroup.setName("Test group " + login);
+        daoHelper.persistOrMerge(testGroup);
 
         //Custom
         if (createCustom) {
@@ -327,7 +324,7 @@ public class MatchingRuleTest {
 
         //Scripting 1
         Role scriptingRole1 = metadata.create(Role.class);
-        scriptingRole1.setName("Scripting role 1");
+        scriptingRole1.setName("Scripting role 1 " + login);
 
         MatchingRuleOrder scriptingOrder1 = metadata.create(MatchingRuleOrder.class);
         scriptingOrder1.setOrder(2);
@@ -348,7 +345,7 @@ public class MatchingRuleTest {
 
         //Scripting 2
         Role scriptingRole2 = metadata.create(Role.class);
-        scriptingRole2.setName("Scripting role 2");
+        scriptingRole2.setName("Scripting role 2 " + login);
 
         MatchingRuleOrder scriptingOrder2 = metadata.create(MatchingRuleOrder.class);
         scriptingOrder2.setOrder(3);
