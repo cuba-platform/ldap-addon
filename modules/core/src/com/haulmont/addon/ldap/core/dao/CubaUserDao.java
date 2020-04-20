@@ -60,7 +60,7 @@ public class CubaUserDao {
     public User getOrCreateCubaUser(String login) {
         login = StringUtils.lowerCase(login);
         TypedQuery<User> query = persistence.getEntityManager()
-                .createQuery("select cu from sec$User cu where cu.login = :login", User.class);
+                .createQuery("select cu from sec$User cu where cu.loginLowerCase = :login", User.class);
         query.setParameter("login", login);
         query.setViewName("sec-user-view-with-group-roles");
 
