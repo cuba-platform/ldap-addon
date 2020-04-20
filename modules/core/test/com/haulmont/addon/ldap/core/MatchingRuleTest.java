@@ -147,7 +147,12 @@ public class MatchingRuleTest {
     @Test
     public void testTerminalAttribute() {
         try (Transaction ignored = persistence.createTransaction()) {
-            prepareTerminalAttributeTest(true, "joes", true);
+
+            Group testGroup = metadata.create(Group.class);
+            testGroup.setName("Test group");
+            daoHelper.persistOrMerge(testGroup);
+
+            prepareTerminalAttributeTest(testGroup, true, "joes", true);
 
             User joes = cubaUserDao.getOrCreateCubaUser("joes");
 
@@ -165,7 +170,7 @@ public class MatchingRuleTest {
 
             cubaUserDao.saveCubaUser(joes, joes, ldapMatchingRuleContext);
             persistence.getEntityManager().flush();
-            prepareTerminalAttributeTest(false, "bena", false);
+            prepareTerminalAttributeTest(testGroup, false, "bena", false);
 
             User bena = cubaUserDao.getOrCreateCubaUser("bena");
 
@@ -300,13 +305,9 @@ public class MatchingRuleTest {
 
     }
 
-    private void prepareTerminalAttributeTest(boolean terminal, String login, boolean createCustom) {
+    private void prepareTerminalAttributeTest(Group testGroup, boolean terminal, String login, boolean createCustom) {
 
         persistence.getEntityManager().getDelegate().clear();
-
-        Group testGroup = metadata.create(Group.class);
-        testGroup.setName("Test group");
-        daoHelper.persistOrMerge(testGroup);
 
         //Custom
         if (createCustom) {
@@ -446,7 +447,7 @@ public class MatchingRuleTest {
             //Scripting2
             Role scriptingRole2 = createRole("Scripting role 2");
             String ruleExpression2 = "{ldapContext}.ldapUser.login=='joes'";
-            ScriptingMatchingRule scriptingMatchingRule2  = createScriptingRule(testGroup2, createStatus(true),
+            ScriptingMatchingRule scriptingMatchingRule2 = createScriptingRule(testGroup2, createStatus(true),
                     createOrder(3), ruleExpression2, scriptingRole2);
             daoHelper.persistOrMerge(scriptingRole2);
             daoHelper.persistOrMerge(scriptingMatchingRule2);
@@ -480,7 +481,7 @@ public class MatchingRuleTest {
             assertEquals(1, logs.size());
             assertEquals(UserSynchronizationResultEnum.SUCCESS_SYNC, logs.get(0).getResult());
             assertEquals("Initial role\n" +
-                    "system-minimal",
+                            "system-minimal",
                     logs.get(0).getRolesBefore());
             assertEquals("Initial role\n" +
                     "Simple role\n" +
