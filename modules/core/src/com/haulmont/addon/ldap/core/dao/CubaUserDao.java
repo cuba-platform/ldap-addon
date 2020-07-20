@@ -87,26 +87,36 @@ public class CubaUserDao {
     @Transactional
     public void saveCubaUser(User cubaUser, User beforeRulesApplyUserState, LdapMatchingRuleContext ldapMatchingRuleContext) {
         EntityManager entityManager = persistence.getEntityManager();
-        User mergedUser = daoHelper.persistOrMerge(cubaUser);
-        List<String> newRoles = mergedUser.getUserRoles().stream()
+        List<String> newRoles = cubaUser.getUserRoles().stream()
                 .map(this::getRoleName)
                 .collect(toList());
-        beforeRulesApplyUserState.getUserRoles().stream()
-                .filter(ur -> !newRoles.contains(getRoleName(ur)))
-                .forEach(entityManager::remove);
-        mergedUser.getUserRoles().stream()
-                .peek(ur -> {
+        List<String> oldRoles = beforeRulesApplyUserState.getUserRoles().stream()
+                .map(this::getRoleName)
+                .collect(toList());
+        List<String> rolesToPersist = newRoles.stream()
+                .filter(ur -> !oldRoles.contains(ur))
+                .collect(toList());
+        cubaUser.getUserRoles()
+                .forEach(ur -> {
                     if (rolesService.getRoleDefinitionByName(getRoleName(ur)) != null) {
                         ur.setRole(null);
                     } else {
                         ur.setRoleName(null);
                     }
-                })
+                });
+        User mergedUser = daoHelper.persistOrMerge(cubaUser);
+        beforeRulesApplyUserState.getUserRoles().stream()
+                .filter(ur -> !newRoles.contains(getRoleName(ur)))
+                .forEach(entityManager::remove);
+
+        cubaUser.getUserRoles().stream()
+                .filter(ur -> rolesToPersist.contains(getRoleName(ur)))
+                .peek(ur -> ur.setUser(mergedUser))
                 .forEach(entityManager::persist);
         userSynchronizationLogDao.logUserSynchronization(ldapMatchingRuleContext, beforeRulesApplyUserState);
     }
 
-    private String getRoleName(UserRole ur){
+    private String getRoleName(UserRole ur) {
         return ur.getRole() != null ? ur.getRole().getName() : ur.getRoleName();
     }
 
