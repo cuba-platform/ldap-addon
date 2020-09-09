@@ -87,6 +87,13 @@ public class CubaUserDao {
     @Transactional
     public void saveCubaUser(User cubaUser, User beforeRulesApplyUserState, LdapMatchingRuleContext ldapMatchingRuleContext) {
         EntityManager entityManager = persistence.getEntityManager();
+        cubaUser.getUserRoles().forEach(ur -> {
+            if (rolesService.getRoleDefinitionByName(getRoleName(ur)) != null) {
+                ur.setRole(null);
+            } else {
+                ur.setRoleName(null);
+            }
+        });
         User mergedUser = daoHelper.persistOrMerge(cubaUser);
         List<String> newRoles = mergedUser.getUserRoles().stream()
                 .map(this::getRoleName)
@@ -94,15 +101,7 @@ public class CubaUserDao {
         beforeRulesApplyUserState.getUserRoles().stream()
                 .filter(ur -> !newRoles.contains(getRoleName(ur)))
                 .forEach(entityManager::remove);
-        mergedUser.getUserRoles().stream()
-                .peek(ur -> {
-                    if (rolesService.getRoleDefinitionByName(getRoleName(ur)) != null) {
-                        ur.setRole(null);
-                    } else {
-                        ur.setRoleName(null);
-                    }
-                })
-                .forEach(entityManager::persist);
+        mergedUser.getUserRoles().forEach(entityManager::persist);
         userSynchronizationLogDao.logUserSynchronization(ldapMatchingRuleContext, beforeRulesApplyUserState);
     }
 
