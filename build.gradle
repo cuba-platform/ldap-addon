@@ -15,7 +15,7 @@
  */
 
 buildscript {
-    ext.cubaVersion = rootProject.hasProperty('cubaVersion') ? rootProject['cubaVersion'] : '7.2-SNAPSHOT'
+    ext.cubaVersion = rootProject.hasProperty('cubaVersion') ? rootProject['cubaVersion'] : '7.2.7'
     repositories {
         mavenLocal()
         if (System.getenv('HAULMONT_REPOSITORY_URL')) {
@@ -59,8 +59,8 @@ apply(plugin: 'addon-gradle-plugin')
 cuba {
     artifact {
         group = 'com.haulmont.addon.ldap'
-        version = '1.5f'
-        isSnapshot = true
+        version = '1.5.2f'
+        isSnapshot = false
     }
     tomcat {
         dir = "$project.rootDir/deploy/tomcat"
