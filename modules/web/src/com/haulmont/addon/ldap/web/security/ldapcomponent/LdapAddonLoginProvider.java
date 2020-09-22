@@ -79,14 +79,16 @@ public class LdapAddonLoginProvider implements LoginProvider, Ordered {
             return null;
         }
 
-        if (RememberMeCredentials.class.isAssignableFrom(credentials.getClass())) {
-            UserSynchronizationResultDto userSynchronizationResult =
-                    userSynchronizationService.synchronizeUser(((RememberMeCredentials) credentials).getLogin(), true, null, null, null);
-            if (userSynchronizationResult.isInactiveUser()) {
-                throw new LoginException(messages.formatMessage(LdapAddonLoginProvider.class,
-                        "LoginException.InactiveUserLoginAttempt", ((RememberMeCredentials) credentials).getLocale()));
+        if (ldapPropertiesConfig.getSynchronizeInfoAfterLogin()) {
+            if (RememberMeCredentials.class.isAssignableFrom(credentials.getClass())) {
+                UserSynchronizationResultDto userSynchronizationResult =
+                        userSynchronizationService.synchronizeUser(((RememberMeCredentials) credentials).getLogin(), true, null, null, null);
+                if (userSynchronizationResult.isInactiveUser()) {
+                    throw new LoginException(messages.formatMessage(LdapAddonLoginProvider.class,
+                            "LoginException.InactiveUserLoginAttempt", ((RememberMeCredentials) credentials).getLocale()));
+                }
+                return null;
             }
-            return null;
         }
 
         LoginPasswordCredentials loginPasswordCredentials = (LoginPasswordCredentials) credentials;
@@ -104,7 +106,7 @@ public class LdapAddonLoginProvider implements LoginProvider, Ordered {
             }
         } else {
             final User cubaUser = userSynchronizationService.getExistingCubaUser(loginPasswordCredentials.getLogin());
-            if (Objects.isNull(cubaUser))
+            if (cubaUser == null)
                 throw new LoginException(messages.formatMessage(LdapAddonLoginProvider.class,
                         "LoginException.UserNotRegistered", loginPasswordCredentials.getLocale()));
         }

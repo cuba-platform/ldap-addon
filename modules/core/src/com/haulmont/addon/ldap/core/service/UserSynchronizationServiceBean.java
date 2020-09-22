@@ -232,6 +232,7 @@ public class UserSynchronizationServiceBean implements UserSynchronizationServic
     @Override
     public User getExistingCubaUser(String login){
         return cubaUserDao.getCubaUsersByLogin(Collections.singletonList(login)).stream()
+                .filter(User::getActive)
                 .findFirst().orElse(null);
     }
 
