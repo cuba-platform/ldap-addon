@@ -63,7 +63,7 @@ public class CubaUserDao {
     public User getOrCreateCubaUser(String login) {
         login = StringUtils.lowerCase(login);
         TypedQuery<User> query = persistence.getEntityManager()
-                .createQuery("select cu from sec$User cu where cu.login = :login", User.class);
+                .createQuery("select cu from sec$User cu where cu.loginLowerCase = :login", User.class);
         query.setParameter("login", login);
         query.setViewName("sec-user-view-with-group-roles");
 
@@ -87,23 +87,26 @@ public class CubaUserDao {
     @Transactional
     public void saveCubaUser(User cubaUser, User beforeRulesApplyUserState, LdapMatchingRuleContext ldapMatchingRuleContext) {
         EntityManager entityManager = persistence.getEntityManager();
+        cubaUser.getUserRoles().forEach(ur -> {
+            if (rolesService.getRoleDefinitionByName(getRoleName(ur)) != null) {
+                ur.setRole(null);
+            } else {
+                ur.setRoleName(null);
+            }
+        });
         User mergedUser = daoHelper.persistOrMerge(cubaUser);
         List<String> newRoles = mergedUser.getUserRoles().stream()
-                .map(UserRole::getRoleName)
+                .map(this::getRoleName)
                 .collect(toList());
         beforeRulesApplyUserState.getUserRoles().stream()
-                .filter(ur -> !newRoles.contains(ur.getRoleName()))
+                .filter(ur -> !newRoles.contains(getRoleName(ur)))
                 .forEach(entityManager::remove);
-        mergedUser.getUserRoles().stream()
-                .peek(ur -> {
-                    if (rolesService.getRoleDefinitionByName(ur.getRoleName()) != null) {
-                        ur.setRole(null);
-                    } else {
-                        ur.setRoleName(null);
-                    }
-                })
-                .forEach(entityManager::persist);
+        mergedUser.getUserRoles().forEach(entityManager::persist);
         userSynchronizationLogDao.logUserSynchronization(ldapMatchingRuleContext, beforeRulesApplyUserState);
+    }
+
+    private String getRoleName(UserRole ur) {
+        return ur.getRole() != null ? ur.getRole().getName() : ur.getRoleName();
     }
 
     @Transactional(readOnly = true)

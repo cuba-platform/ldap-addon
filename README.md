@@ -28,6 +28,7 @@ ____________________
 - [Scheduled Task Configuration](#scheduled-task-configuration)
 - [EventListeners to Interact with LDAP Add-on Events](#eventlisteners-to-interact-with-ldap-add-on-events)
 - [Appendix A. Application Properties](#appendix-a)
+- [Release notes](https://github.com/cuba-platform/ldap-addon/releases)
 
 # Overview
 
@@ -87,7 +88,7 @@ The add-on corresponding to the used platform version will be installed.
 
  | Platform Version | Add-on Version   |
 |------------------|-------------------|
-| 7.2.x            | 1.5.0             |
+| 7.2.x            | 1.5.2             |
 | 7.1.x            | 1.4.0             |
 | 7.0.x            | 1.3.2             |
 | 6.10.x           | 1.2.0             |
@@ -133,6 +134,11 @@ ldap.expiringSessionsEnable = true
 If you want to use the component functionality in several CUBA applications, you have to enable it for each of them separately.
 
 # Component Functionalities
+
+## Predefined roles
+
+- **LDAP Admin role** - LDAP configuration role
+- **Default LDAP role** - Default LDAP role, allows user to login with LDAP credentials
 
 ## LDAP Config
 

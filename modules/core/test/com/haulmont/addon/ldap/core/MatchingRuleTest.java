@@ -158,9 +158,9 @@ public class MatchingRuleTest {
 
             assertEquals(1, ldapMatchingRuleContext.getAppliedRules().size());
             assertTrue(ldapMatchingRuleContext.getAppliedRules().stream().allMatch(mr -> MatchingRuleType.SCRIPTING == mr.getRuleType()));
-            assertEquals("Test group", joes.getGroup().getName());
+            assertEquals("Test group joes", joes.getGroup().getName());
             assertEquals(1, joes.getUserRoles().size());
-            assertEquals("Scripting role 1", joes.getUserRoles().get(0).getRole().getName());
+            assertEquals("Scripting role 1 joes", joes.getUserRoles().get(0).getRole().getName());
             assertTrue(ldapMatchingRuleContext.isTerminalRuleApply());
 
             cubaUserDao.saveCubaUser(joes, joes, ldapMatchingRuleContext);
@@ -177,10 +177,10 @@ public class MatchingRuleTest {
 
             assertEquals(2, ldapMatchingRuleContext.getAppliedRules().size());
             assertTrue(ldapMatchingRuleContext.getAppliedRules().stream().allMatch(mr -> MatchingRuleType.SCRIPTING == mr.getRuleType()));
-            assertEquals("Test group", bena.getGroup().getName());
+            assertEquals("Test group bena", bena.getGroup().getName());
             assertEquals(2, bena.getUserRoles().size());
-            assertTrue(bena.getUserRoles().stream().anyMatch(ur -> ur.getRole().getName().equals("Scripting role 1")));
-            assertTrue(bena.getUserRoles().stream().anyMatch(ur -> ur.getRole().getName().equals("Scripting role 2")));
+            assertTrue(bena.getUserRoles().stream().anyMatch(ur -> ur.getRole().getName().equals("Scripting role 1 bena")));
+            assertTrue(bena.getUserRoles().stream().anyMatch(ur -> ur.getRole().getName().equals("Scripting role 2 bena")));
             assertFalse(ldapMatchingRuleContext.isTerminalRuleApply());
 
             cubaUserDao.saveCubaUser(bena, bena, ldapMatchingRuleContext);
@@ -305,7 +305,7 @@ public class MatchingRuleTest {
         persistence.getEntityManager().getDelegate().clear();
 
         Group testGroup = metadata.create(Group.class);
-        testGroup.setName("Test group");
+        testGroup.setName("Test group " + login);
         daoHelper.persistOrMerge(testGroup);
 
         //Custom
@@ -324,7 +324,7 @@ public class MatchingRuleTest {
 
         //Scripting 1
         Role scriptingRole1 = metadata.create(Role.class);
-        scriptingRole1.setName("Scripting role 1");
+        scriptingRole1.setName("Scripting role 1 " + login);
 
         MatchingRuleOrder scriptingOrder1 = metadata.create(MatchingRuleOrder.class);
         scriptingOrder1.setOrder(2);
@@ -345,7 +345,7 @@ public class MatchingRuleTest {
 
         //Scripting 2
         Role scriptingRole2 = metadata.create(Role.class);
-        scriptingRole2.setName("Scripting role 2");
+        scriptingRole2.setName("Scripting role 2 " + login);
 
         MatchingRuleOrder scriptingOrder2 = metadata.create(MatchingRuleOrder.class);
         scriptingOrder2.setOrder(3);
@@ -446,7 +446,7 @@ public class MatchingRuleTest {
             //Scripting2
             Role scriptingRole2 = createRole("Scripting role 2");
             String ruleExpression2 = "{ldapContext}.ldapUser.login=='joes'";
-            ScriptingMatchingRule scriptingMatchingRule2  = createScriptingRule(testGroup2, createStatus(true),
+            ScriptingMatchingRule scriptingMatchingRule2 = createScriptingRule(testGroup2, createStatus(true),
                     createOrder(3), ruleExpression2, scriptingRole2);
             daoHelper.persistOrMerge(scriptingRole2);
             daoHelper.persistOrMerge(scriptingMatchingRule2);
@@ -471,9 +471,8 @@ public class MatchingRuleTest {
             assertEquals("Manager", syncedUser.getPosition());
             assertEquals(true, syncedUser.getActive());
             assertEquals("Company", syncedUser.getGroup().getName());
-            assertEquals(4, syncedUser.getUserRoles().size());
+            assertEquals(3, syncedUser.getUserRoles().size());
             assertTrue(syncedUser.getUserRoles().stream().anyMatch(ur -> ur.getRole().getName().equals("Initial role")));
-            assertTrue(syncedUser.getUserRoles().stream().anyMatch(ur -> ur.getRole().getName().equals("ldap-administrator")));
             assertTrue(syncedUser.getUserRoles().stream().anyMatch(ur -> ur.getRole().getName().equals("Simple role")));
             assertTrue(syncedUser.getUserRoles().stream().anyMatch(ur -> ur.getRole().getName().equals("Scripting role")));
 
@@ -481,12 +480,11 @@ public class MatchingRuleTest {
             assertEquals(1, logs.size());
             assertEquals(UserSynchronizationResultEnum.SUCCESS_SYNC, logs.get(0).getResult());
             assertEquals("Initial role\n" +
-                    "system-minimal\n",
+                            "system-minimal",
                     logs.get(0).getRolesBefore());
             assertEquals("Initial role\n" +
-                    "ldap-administrator\n" +
                     "Simple role\n" +
-                    "Scripting role\n", logs.get(0).getRolesAfter());
+                    "Scripting role", logs.get(0).getRolesAfter());
             assertEquals("Test group 1", logs.get(0).getAccessGroupBefore());
             assertEquals("Company", logs.get(0).getAccessGroupAfter());
             assertEquals("1)Custom. Test custom Rule(com.haulmont.addon.ldap.core.custom.TestCustomLdapRule)\n" +

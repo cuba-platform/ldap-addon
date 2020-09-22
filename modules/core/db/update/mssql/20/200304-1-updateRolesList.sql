@@ -1,1 +1,5 @@
-update LDAP_MATCHING_RULE mr set ROLES_LIST = (select STRING_AGG(r.name,';') from LDAP_MATCHING_RULE_ROLE_LINK mrl inner join SEC_ROLE r on r.id = mrl.ROLE_ID where mrl.MATCHING_RULE_ID = mr.id)
+update LDAP_MATCHING_RULE set ROLES_LIST = (SELECT ';' + r.name
+      FROM LDAP_MATCHING_RULE_ROLE_LINK AS mrl
+      INNER JOIN SEC_ROLE r on r.id = mrl.ROLE_ID
+      WHERE mrl.MATCHING_RULE_ID = LDAP_MATCHING_RULE.id
+      FOR XML PATH(''))

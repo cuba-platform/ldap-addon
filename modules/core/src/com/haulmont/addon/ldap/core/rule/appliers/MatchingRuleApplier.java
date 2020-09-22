@@ -23,6 +23,7 @@ import com.haulmont.cuba.core.global.Metadata;
 import com.haulmont.cuba.security.entity.Role;
 import com.haulmont.cuba.security.entity.User;
 import com.haulmont.cuba.security.entity.UserRole;
+import com.haulmont.cuba.security.role.RolesService;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
@@ -43,6 +44,9 @@ public class MatchingRuleApplier {
 
     @Inject
     private Metadata metadata;
+
+    @Inject
+    private RolesService rolesService;
 
     /**
      * Collects all user roles and group that should be applied for user into LdapMatchingRuleContext
@@ -79,11 +83,25 @@ public class MatchingRuleApplier {
     private void applyUserRoles(User cubaUser, Collection<Role> rolesToApply, Collection<UserRole> rolesBeforeApply) {
         rolesToApply.stream()
                 .map(role -> rolesBeforeApply.stream()
-                        .filter(ur -> ur.getRole() != null)
-                        .filter(ur -> ur.getRole().equals(role))
+                        .filter(ur -> isSameRole(role, ur))
                         .findFirst()
                         .orElse(createUserRole(cubaUser, role)))
                 .forEach(cubaUser.getUserRoles()::add);
+    }
+
+    private boolean isSameRole(Role role, UserRole ur) {
+        if (ur.getRole() != null && ur.getRole().equals(role)) {
+            return true;
+        }
+        String roleName = getRoleName(ur);
+        if (rolesService.getRoleDefinitionByName(roleName) != null) {
+            return roleName.equals(role.getName());
+        }
+        return false;
+    }
+
+    private String getRoleName(UserRole ur) {
+        return ur.getRole() != null ? ur.getRole().getName() : ur.getRoleName();
     }
 
     private UserRole createUserRole(User user, Role role) {
