@@ -14,6 +14,7 @@
     - [Configuration](#configuration)
     - [Additional Information](#additional-information)
 - [Component Functionalities](#component-functionalities)
+    - [Predefined Roles](#predefined-roles)
     - [LDAP Config](#ldap-config)
     - [LDAP Matching Rules](#ldap-matching-rules)
     - [Testing LDAP Matching Rules](#testing-ldap-matching-rules)
@@ -128,10 +129,10 @@ If you want to use the component functionality in several CUBA applications, you
 
 # Component Functionalities
 
-## Predefined roles
+## Predefined Roles
 
-- **LDAP Admin role** - LDAP configuration role
-- **Default LDAP role** - Default LDAP role, allows user to login with LDAP credentials
+- **LDAP Admin role** - LDAP configuration role.
+- **Default LDAP role** - default LDAP role, allows user to login with LDAP credentials.
 
 ## LDAP Config
 
