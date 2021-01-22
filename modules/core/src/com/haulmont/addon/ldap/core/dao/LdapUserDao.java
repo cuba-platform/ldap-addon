@@ -313,8 +313,6 @@ public class LdapUserDao {
      */
     class ActiveDirectoryDomain {
 
-        private static final String CN_USERS = "CN=Users";
-
         final String nETBIOSName;
         final String nCName;
         final String dnsRoot;
@@ -339,6 +337,7 @@ public class LdapUserDao {
                 ldapContextSource.setPassword(ldapPropertiesConfig.getContextSourcePassword());
                 ldapContextSource.setUrl(getUrl());
                 ldapContextSource.setBase(nCName);
+                ldapContextSource.setReferral("follow");
                 ldapContextSource.afterPropertiesSet();
             }
             return ldapContextSource;
@@ -362,11 +361,11 @@ public class LdapUserDao {
                 searchControls.setCountLimit(1);
             }
 
-            return getLdapTemplate().search(CN_USERS, query, new LdapUserMapper(ldapConfigDao.getLdapConfig()));
+            return getLdapTemplate().search(LdapUtils.emptyLdapName(), query, new LdapUserMapper(ldapConfigDao.getLdapConfig()));
         }
 
         boolean authenticate(String filter, String password) throws LoginException {
-            return getLdapTemplate().authenticate(CN_USERS, filter, password,
+            return getLdapTemplate().authenticate(LdapUtils.emptyLdapName(), filter, password,
                     (ctx, ldapEntryIdentification) -> {},
                     e -> logger.error(String.format("Could not auth user by query: %s", filter), e));
         }

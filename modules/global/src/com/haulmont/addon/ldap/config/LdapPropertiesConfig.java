@@ -83,6 +83,10 @@ public interface LdapPropertiesConfig extends Config {
     @Property("ldap.synchronizeCommonInfoFromLdap")
     Boolean getSynchronizeCommonInfoFromLdap();
 
+    @Source(type = SourceType.APP)
+    @Property("ldap.synchronizeInfoAfterLogin")
+    Boolean getSynchronizeInfoAfterLogin();
+
     void setContextSourceUrl(String contextSourceUrl);
 
     void setContextSourceBase(String contextSourceBase);
@@ -108,5 +112,7 @@ public interface LdapPropertiesConfig extends Config {
     void setCubaGroupForSynchronizationInverse(Boolean cubaGroupForSynchronizationInverse);
 
     void setSynchronizeCommonInfoFromLdap(Boolean synchronizeCommonInfoFromLdap);
+
+    void setSynchronizeInfoAfterLogin(Boolean synchronizeInfoAfterLogin);
 
 }
