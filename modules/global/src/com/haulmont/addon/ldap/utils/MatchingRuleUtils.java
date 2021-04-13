@@ -21,10 +21,12 @@ import com.haulmont.addon.ldap.entity.*;
 import com.haulmont.cuba.security.entity.Role;
 import com.haulmont.cuba.security.entity.User;
 import com.haulmont.cuba.security.entity.UserRole;
+import com.haulmont.cuba.security.role.RolesService;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
+import javax.inject.Inject;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -36,6 +38,9 @@ import static org.apache.commons.collections4.CollectionUtils.isEqualCollection;
 @Component(NAME)
 public class MatchingRuleUtils {
     public static final String NAME = "ldap_MatchingRuleUtils";
+
+    @Inject
+    private RolesService rolesService;
 
     private String getStringCondition(List<SimpleRuleCondition> conditions) {
         StringBuilder sb = new StringBuilder();
@@ -129,18 +134,22 @@ public class MatchingRuleUtils {
         return true;
     }
 
-    public static List<Role> getRoles(User user) {
+    public List<Role> getRoles(User user) {
         return user.getUserRoles().stream()
+                .peek(ur -> {
+                    if (ur.getRole() == null) {
+                        ur.setRole(rolesService.getRoleDefinitionAndTransformToRole(ur.getRoleName()));
+                    }
+                })
                 .map(UserRole::getRole)
-                .filter(Objects::nonNull)
                 .collect(Collectors.toList());
     }
 
-    public static boolean isEqualRoles(User first, User second) {
+    public boolean isEqualRoles(User first, User second) {
         return isEqualCollection(getRoles(first), getRoles(second));
     }
 
-    public static boolean isEqualGroups(User first, User second) {
+    public boolean isEqualGroups(User first, User second) {
         return Objects.equals(first.getGroup(), second.getGroup());
     }
 }
