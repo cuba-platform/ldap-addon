@@ -18,11 +18,15 @@ package com.haulmont.addon.ldap.web.simplematchingrule;
 
 import com.haulmont.addon.ldap.entity.SimpleMatchingRule;
 import com.haulmont.addon.ldap.entity.SimpleRuleCondition;
+import com.haulmont.addon.ldap.service.MatchingRuleAccessGroupService;
 import com.haulmont.addon.ldap.web.datasource.RuleRolesDatasource;
+import com.haulmont.cuba.core.global.EntityStates;
 import com.haulmont.cuba.gui.components.AbstractEditor;
+import com.haulmont.cuba.gui.components.PickerField;
 import com.haulmont.cuba.gui.components.Table;
 import com.haulmont.cuba.gui.components.ValidationErrors;
 import com.haulmont.cuba.gui.screen.Subscribe;
+import com.haulmont.cuba.security.entity.Group;
 import com.haulmont.cuba.security.entity.Role;
 
 import javax.inject.Inject;
@@ -39,10 +43,22 @@ public class SimpleMatchingRuleEdit extends AbstractEditor<SimpleMatchingRule> {
     @Inject
     private RuleRolesDatasource rolesDs;
 
-    @Subscribe
+	@Inject
+	private MatchingRuleAccessGroupService matchingRuleAccessGroupService;
+
+	@Named("accessGroupFieldGroup.accessGroupField")
+	private PickerField<Group> accessGroupField;
+
+	@Inject
+	private EntityStates entityStates;
+
+	@Subscribe
     public void onBeforeShow(BeforeShowEvent event) {
         rolesDs.init(getItem());
         rolesDs.refresh();
+        if (!entityStates.isNew(getEditedEntity())) {
+        	accessGroupField.setValue(matchingRuleAccessGroupService.getAccessGroupMatchingRule(getEditedEntity()));
+        }
     }
 
     @Override

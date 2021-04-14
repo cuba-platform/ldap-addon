@@ -8,16 +8,17 @@ create table LDAP_MATCHING_RULE (
     UPDATED_BY varchar(50),
     DELETE_TS timestamp,
     DELETED_BY varchar(50),
-    RULE_TYPE varchar(50) not null,
     MATCHING_RULE_STATUS_ID varchar(36) not null,
     MATCHING_RULE_ORDER_ID varchar(36) not null,
     DESCRIPTION varchar(1500),
+    RULE_TYPE varchar(50) not null,
     --
-    ACCESS_GROUP_ID varchar(36),
     ROLES_LIST longvarchar,
+    ACCESS_GROUP_ID varchar(36),
     IS_TERMINAL_RULE boolean,
     IS_OVERRIDE_EXISTING_ROLES boolean,
     IS_OVERRIDE_EXIST_ACCESS_GRP boolean,
+    ACCESS_GROUP_NAME varchar(255),
     --
     -- from ldap$ScriptingMatchingRule
     STRING_CONDITION longvarchar,

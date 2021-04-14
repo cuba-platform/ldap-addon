@@ -18,6 +18,7 @@ create table LDAP_MATCHING_RULE (
     IS_TERMINAL_RULE char(1),
     IS_OVERRIDE_EXISTING_ROLES char(1),
     IS_OVERRIDE_EXIST_ACCESS_GRP char(1),
+    ACCESS_GROUP_NAME varchar2(255),
     --
     -- from ldap$ScriptingMatchingRule
     STRING_CONDITION clob,

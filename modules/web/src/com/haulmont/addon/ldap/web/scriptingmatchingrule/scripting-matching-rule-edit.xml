@@ -66,9 +66,10 @@
                            align="MIDDLE_CENTER"/>
             </hbox>
         </flowBox>
-        <fieldGroup datasource="scriptingMatchingRuleDs">
+        <fieldGroup id="accessGroupFieldGroup" datasource="scriptingMatchingRuleDs">
             <column width="250px">
-                <field caption="msg://accessGroupFieldCaption"
+                <field id="accessGroupField"
+                       caption="msg://accessGroupFieldCaption"
                        property="accessGroup"
                        required="true"
                        requiredMessage="msg://validationEmptyGroup"/>

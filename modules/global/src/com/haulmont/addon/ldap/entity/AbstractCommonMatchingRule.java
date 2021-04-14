@@ -32,7 +32,7 @@ public abstract class AbstractCommonMatchingRule extends StandardEntity implemen
     private static final long serialVersionUID = 1956446424046023194L;
 
     @NotNull
-    @Column(name = "RULE_TYPE", nullable = false)
+    @Column(name = "RULE_TYPE", nullable = false, insertable = false, updatable = false)
     private String ruleType;
 
     @OneToOne(fetch = FetchType.LAZY, optional = false, cascade = CascadeType.ALL)

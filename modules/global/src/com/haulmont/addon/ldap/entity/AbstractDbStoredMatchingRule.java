@@ -39,115 +39,124 @@ import java.util.stream.Collectors;
  */
 @PublishEntityChangedEvents
 @NamePattern("%s|description")
-@Listeners("ldap_RuleDetachListener")
+@Listeners({"ldap_RuleDetachListener", "ldap_RuleEntityListener"})
 @DiscriminatorValue("ABSTRACT")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "RULE_TYPE", discriminatorType = DiscriminatorType.STRING)
 @Table(name = "LDAP_MATCHING_RULE")
 @Entity(name = "ldap$AbstractDbStoredMatchingRule")
 public abstract class AbstractDbStoredMatchingRule extends AbstractCommonMatchingRule implements MatchingRule {
-    private static final long serialVersionUID = 1956446424046023195L;
+	private static final long serialVersionUID = 1956446424046023195L;
+	@Lob
+	@Column(name = "ROLES_LIST")
+	protected String rolesList;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ACCESS_GROUP_ID")
-    private Group accessGroup;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "ACCESS_GROUP_ID")
+	private Group accessGroup;
 
-    @Lob
-    @Column(name = "ROLES_LIST")
-    protected String rolesList;
+	@Column(name = "IS_TERMINAL_RULE")
+	private Boolean isTerminalRule = false;
 
-    @Column(name = "IS_TERMINAL_RULE")
-    private Boolean isTerminalRule = false;
+	@Column(name = "IS_OVERRIDE_EXISTING_ROLES")
+	private Boolean isOverrideExistingRoles = false;
 
-    @Column(name = "IS_OVERRIDE_EXISTING_ROLES")
-    private Boolean isOverrideExistingRoles = false;
+	@Column(name = "IS_OVERRIDE_EXIST_ACCESS_GRP")
+	private Boolean isOverrideExistingAccessGroup = false;
 
-    @Column(name = "IS_OVERRIDE_EXIST_ACCESS_GRP")
-    private Boolean isOverrideExistingAccessGroup = false;
+	@Column(name = "ACCESS_GROUP_NAME")
+	private String accessGroupName;
+	@Transient
+	private List<Role> roles = new ArrayList<>();
 
-    @Transient
-    private List<Role> roles = new ArrayList<>();
+	public String getAccessGroupName() {
+		return accessGroupName;
+	}
 
-    public String getRolesList() {
-        return rolesList;
-    }
+	public void setAccessGroupName(String accessGroupName) {
+		this.accessGroupName = accessGroupName;
+	}
 
-    public void setRolesList(String rolesList) {
-        this.rolesList = rolesList;
-    }
+	public String getRolesList() {
+		return rolesList;
+	}
 
-    @Override
-    public Group getAccessGroup() {
-        return accessGroup;
-    }
+	public void setRolesList(String rolesList) {
+		this.rolesList = rolesList;
+	}
 
-    public void setAccessGroup(Group accessGroup) {
-        this.accessGroup = accessGroup;
-    }
+	@Override
+	public Group getAccessGroup() {
+		return accessGroup;
+	}
 
-    @Override
-    public List<Role> getRoles() {
-        return roles;
-    }
+	public void setAccessGroup(Group accessGroup) {
+		this.accessGroup = accessGroup;
+	}
 
-    public void setRoles(List<Role> roles) {
-        this.roles = roles;
-    }
+	@Override
+	public List<Role> getRoles() {
+		return roles;
+	}
 
-    @Override
-    public Boolean getIsTerminalRule() {
-        return isTerminalRule;
-    }
+	public void setRoles(List<Role> roles) {
+		this.roles = roles;
+	}
 
-    public void setIsTerminalRule(Boolean terminalRule) {
-        isTerminalRule = terminalRule;
-    }
+	@Override
+	public Boolean getIsTerminalRule() {
+		return isTerminalRule;
+	}
 
-    @Override
-    public Boolean getIsOverrideExistingRoles() {
-        return isOverrideExistingRoles;
-    }
+	public void setIsTerminalRule(Boolean terminalRule) {
+		isTerminalRule = terminalRule;
+	}
 
-    public void setIsOverrideExistingRoles(Boolean overrideExistingRoles) {
-        isOverrideExistingRoles = overrideExistingRoles;
-    }
+	@Override
+	public Boolean getIsOverrideExistingRoles() {
+		return isOverrideExistingRoles;
+	}
 
-    @Override
-    public Boolean getIsOverrideExistingAccessGroup() {
-        return isOverrideExistingAccessGroup;
-    }
+	public void setIsOverrideExistingRoles(Boolean overrideExistingRoles) {
+		isOverrideExistingRoles = overrideExistingRoles;
+	}
 
-    public void setIsOverrideExistingAccessGroup(Boolean overrideExistingAccessGroup) {
-        isOverrideExistingAccessGroup = overrideExistingAccessGroup;
-    }
+	@Override
+	public Boolean getIsOverrideExistingAccessGroup() {
+		return isOverrideExistingAccessGroup;
+	}
 
-    public void updateRolesList() {
-        setRolesList(getRoles().stream().map(Role::getName).collect(Collectors.joining(";")));
-    }
+	public void setIsOverrideExistingAccessGroup(Boolean overrideExistingAccessGroup) {
+		isOverrideExistingAccessGroup = overrideExistingAccessGroup;
+	}
 
-    public void postLoad() {
-        setRoles(getRolesList() != null ? Arrays.stream(getRolesList().split(";"))
-                .filter(Objects::nonNull)
-                .map(String::trim)
-                .distinct()
-                .filter(s -> !s.isEmpty())
-                .map(s -> {
-                            Role role = AppBeans.get(RolesService.class).getRoleDefinitionAndTransformToRole(s);
-                            if (role == null) {
-                                LoadContext<Role> roleLoadContext = new LoadContext<>(Role.class);
-                                roleLoadContext
-                                        .setView(View.LOCAL)
-                                        .setQueryString("select r from sec$Role r where r.name=:name")
-                                        .setParameter("name", s)
-                                        .setMaxResults(1);
-                                role = AppBeans.get(DataManager.class).load(roleLoadContext);
-                            }
-                            return role;
-                        }
-                )
-                .filter(Objects::nonNull)
-                .collect(Collectors.toList())
-                : new ArrayList<>()
-        );
-    }
+	public void updateRolesList() {
+		setRolesList(getRoles().stream().map(Role::getName).collect(Collectors.joining(";")));
+	}
+
+	public void postLoad() {
+		setRoles(getRolesList() != null ? Arrays.stream(getRolesList().split(";"))
+				.filter(Objects::nonNull)
+				.map(String::trim)
+				.distinct()
+				.filter(s -> !s.isEmpty())
+				.map(s -> {
+							Role role = AppBeans.get(RolesService.class).getRoleDefinitionAndTransformToRole(s);
+							if (role == null) {
+								LoadContext<Role> roleLoadContext = new LoadContext<>(Role.class);
+								roleLoadContext
+										.setView(View.LOCAL)
+										.setQueryString("select r from sec$Role r where r.name=:name")
+										.setParameter("name", s)
+										.setMaxResults(1);
+								role = AppBeans.get(DataManager.class).load(roleLoadContext);
+							}
+							return role;
+						}
+				)
+				.filter(Objects::nonNull)
+				.collect(Collectors.toList())
+				: new ArrayList<>()
+		);
+	}
 }
