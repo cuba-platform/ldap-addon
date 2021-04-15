@@ -17,6 +17,8 @@
 package com.haulmont.addon.ldap.service;
 
 import com.haulmont.addon.ldap.entity.AbstractCommonMatchingRule;
+import com.haulmont.addon.ldap.entity.AbstractDbStoredMatchingRule;
+import com.haulmont.cuba.security.entity.Group;
 
 import java.util.List;
 
@@ -37,4 +39,10 @@ public interface MatchingRuleService {
 	 * Persists the state of matching rules from LDAP Matching Rule Screen.
 	 */
 	void saveMatchingRules(List<AbstractCommonMatchingRule> matchingRules, List<AbstractCommonMatchingRule> matchingRulesToDelete);
+
+	/**
+	 * Returns access group for matching rule. If group is db stored just returns that group.
+	 * But if group is predefined creating representation for it and returns that.
+	 */
+	Group getAccessGroupForMatchingRule(AbstractDbStoredMatchingRule rule);
 }

@@ -20,7 +20,7 @@ import com.google.common.base.Strings;
 import com.haulmont.addon.ldap.dto.GroovyScriptTestResultDto;
 import com.haulmont.addon.ldap.entity.ScriptingMatchingRule;
 import com.haulmont.addon.ldap.service.LdapService;
-import com.haulmont.addon.ldap.service.MatchingRuleAccessGroupService;
+import com.haulmont.addon.ldap.service.MatchingRuleService;
 import com.haulmont.addon.ldap.web.datasource.RuleRolesDatasource;
 import com.haulmont.cuba.core.global.EntityStates;
 import com.haulmont.cuba.gui.UiComponents;
@@ -58,7 +58,7 @@ public class ScriptingMatchingRuleEdit extends AbstractEditor<ScriptingMatchingR
     private PickerField<Group> accessGroupField;
 
     @Inject
-    private MatchingRuleAccessGroupService matchingRuleAccessGroupService;
+    private MatchingRuleService matchingRuleService;
 
     @Inject
     private EntityStates entityStates;
@@ -68,7 +68,7 @@ public class ScriptingMatchingRuleEdit extends AbstractEditor<ScriptingMatchingR
         rolesDs.init(getItem());
         rolesDs.refresh();
         if (!entityStates.isNew(getEditedEntity())) {
-            accessGroupField.setValue(matchingRuleAccessGroupService.getAccessGroupMatchingRule(getEditedEntity()));
+            accessGroupField.setValue(matchingRuleService.getAccessGroupForMatchingRule(getEditedEntity()));
         }
     }
 

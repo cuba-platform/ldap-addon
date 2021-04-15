@@ -17,7 +17,7 @@
 package com.haulmont.addon.ldap.web.defaultmatchingrule;
 
 import com.haulmont.addon.ldap.entity.DefaultMatchingRule;
-import com.haulmont.addon.ldap.service.MatchingRuleAccessGroupService;
+import com.haulmont.addon.ldap.service.MatchingRuleService;
 import com.haulmont.addon.ldap.web.datasource.RuleRolesDatasource;
 import com.haulmont.cuba.core.global.EntityStates;
 import com.haulmont.cuba.gui.components.AbstractEditor;
@@ -43,7 +43,7 @@ public class DefaultMatchingRuleEdit extends AbstractEditor<DefaultMatchingRule>
     private PickerField<Group> accessGroupField;
 
     @Inject
-    private MatchingRuleAccessGroupService matchingRuleAccessGroupService;
+    private MatchingRuleService matchingRuleService;
 
     @Inject
     private EntityStates entityStates;
@@ -53,7 +53,7 @@ public class DefaultMatchingRuleEdit extends AbstractEditor<DefaultMatchingRule>
         rolesDs.init(getItem());
         rolesDs.refresh();
         if (!entityStates.isNew(getEditedEntity())) {
-            accessGroupField.setValue(matchingRuleAccessGroupService.getAccessGroupMatchingRule(getEditedEntity()));
+            accessGroupField.setValue(matchingRuleService.getAccessGroupForMatchingRule(getEditedEntity()));
         }
     }
 
