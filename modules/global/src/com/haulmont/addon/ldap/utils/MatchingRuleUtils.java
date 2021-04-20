@@ -86,7 +86,8 @@ public class MatchingRuleUtils {
         }
         sb.append("\n");
         sb.append("Access group: ");
-        sb.append(dbStoredMatchingRule.getAccessGroup() == null ? StringUtils.EMPTY : dbStoredMatchingRule.getAccessGroup().getName());
+        sb.append(dbStoredMatchingRule.getAccessGroup() == null ? dbStoredMatchingRule.getAccessGroupName()
+                : dbStoredMatchingRule.getAccessGroup().getName());
 
         return sb.toString();
     }

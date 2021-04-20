@@ -71,9 +71,10 @@
                 </buttonsPanel>
             </table>
         </groupBox>
-        <fieldGroup datasource="simpleMatchingRuleDs">
+        <fieldGroup datasource="simpleMatchingRuleDs" id="accessGroupFieldGroup">
             <column width="250px">
-                <field caption="msg://accessGroupFieldCaption"
+                <field id="accessGroupField"
+                       caption="msg://accessGroupFieldCaption"
                        property="accessGroup"
                        required="true"
                        requiredMessage="msg://validationEmptyGroup"/>

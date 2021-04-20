@@ -1,0 +1,1 @@
+alter table LDAP_MATCHING_RULE add ACCESS_GROUP_NAME varchar2(255) ;

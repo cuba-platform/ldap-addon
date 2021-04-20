@@ -45,7 +45,8 @@
                        requiredMessage="msg://validationEmptyDescription"/>
                 <field caption="msg://isTerminalRuleFieldCaption"
                        property="isTerminalRule"/>
-                <field caption="msg://accessGroupFieldCaption"
+                <field id="accessGroupField"
+                       caption="msg://accessGroupFieldCaption"
                        property="accessGroup"
                        required="true"
                        requiredMessage="msg://validationEmptyAccessGroup"/>
