@@ -41,8 +41,7 @@ public interface MatchingRuleService {
 	void saveMatchingRules(List<AbstractCommonMatchingRule> matchingRules, List<AbstractCommonMatchingRule> matchingRulesToDelete);
 
 	/**
-	 * Returns access group for matching rule. If group is db stored just returns that group.
-	 * But if group is predefined creating representation for it and returns that.
+	 * Returns an access group for the matching rule. The access group may be either database or predefined.
 	 */
 	Group getAccessGroupForMatchingRule(AbstractDbStoredMatchingRule rule);
 }
