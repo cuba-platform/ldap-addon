@@ -20,7 +20,6 @@ import com.haulmont.addon.ldap.dto.CustomLdapMatchingRuleDto;
 import com.haulmont.addon.ldap.entity.*;
 import com.haulmont.cuba.security.entity.Role;
 import com.haulmont.cuba.security.entity.User;
-import com.haulmont.cuba.security.entity.UserRole;
 import com.haulmont.cuba.security.role.RolesService;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -136,12 +135,12 @@ public class MatchingRuleUtils {
 
     public List<Role> getRoles(User user) {
         return user.getUserRoles().stream()
-                .peek(ur -> {
+                .map(ur -> {
                     if (ur.getRole() == null) {
                         ur.setRole(rolesService.getRoleDefinitionAndTransformToRole(ur.getRoleName()));
                     }
+                    return ur.getRole();
                 })
-                .map(UserRole::getRole)
                 .collect(Collectors.toList());
     }
 
