@@ -30,6 +30,7 @@ import com.haulmont.addon.ldap.entity.AbstractCommonMatchingRule;
 import com.haulmont.addon.ldap.entity.AbstractDbStoredMatchingRule;
 import com.haulmont.addon.ldap.entity.CommonMatchingRule;
 import com.haulmont.addon.ldap.service.UserSynchronizationService;
+import com.haulmont.addon.ldap.utils.MatchingRuleUtils;
 import com.haulmont.cuba.core.global.Events;
 import com.haulmont.cuba.core.global.Messages;
 import com.haulmont.cuba.core.global.MetadataTools;
@@ -90,6 +91,9 @@ public class UserSynchronizationServiceBean implements UserSynchronizationServic
     @Inject
     private LdapPropertiesConfig ldapPropertiesConfig;
 
+    @Inject
+    private MatchingRuleUtils matchingRuleUtils;
+
     @Override
     public UserSynchronizationResultDto synchronizeUser(String login,
                                                         boolean saveSynchronizationResult,
@@ -117,7 +121,7 @@ public class UserSynchronizationServiceBean implements UserSynchronizationServic
 
             // Create matching rule context
             LdapMatchingRuleContext ldapMatchingRuleContext = new LdapMatchingRuleContext(ldapUser, cubaUser,
-                    getRoles(originalCubaUser), originalCubaUser.getGroup());
+                    matchingRuleUtils.getRoles(originalCubaUser), originalCubaUser.getGroup());
 
             // Get user enabled status
             boolean ldapUserEnabled = !ldapUser.getDisabled();
@@ -272,8 +276,8 @@ public class UserSynchronizationServiceBean implements UserSynchronizationServic
         UserSynchronizationResultDto result = new UserSynchronizationResultDto();
         result.setInactiveUser(!activeAfter);
         result.setUserPrivilegesChanged(activeBefore != activeAfter
-                || !isEqualGroups(beforeSyncUser, afterSyncUser)
-                || !isEqualRoles(beforeSyncUser, afterSyncUser));
+                || !matchingRuleUtils.isEqualGroups(beforeSyncUser, afterSyncUser)
+                || !matchingRuleUtils.isEqualRoles(beforeSyncUser, afterSyncUser));
 
         return result;
     }

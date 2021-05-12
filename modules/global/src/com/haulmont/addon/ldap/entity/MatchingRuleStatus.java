@@ -35,7 +35,6 @@ public class MatchingRuleStatus extends StandardEntity {
     @Column(name = "CUSTOM_MATCHING_RULE_ID", unique = true)
     private String customMatchingRuleId;
 
-
     @NotNull
     @Column(name = "IS_ACTIVE", nullable = false)
     private Boolean isActive = true;
