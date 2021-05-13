@@ -207,21 +207,22 @@ or schema. The example of a custom rule is provided below.
 @Component
 @LdapMatchingRule(name = "Custom Rule 1", condition = "Test Rule")
 public class TestCustomRule implements CustomLdapMatchingRule {
-    @Inject
-    private LdapUserDao ldapUserDao;
+	@Inject
+	private CubaUserDao cubaUserDao;
 
-    @Inject
-    private CubaUserDao cubaUserDao;
+	@Inject
+	private RolesService rolesService;
 
-    @Override
-    public boolean applyCustomMatchingRule (LdapMatchingRuleContext ldapMatchingRuleContext) {
-        if (ldapMatchingRuleContext.getLdapUser().getLogin().equalsIgnoreCase("barts")) {
-            User admin = cubaUserDao.getOrCreateCubaUser("admin");
-            ldapMatchingRuleContext.getRoles().add(admin.getUserRoles().get(0).getRole());
-            ldapMatchingRuleContext.setGroup(admin.getGroup());
-        }
-        return true;
-    }
+	@Override
+	public boolean applyCustomMatchingRule(LdapMatchingRuleContext ldapMatchingRuleContext) {
+		if (ldapMatchingRuleContext.getLdapUser().getLogin().equalsIgnoreCase("sel")) {
+			User admin = cubaUserDao.getOrCreateCubaUser("admin");
+			Role role = rolesService.getRoleDefinitionAndTransformToRole(admin.getUserRoles().get(0).getRoleName());
+			ldapMatchingRuleContext.getRoles().add(role);
+			ldapMatchingRuleContext.setGroup(admin.getGroup());
+		}
+		return true;
+	}
 }
 ```
 
