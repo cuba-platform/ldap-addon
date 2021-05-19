@@ -16,6 +16,7 @@
 
 package com.haulmont.addon.ldap.core.service;
 
+import com.google.common.base.Strings;
 import com.haulmont.addon.ldap.config.LdapPropertiesConfig;
 import com.haulmont.addon.ldap.core.dao.*;
 import com.haulmont.addon.ldap.core.rule.LdapMatchingRuleContext;
@@ -29,6 +30,7 @@ import com.haulmont.addon.ldap.dto.UserSynchronizationResultDto;
 import com.haulmont.addon.ldap.entity.AbstractCommonMatchingRule;
 import com.haulmont.addon.ldap.entity.AbstractDbStoredMatchingRule;
 import com.haulmont.addon.ldap.entity.CommonMatchingRule;
+import com.haulmont.addon.ldap.entity.LdapConfig;
 import com.haulmont.addon.ldap.service.UserSynchronizationService;
 import com.haulmont.addon.ldap.utils.MatchingRuleUtils;
 import com.haulmont.cuba.core.global.Events;
@@ -51,7 +53,6 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import static com.haulmont.addon.ldap.entity.MatchingRuleType.CUSTOM;
-import static com.haulmont.addon.ldap.utils.MatchingRuleUtils.*;
 
 @Service(UserSynchronizationService.NAME)
 public class UserSynchronizationServiceBean implements UserSynchronizationService {
@@ -93,6 +94,9 @@ public class UserSynchronizationServiceBean implements UserSynchronizationServic
 
     @Inject
     private MatchingRuleUtils matchingRuleUtils;
+
+    @Inject
+    private LdapConfigDao ldapConfigDao;
 
     @Override
     public UserSynchronizationResultDto synchronizeUser(String login,
@@ -242,13 +246,28 @@ public class UserSynchronizationServiceBean implements UserSynchronizationServic
                                               String modeMessage,
                                               SynchronizationMode modeType) {
         if (PersistenceHelper.isNew(syncUser) || ldapPropertiesConfig.getSynchronizeCommonInfoFromLdap()) {
-            syncUser.setEmail(ldapMatchingRuleContext.getLdapUser().getEmail());
-            syncUser.setName(ldapMatchingRuleContext.getLdapUser().getCn());
-            syncUser.setFirstName(ldapMatchingRuleContext.getLdapUser().getGivenName());
-            syncUser.setLastName(ldapMatchingRuleContext.getLdapUser().getSn());
-            syncUser.setMiddleName(ldapMatchingRuleContext.getLdapUser().getMiddleName());
-            syncUser.setPosition(ldapMatchingRuleContext.getLdapUser().getPosition());
-            syncUser.setLanguage(ldapMatchingRuleContext.getLdapUser().getLanguage());
+            LdapConfig ldapConfig = ldapConfigDao.getLdapConfig();
+            if (!Strings.isNullOrEmpty(ldapConfig.getEmailAttribute())) {
+                syncUser.setEmail(ldapMatchingRuleContext.getLdapUser().getEmail());
+            }
+            if (!Strings.isNullOrEmpty(ldapConfig.getCnAttribute())) {
+                syncUser.setName(ldapMatchingRuleContext.getLdapUser().getCn());
+            }
+            if (!Strings.isNullOrEmpty(ldapConfig.getGivenNameAttribute())) {
+                syncUser.setFirstName(ldapMatchingRuleContext.getLdapUser().getGivenName());
+            }
+            if (!Strings.isNullOrEmpty(ldapConfig.getSnAttribute())) {
+                syncUser.setLastName(ldapMatchingRuleContext.getLdapUser().getSn());
+            }
+            if (!Strings.isNullOrEmpty(ldapConfig.getMiddleNameAttribute())) {
+                syncUser.setMiddleName(ldapMatchingRuleContext.getLdapUser().getMiddleName());
+            }
+            if (!Strings.isNullOrEmpty(ldapConfig.getPositionAttribute())) {
+                syncUser.setPosition(ldapMatchingRuleContext.getLdapUser().getPosition());
+            }
+            if (!Strings.isNullOrEmpty(ldapConfig.getLanguageAttribute())) {
+                syncUser.setLanguage(ldapMatchingRuleContext.getLdapUser().getLanguage());
+            }
         }
 
         if (ldapMatchingRuleContext.getLdapUser().getDisabled()) {
