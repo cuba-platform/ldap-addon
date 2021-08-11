@@ -352,16 +352,6 @@ public class LdapUserDao {
         }
 
         List<LdapUser> searchUser(String query) {
-            return searchUser(query, null);
-        }
-
-        List<LdapUser> searchUser(String query, @Nullable SearchControls searchControls) {
-            if (searchControls == null) {
-                searchControls = new SearchControls();
-                searchControls.setSearchScope(SUBTREE_SCOPE);
-                searchControls.setCountLimit(1);
-            }
-
             return getLdapTemplate().search(CN_USERS, query, new LdapUserMapper(ldapConfigDao.getLdapConfig()));
         }
 
