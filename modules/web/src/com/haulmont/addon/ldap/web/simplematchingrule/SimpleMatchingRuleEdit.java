@@ -43,21 +43,21 @@ public class SimpleMatchingRuleEdit extends AbstractEditor<SimpleMatchingRule> {
     @Inject
     private RuleRolesDatasource rolesDs;
 
-	@Inject
-	private MatchingRuleService matchingRuleService;
+    @Inject
+    private MatchingRuleService matchingRuleService;
 
-	@Named("accessGroupFieldGroup.accessGroupField")
-	private PickerField<Group> accessGroupField;
+    @Named("accessGroupFieldGroup.accessGroupField")
+    private PickerField<Group> accessGroupField;
 
-	@Inject
-	private EntityStates entityStates;
+    @Inject
+    private EntityStates entityStates;
 
-	@Subscribe
+    @Subscribe
     public void onBeforeShow(BeforeShowEvent event) {
         rolesDs.init(getItem());
         rolesDs.refresh();
         if (!entityStates.isNew(getEditedEntity())) {
-	        accessGroupField.setValue(matchingRuleService.getAccessGroupForMatchingRule(getEditedEntity()));
+            accessGroupField.setValue(matchingRuleService.getAccessGroupForMatchingRule(getEditedEntity()));
         }
     }
 
