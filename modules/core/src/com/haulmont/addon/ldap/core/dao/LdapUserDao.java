@@ -48,7 +48,6 @@ import org.springframework.stereotype.Component;
 import javax.inject.Inject;
 import javax.naming.NamingException;
 import javax.naming.directory.Attributes;
-import javax.naming.directory.SearchControls;
 import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.List;
@@ -58,7 +57,6 @@ import java.util.function.BinaryOperator;
 import java.util.function.Consumer;
 
 import static com.haulmont.addon.ldap.core.dao.LdapUserDao.NAME;
-import static javax.naming.directory.SearchControls.SUBTREE_SCOPE;
 
 @Component(NAME)
 public class LdapUserDao {
