@@ -365,4 +365,9 @@
         <Class name="com.haulmont.cuba.web.sys.navigation.CrockfordUuidEncoder"/>
     </Match>
 
+    <Match>
+        <Bug pattern="RV_RETURN_VALUE_IGNORED_NO_SIDE_EFFECT"/>
+        <Class name="com.haulmont.addon.ldap.web.screens.MatchingRuleScreen"/>
+    </Match>
+
 </FindBugsFilter>

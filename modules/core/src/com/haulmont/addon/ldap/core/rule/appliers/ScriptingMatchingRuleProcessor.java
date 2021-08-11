@@ -74,7 +74,7 @@ public class ScriptingMatchingRuleProcessor extends DbStoredMatchingRuleProcesso
             return (Boolean) scriptExecutionResult;
         } else {
             throw new RuntimeException(messages.formatMessage(LdapServiceBean.class, "testGroovyScriptResultNonBoolean",
-                    scriptExecutionResult == null ? "null" : scriptExecutionResult.toString()));
+                    scriptExecutionResult.toString()));
         }
     }
 
