@@ -38,7 +38,7 @@ import com.haulmont.cuba.core.global.Messages;
 import com.haulmont.cuba.core.global.MetadataTools;
 import com.haulmont.cuba.core.global.PersistenceHelper;
 import com.haulmont.cuba.security.entity.User;
-import com.haulmont.cuba.security.entity.UserRole;
+import com.haulmont.cuba.security.role.RolesService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -97,6 +97,9 @@ public class UserSynchronizationServiceBean implements UserSynchronizationServic
 
     @Inject
     private LdapConfigDao ldapConfigDao;
+
+    @Inject
+    private RolesService rolesService;
 
     @Override
     public UserSynchronizationResultDto synchronizeUser(String login,
@@ -204,9 +207,7 @@ public class UserSynchronizationServiceBean implements UserSynchronizationServic
             }
         });
 
-        testUserSynchronizationDto.getAppliedCubaRoles().addAll(cubaUser.getUserRoles().stream()
-                .map(UserRole::getRole)
-                .collect(Collectors.toList()));
+        testUserSynchronizationDto.getAppliedCubaRoles().addAll(rolesService.getRolesForUser(cubaUser));
         testUserSynchronizationDto.setGroup(cubaUser.getGroup());
 
         return testUserSynchronizationDto;
