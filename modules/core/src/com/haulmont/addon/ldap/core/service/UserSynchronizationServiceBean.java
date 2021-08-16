@@ -37,6 +37,7 @@ import com.haulmont.cuba.core.global.Events;
 import com.haulmont.cuba.core.global.Messages;
 import com.haulmont.cuba.core.global.MetadataTools;
 import com.haulmont.cuba.core.global.PersistenceHelper;
+import com.haulmont.cuba.security.entity.Role;
 import com.haulmont.cuba.security.entity.User;
 import com.haulmont.cuba.security.role.RolesService;
 import org.slf4j.Logger;
@@ -207,7 +208,10 @@ public class UserSynchronizationServiceBean implements UserSynchronizationServic
             }
         });
 
-        testUserSynchronizationDto.getAppliedCubaRoles().addAll(rolesService.getRolesForUser(cubaUser));
+        testUserSynchronizationDto.getAppliedCubaRoles().addAll(cubaUser.getUserRoles().stream()
+                .map(userRole -> Optional.ofNullable(userRole.getRole())
+                        .orElse(rolesService.getRoleDefinitionAndTransformToRole(userRole.getRoleName())))
+                .collect(Collectors.toList()));
         testUserSynchronizationDto.setGroup(cubaUser.getGroup());
 
         return testUserSynchronizationDto;
