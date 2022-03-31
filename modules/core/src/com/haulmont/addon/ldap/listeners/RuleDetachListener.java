@@ -32,6 +32,6 @@ public class RuleDetachListener implements BeforeDetachEntityListener<AbstractDb
 
     @Override
     public void onBeforeDetach(AbstractDbStoredMatchingRule entity, EntityManager entityManager) {
-        entity.postLoad();
+//        entity.postLoad();
     }
 }

@@ -1,0 +1,338 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+  ~ Copyright (c) 2008-2022 Haulmont.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~  http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<window xmlns="http://schemas.haulmont.com/cuba/screen/window.xsd"
+        caption="msg://editorCaption"
+        messagesPack="com.haulmont.addon.ldap.web.screens.ldapconfig">
+    <data>
+        <instance id="ldapConfigDs" class="com.haulmont.addon.ldap.entity.LdapConfig">
+            <view extends="_local">
+                <property name="ldapUserAttributes" view="_local"/>
+            </view>
+            <loader/>
+            <collection id="ldapUserAttributesDs" property="ldapUserAttributes"/>
+        </instance>
+
+        <collection id="abstractMatchingRulesDs" class="com.haulmont.addon.ldap.entity.AbstractCommonMatchingRule"/>
+        <collection id="appliedMatchingRulesDs" class="com.haulmont.addon.ldap.entity.AbstractCommonMatchingRule"/>
+        <collection id="appliedRolesDs" class="com.haulmont.cuba.security.entity.Role" view="_local"/>
+    </data>
+    <dialogMode height="600"
+                width="800"/>
+    <layout spacing="true" expand="tabSheet">
+        <tabSheet id="tabSheet">
+            <tab id="tab" caption="Settings">
+                <scrollBox height="100%">
+                    <groupBox caption="msg://connectionSettings" spacing="true">
+                        <form id="connectionSettingsForm" dataContainer="ldapConfigDs">
+                            <column width="250px">
+                                <textField id="contextSourceUrlField"
+                                           caption="msg://contextSourceUrl"
+                                           description="msg://settingsScreenUrlDescr"
+                                           property="contextSourceUrl"
+                                           required="true"/>
+                                <textField id="contextSourceUserNameField"
+                                           caption="msg://contextSourceUserName"
+                                           description="msg://settingsScreenUserDescr"
+                                           property="contextSourceUserName"
+                                           required="true"/>
+                                <textField id="contextSourceBaseField"
+                                           caption="msg://contextSourceBase"
+                                           description="msg://settingsScreenBaseDescr"
+                                           property="contextSourceBase"
+                                           required="true"/>
+                                <passwordField id="contextSourcePasswordField"
+                                               caption="msg://contextPassword"
+                                               description="msg://settingsScreenPasswordDescr"
+                                               property="contextSourcePassword"
+                                               required="true"/>
+                                <lookupField id="tenantField"
+                                             caption="msg://tenantId"
+                                             property="sysTenantId"
+                                             required="true"/>
+                            </column>
+                        </form>
+                    </groupBox>
+                    <groupBox caption="msg://attributeSettings" spacing="true">
+                        <hbox spacing="true">
+                            <form id="attributeSettingsFieldGroup1" dataContainer="ldapConfigDs">
+                                <column width="250px">
+                                    <textField id="loginAttributeField"
+                                               caption="msg://loginAttribute"
+                                               description="msg://loginAttributeHint"
+                                               property="loginAttribute"/>
+                                    <textField id="cnAttributeField"
+                                               caption="msg://cnAttribute"
+                                               description="msg://cnAttributeHint"
+                                               property="cnAttribute"/>
+                                    <textField id="givenNameAttributeField"
+                                               caption="msg://givenNameAttribute"
+                                               description="msg://givenNameAttributeHint"
+                                               property="givenNameAttribute"/>
+                                    <textField id="middleNameAttributeField"
+                                               caption="msg://middleNameAttribute"
+                                               description="msg://middleNameAttributeHint"
+                                               property="middleNameAttribute"/>
+                                    <textField id="snAttributeField"
+                                               caption="msg://snAttribute"
+                                               description="msg://snAttributeHint"
+                                               property="snAttribute"/>
+                                </column>
+                            </form>
+                            <form id="attributeSettingsFieldGroup2" dataContainer="ldapConfigDs">
+                                <column>
+                                    <textField id="emailAttributeField"
+                                               caption="msg://emailAttribute"
+                                               description="msg://emailAttributeHint"
+                                               property="emailAttribute"/>
+                                    <textField id="memberOfAttributeField"
+                                               caption="msg://memberOfAttribute"
+                                               description="msg://memberOfAttributeHint"
+                                               property="memberOfAttribute"/>
+                                    <textField id="accessGroupAttributeField"
+                                               caption="msg://accessGroupAttribute"
+                                               description="msg://accessGroupAttributeHint"
+                                               property="accessGroupAttribute"/>
+                                    <textField id="positionAttributeField"
+                                               caption="msg://positionAttribute"
+                                               description="msg://positionAttributeHint"
+                                               property="positionAttribute"/>
+                                    <textField id="languageAttributeField"
+                                               caption="msg://languageAttribute"
+                                               description="msg://languageAttributeHint"
+                                               property="languageAttribute"/>
+                                </column>
+                            </form>
+                            <form id="attributeSettingsFieldGroup3" dataContainer="ldapConfigDs">
+                                <column width="250px">
+                                    <textField id="ouAttributeField"
+                                               caption="msg://ouAttribute"
+                                               description="msg://ouAttributeHint"
+                                               property="ouAttribute"/>
+                                    <textField id="inactiveUserAttributeField"
+                                               caption="msg://inactiveUserAttribute"
+                                               description="msg://inactiveUserAttributeHint"
+                                               property="inactiveUserAttribute"/>
+                                    <textField id="userBaseField"
+                                               caption="msg://userBase"
+                                               description="msg://userBaseHint"
+                                               property="userBase"/>
+                                    <textField id="defaultAccessGroupNameField"
+                                               caption="msg://defaultGroupName"
+                                               description="msg://defaultGroupHint"
+                                               property="defaultAccessGroupName"/>
+                                </column>
+                            </form>
+                        </hbox>
+                    </groupBox>
+                    <groupBox caption="msg://schemaSettings" spacing="true">
+                        <hbox spacing="true">
+                            <form id="schemaSettingsFieldGroup1" dataContainer="ldapConfigDs">
+                                <column width="250px">
+                                    <textField id="schemaBaseField"
+                                               caption="msg://schemaBase"
+                                               description="msg://schemaBaseHint"
+                                               property="schemaBase"/>
+                                    <textField id="ldapUserObjectClassesField"
+                                               caption="msg://ldapUserObjectClasses"
+                                               description="msg://ldapUserObjectClassesHint"
+                                               property="ldapUserObjectClasses"/>
+                                </column>
+                            </form>
+                            <form id="schemaSettingsFieldGroup2" dataContainer="ldapConfigDs">
+                                <column width="250px">
+                                    <textField id="objectClassPropertyNameField"
+                                               caption="msg://objectClassPropertyName"
+                                               description="msg://objectClassPropertyNameHint"
+                                               property="objectClassPropertyName"/>
+                                    <textField id="attributePropertyNamesField"
+                                               caption="msg://attributePropertyNames"
+                                               description="msg://attributePropertyNamesHint"
+                                               property="attributePropertyNames"/>
+                                </column>
+                            </form>
+                        </hbox>
+                        <table id="schemaTabLdapAttributeTable"
+                               columnControlVisible="false"
+                               contextMenuEnabled="false"
+                               height="300px"
+                               multiselect="true"
+                               reorderingAllowed="false"
+                               settingsEnabled="false"
+                               sortable="false"
+                               width="100%"
+                               dataContainer="ldapUserAttributesDs">
+                            <actions>
+                                <action id="create" type="create"/>
+                                <action id="remove" type="remove"/>
+                            </actions>
+                            <columns>
+                                <column id="attributeName"/>
+                            </columns>
+                            <rows/>
+                            <buttonsPanel>
+                                <button action="schemaTabLdapAttributeTable.create"
+                                        caption="msg://ldapAttributesTableCreate"/>
+                                <button action="schemaTabLdapAttributeTable.remove"
+                                        caption="msg://ldapAttributesTableRemove"/>
+                                <button id="updateLdapSchemaUserAttributesButton"
+                                        caption="msg://refreshLdapAttributesButtonCaption"
+                                        invoke="onUpdateLdapSchemaUserAttributesButtonClick"/>
+                            </buttonsPanel>
+                        </table>
+                        <!--                        <buttonsPanel>-->
+                        <!--                            <button id="windowCommitAndClose" caption="OK" invoke="onSaveBtnClick" icon="EDITOR_OK"/>-->
+                        <!--                            <button id="windowClose" caption="Cancel" invoke="onCancelBtnClick" icon="EDITOR_CANCEL"/>-->
+                        <!--                            <button id="testConnection"-->
+                        <!--                                    caption="msg://testConnectionButtonCaption"-->
+                        <!--                                    invoke="onTestConnectionClick"/>-->
+                        <!--                        </buttonsPanel>-->
+                    </groupBox>
+                </scrollBox>
+            </tab>
+            <tab id="tab_2" caption="Matching rules" margin="true,false,false,false" spacing="true">
+                <groupBox id="one" height="100%" spacing="true">
+                    <table id="matchingRuleTable" dataContainer="abstractMatchingRulesDs" editable="true"
+                           height="100%"
+                           width="100%">
+                        <actions>
+                            <action id="edit" type="edit"/>
+                            <action id="remove" type="remove"/>
+                        </actions>
+                        <columns>
+                            <column id="matchingRuleTableStateColumn"
+                                    caption="msg://matchingRuleTableStateColumn"
+                                    generator="generateMatchingRuleTableStatusColumnCell"/>
+                            <column id="matchingRuleTableOrderColumn"
+                                    caption="msg://matchingRuleTableOrderColumn"
+                                    generator="generateMatchingRuleTableOrderColumnCell"/>
+                            <column id="matchingRuleTableTerminalColumn"
+                                    caption="msg://matchingRuleTableTerminalColumn"
+                                    generator="generateMatchingRuleTableTerminalColumnCell"/>
+                            <column id="description"
+                                    caption="msg://matchingRuleTableDescriptionColumn"
+                                    generator="generateMatchingRuleTableDescriptionColumnCell"/>
+                            <column id="matchingRuleTableTypeColumn"
+                                    caption="msg://matchingRuleTableTypeColumn"
+                                    generator="generateMatchingRuleTableTypeColumnCell"/>
+                            <column id="matchingRuleTableCubaColumn"
+                                    caption="msg://matchingRuleTableCubaColumn"
+                                    generator="generateMatchingRuleTableCubaColumnCell"/>
+                            <column id="matchingRuleTableOptionsColumn"
+                                    caption="msg://matchingRuleTableOptionsColumn"
+                                    generator="generateMatchingRuleTableOptionsColumnCell"/>
+                            <column id="matchingRuleTableConditionColumn"
+                                    caption="msg://matchingRuleTableConditionColumn"
+                                    generator="generateMatchingRuleTableConditionColumnCell"/>
+                        </columns>
+                        <rows/>
+                        <buttonsPanel>
+                            <popupButton id="popupBtn" caption="msg://createMatchingRule">
+                                <actions>
+                                    <action id="createSimpleRule"
+                                            caption="msg://createSimpleRuleAction"/>
+                                    <action id="createScriptingRule"
+                                            caption="msg://createScriptingRuleActon"/>
+                                </actions>
+                            </popupButton>
+                            <button id="ruleEditButton"
+                                    action="matchingRuleTable.edit"
+                                    caption="msg://ruleEditButton"/>
+                            <button id="ruleRemoveButton"
+                                    action="matchingRuleTable.remove"
+                                    caption="msg://ruleRemoveButton"/>
+                            <button id="up"
+                                    icon="icons/up.png"/>
+                            <button id="down"
+                                    icon="icons/down.png"
+                                    invoke="onDownClick"/>
+                        </buttonsPanel>
+                    </table>
+                </groupBox>
+                <groupBox height="100%" spacing="true" expand="applied">
+                    <flowBox spacing="true">
+                        <hbox align="MIDDLE_CENTER"
+                              spacing="true">
+                            <label align="MIDDLE_CENTER"
+                                   height="20px"
+                                   value="msg://testRuleScreenUserName"
+                                   width="70px"/>
+                            <textField id="testRuleScreenLogin"
+                                       align="MIDDLE_CENTER"/>
+                            <button id="testRuleScreenTestButton"
+                                    align="MIDDLE_CENTER"
+                                    caption="msg://testRuleScreenTestButton"
+                                    invoke="onTestRuleScreenTestButtonClick"/>
+                        </hbox>
+                    </flowBox>
+                    <flowBox spacing="true">
+                        <hbox align="MIDDLE_CENTER"
+                              spacing="true">
+                            <label align="MIDDLE_CENTER"
+                                   value="msg://testRuleScreenAppliedGroup"
+                                   width="70px"/>
+                            <textField id="testRuleScreenAppliedGroup"
+                                       align="MIDDLE_CENTER"
+                                       enable="false"/>
+                        </hbox>
+                    </flowBox>
+                    <hbox id="applied" spacing="true" width="100%">
+                        <groupBox spacing="true">
+                            <label stylename="bold" value="msg://testRuleScreenRoleTable"/>
+                            <table id="testRuleScreenRoleTable" dataContainer="appliedRolesDs" height="200px"
+                                   width="100%">
+                                <columns>
+                                    <column id="name" caption="msg://appliedRolesName"/>
+                                    <column id="description" caption="msg://appliedRolesDescription"/>
+                                </columns>
+                                <rows/>
+                            </table>
+                        </groupBox>
+                        <groupBox spacing="true">
+                            <label stylename="bold" value="msg://testRuleScreenRuleTable"/>
+                            <table id="testRuleScreenRuleTable" dataContainer="appliedMatchingRulesDs" height="200px"
+                                   width="100%">
+                                <columns>
+                                    <column id="description"
+                                            caption="msg://testMatchingRuleTableDescriptionColumn"
+                                            generator="generateMatchingRuleTableDescriptionColumnCell"/>
+                                    <column id="testMatchingRuleTableTypeColumn"
+                                            caption="msg://testMatchingRuleTableTypeColumn"
+                                            generator="generateTestMatchingRuleTableTypeColumnCell"/>
+                                    <column id="testMatchingRuleTableOptionsColumn"
+                                            caption="msg://testMatchingRuleTableOptionsColumn"
+                                            generator="generateTestMatchingRuleTableOptionsColumnCell"/>
+                                </columns>
+                                <rows/>
+                            </table>
+                        </groupBox>
+                    </hbox>
+                </groupBox>
+            </tab>
+        </tabSheet>
+        <hbox>
+            <buttonsPanel>
+                <!--                <button id="windowCommitAndClose" caption="OK" invoke="onSaveBtnClick" icon="EDITOR_OK"/>-->
+                <button id="windowCommitAndClose" caption="OK" action="windowCommitAndClose" icon="EDITOR_OK"/>
+                <button id="windowClose" caption="Cancel" action="windowClose" icon="EDITOR_CANCEL"/>
+                <button id="testConnection"
+                        caption="msg://testConnectionButtonCaption"
+                        invoke="onTestConnectionClick"/>
+            </buttonsPanel>
+        </hbox>
+    </layout>
+</window>

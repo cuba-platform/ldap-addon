@@ -22,6 +22,7 @@ create table LDAP_MATCHING_RULE (
     --
     -- from ldap$ScriptingMatchingRule
     STRING_CONDITION clob,
+    LDAP_CONFIG_ID varchar2(32),
     --
     primary key (ID)
 )^
@@ -85,6 +86,7 @@ create table LDAP_USER_ATTRIBUTE (
     CREATED_BY varchar2(50),
     --
     ATTRIBUTE_NAME varchar2(255) not null,
+    LDAP_CONFIG_ID varchar2(32),
     --
     primary key (ID)
 )^
@@ -121,6 +123,10 @@ create table LDAP_LDAP_CONFIG (
     UPDATED_BY varchar2(50),
     VERSION number(10) not null,
     --
+    CONTEXT_SOURCE_BASE varchar2(255),
+    CONTEXT_SOURCE_URL varchar2(255),
+    CONTEXT_SOURCE_USER_NAME varchar2(255),
+    CONTEXT_SOURCE_PASSWORD varchar2(255),
     SCHEMA_BASE varchar2(255),
     DEFAULT_ACCESS_GROUP_NAME varchar2(255),
     LDAP_USER_OBJECT_CLASSES varchar2(2000),
@@ -139,6 +145,7 @@ create table LDAP_LDAP_CONFIG (
     LANGUAGE_ATTRIBUTE varchar2(255),
     INACTIVE_USER_ATTRIBUTE varchar2(255),
     USER_BASE varchar2(255),
+    SYS_TENANT_ID varchar2(255),
     --
     primary key (ID)
 )^

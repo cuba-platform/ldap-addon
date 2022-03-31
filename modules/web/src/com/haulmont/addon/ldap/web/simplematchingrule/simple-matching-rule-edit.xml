@@ -15,102 +15,99 @@
   ~ limitations under the License.
   -->
 
-<window xmlns="http://schemas.haulmont.com/cuba/window.xsd"
+<window xmlns="http://schemas.haulmont.com/cuba/screen/window.xsd"
         caption="msg://editorCaption"
-        class="com.haulmont.addon.ldap.web.simplematchingrule.SimpleMatchingRuleEdit"
-        datasource="simpleMatchingRuleDs"
         focusComponent="fieldGroup"
         messagesPack="com.haulmont.addon.ldap.web.simplematchingrule">
-    <dsContext>
-        <datasource id="simpleMatchingRuleDs"
-                    class="com.haulmont.addon.ldap.entity.SimpleMatchingRule"
-                    view="simpleMatchingRule-view-with-group-roles-conditions-order-status">
-            <collectionDatasource id="conditionsDs"
-                                  allowCommit="false"
-                                  property="conditions"/>
-        </datasource>
-        <collectionDatasource id="rolesDs"
-                              allowCommit="false"
-                              class="com.haulmont.cuba.security.entity.Role"
-                              datasourceClass="com.haulmont.addon.ldap.web.datasource.RuleRolesDatasource"/>
-    </dsContext>
+    <data>
+        <instance id="simpleMatchingRuleDs"
+                  class="com.haulmont.addon.ldap.entity.SimpleMatchingRule"
+                  view="simpleMatchingRule-view-with-group-roles-conditions-order-status">
+            <loader/>
+            <collection id="conditionsDs" property="conditions"/>
+        </instance>
+        <collection id="rolesDs" class="com.haulmont.cuba.security.entity.Role"/>
+    </data>
     <dialogMode height="600"
                 width="800"/>
-    <layout expand="windowActions"
+    <layout expand="editActions"
             spacing="true">
-        <fieldGroup id="fieldGroup"
-                    datasource="simpleMatchingRuleDs">
+        <form id="fieldGroup" dataContainer="simpleMatchingRuleDs">
             <column width="250px">
-                <field caption="msg://descriptionFieldCaption"
-                       property="description"
-                       required="true"
-                       requiredMessage="msg://validationEmptyDescription"/>
-                <field caption="msg://isTerminalRuleFieldCaption"
-                       property="isTerminalRule"/>
+                <textField caption="msg://descriptionFieldCaption"
+                           property="description"
+                           required="true"
+                           requiredMessage="msg://validationEmptyDescription"/>
+                <checkBox caption="msg://isTerminalRuleFieldCaption"
+                          property="isTerminalRule"/>
             </column>
-        </fieldGroup>
+        </form>
         <groupBox id="conditionsBox"
                   caption="msg://conditionsTableCaption"
                   spacing="true">
             <table id="conditionsTable"
                    height="250px"
-                   width="100%">
+                   width="100%"
+                   dataContainer="conditionsDs">
                 <actions>
-                    <action id="create"/>
-                    <action id="remove"/>
-                    <action id="edit"/>
+                    <action id="create" type="create"/>
+                    <action id="remove" type="remove"/>
+                    <action id="edit" type="edit"/>
                 </actions>
                 <columns>
                     <column id="attribute"/>
                     <column id="attributeValue"/>
                 </columns>
-                <rows datasource="conditionsDs"/>
+                <rows/>
                 <buttonsPanel>
                     <button action="conditionsTable.create"/>
                     <button action="conditionsTable.remove"/>
                 </buttonsPanel>
             </table>
         </groupBox>
-        <fieldGroup datasource="simpleMatchingRuleDs" id="accessGroupFieldGroup">
+        <form dataContainer="simpleMatchingRuleDs" id="accessGroupFieldGroup">
             <column width="250px">
-                <field id="accessGroupField"
-                       caption="msg://accessGroupFieldCaption"
-                       property="accessGroup"
-                       required="true"
-                       requiredMessage="msg://validationEmptyGroup"/>
-                <field caption="msg://isOverrideExistingAccessGroupFieldCaption"
-                       property="isOverrideExistingAccessGroup"/>
+                <pickerField id="accessGroupField"
+                             caption="msg://accessGroupFieldCaption"
+                             property="accessGroup"
+                             required="true"
+                             requiredMessage="msg://validationEmptyGroup"/>
+                <checkBox caption="msg://isOverrideExistingAccessGroupFieldCaption"
+                          property="isOverrideExistingAccessGroup"/>
             </column>
-        </fieldGroup>
+        </form>
         <groupBox id="rolesBox"
                   caption="msg://rolesTableCaption">
             <table id="rolesTable"
                    height="200px"
-                   width="100%">
+                   width="100%"
+                   dataContainer="rolesDs">
                 <actions>
-                    <action id="add"/>
-                    <action id="remove"/>
+                    <action id="add" type="add"/>
+                    <action id="remove" type="remove"/>
                 </actions>
                 <columns>
                     <column id="name"/>
                     <column id="locName"/>
                     <column id="description"/>
                 </columns>
-                <rows datasource="rolesDs"/>
+                <rows/>
                 <buttonsPanel>
                     <button action="rolesTable.add"/>
                     <button action="rolesTable.remove"/>
-                    <fieldGroup align="MIDDLE_LEFT"
-                                datasource="simpleMatchingRuleDs">
+                    <form align="MIDDLE_LEFT"
+                          dataContainer="simpleMatchingRuleDs">
                         <column width="250px">
-                            <field caption="msg://isOverrideExistingRolesFieldCaption"
-                                   property="isOverrideExistingRoles"/>
+                            <checkBox caption="msg://isOverrideExistingRolesFieldCaption"
+                                      property="isOverrideExistingRoles"/>
                         </column>
-                    </fieldGroup>
+                    </form>
                 </buttonsPanel>
             </table>
         </groupBox>
-        <frame id="windowActions"
-               screen="editWindowActions"/>
+        <hbox id="editActions" spacing="true">
+            <button id="commitAndCloseBtn" action="windowCommitAndClose"/>
+            <button action="windowClose"/>
+        </hbox>
     </layout>
 </window>

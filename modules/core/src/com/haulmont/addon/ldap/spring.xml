@@ -27,15 +27,17 @@
     <!-- Annotation-based beans -->
     <context:component-scan base-package="com.haulmont.addon.ldap"/>
 
-    <ldap:context-source
-            id="ldap_ldapContextSource"
-            url="${ldap.contextSourceUrl}"
-            base="${ldap.contextSourceBase}"
-            username="${ldap.contextSourceUserName}"
-            password="${ldap.contextSourcePassword}"
-            referral="${ldap.referral}"/>
+<!--&lt;!&ndash;    todo should be placed into code because these parameters are not deployment-time &ndash;&gt;-->
+<!--    <ldap:context-source-->
+<!--            id="ldap_ldapContextSource"-->
+<!--            url="${ldap.contextSourceUrl}"-->
+<!--            base="${ldap.contextSourceBase}"-->
+<!--            username="${ldap.contextSourceUserName}"-->
+<!--            password="${ldap.contextSourcePassword}"-->
+<!--            referral="${ldap.referral}"/>-->
 
-    <ldap:ldap-template id="ldap_ldapTemplate" context-source-ref="ldap_ldapContextSource"/>
+<!--&lt;!&ndash;    todo also should be placed in the code &ndash;&gt;-->
+<!--    <ldap:ldap-template id="ldap_ldapTemplate" context-source-ref="ldap_ldapContextSource"/>-->
 
     <aop:aspectj-autoproxy/>
 </beans>

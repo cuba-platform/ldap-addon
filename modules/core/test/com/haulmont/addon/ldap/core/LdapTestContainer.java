@@ -39,15 +39,9 @@ import java.util.List;
 public class LdapTestContainer extends TestContainer {
 	public LdapTestContainer() {
 		super();
-		appComponents = new ArrayList<>(Arrays.asList(
-				"com.haulmont.cuba"
-				// add CUBA premium add-ons here
-				// "com.haulmont.bpm",
-				// "com.haulmont.charts",
-				// "com.haulmont.fts",
-				// "com.haulmont.reports",
-				// and custom app components if any
-		));
+		appComponents = Arrays.asList(
+                "com.haulmont.addon.sdbmt",
+                "com.haulmont.cuba");
 		appPropertiesFiles = Arrays.asList(
 				// List the files defined in your web.xml
 				// in appPropertiesConfig context parameter of the core module
@@ -92,60 +86,60 @@ public class LdapTestContainer extends TestContainer {
 		return StringUtils.isNotBlank(externalValue) ? externalValue : resourceElem.attributeValue(attributeName);
 	}
 
-	public void setupDefaultDbState() {
-		DataManager dataManager = AppBeans.get(DataManager.NAME);
-
-		List<User> users = dataManager.load(User.class)
-				.view(new View(User.class).addProperty("userRoles", new View(UserRole.class).addProperty("role")))
-				.query("select u from sec$User u where u.login <> :admin and u.login <> :anonymous")
-				.parameter("admin", "admin")
-				.parameter("anonymous", "anonymous")
-				.list();
-
-		users.stream()
-				.flatMap(u -> u.getUserRoles().stream())
-				.forEach(this::deleteRecord);
-		dataManager.load(Role.class)
-				.list()
-				.forEach(this::deleteRecord);
-		users.forEach(this::deleteRecord);
-
-		LdapConfig ldapConfig = AppBeans.get(LdapConfigDao.class).getLdapConfig();
-		ldapConfig.setLoginAttribute("sAMAccountName");
-		ldapConfig.setInactiveUserAttribute("userAccountControl");
-		ldapConfig.setMiddleNameAttribute("middleName");
-		dataManager.commit(ldapConfig);
-
-		dataManager.load(UserSynchronizationLog.class)
-				.list().forEach(this::deleteRecord);
-
-		dataManager.load(SimpleRuleCondition.class)
-				.list().forEach(this::deleteRecord);
-
-		dataManager.load(AbstractDbStoredMatchingRule.class)
-				.query("select mr from ldap$AbstractDbStoredMatchingRule mr where mr.createdBy <> :login")
-				.parameter("login", "admin")
-				.list()
-				.forEach(this::deleteRecord);
-
-		dataManager.load(MatchingRuleStatus.class)
-				.query("select mrs from ldap$MatchingRuleStatus mrs where mrs.createdBy <> :login")
-				.parameter("login", "admin")
-				.list()
-				.forEach(this::deleteRecord);
-
-		dataManager.load(MatchingRuleOrder.class)
-				.query("select mro from ldap$MatchingRuleOrder mro where mro.createdBy <> :login")
-				.parameter("login", "admin")
-				.list()
-				.forEach(this::deleteRecord);
-
-		dataManager.load(Group.class)
-				.query("select g from sec$Group g where g.name <> :name")
-				.parameter("name", "Company")
-				.list()
-				.forEach(this::deleteRecord);
-	}
+//	public void setupDefaultDbState() {
+//		DataManager dataManager = AppBeans.get(DataManager.NAME);
+//
+//		List<User> users = dataManager.load(User.class)
+//				.view(new View(User.class).addProperty("userRoles", new View(UserRole.class).addProperty("role")))
+//				.query("select u from sec$User u where u.login <> :admin and u.login <> :anonymous")
+//				.parameter("admin", "admin")
+//				.parameter("anonymous", "anonymous")
+//				.list();
+//
+//		users.stream()
+//				.flatMap(u -> u.getUserRoles().stream())
+//				.forEach(this::deleteRecord);
+//		dataManager.load(Role.class)
+//				.list()
+//				.forEach(this::deleteRecord);
+//		users.forEach(this::deleteRecord);
+//
+//		LdapConfig ldapConfig = AppBeans.get(LdapConfigDao.class).getDefaultLdapConfig();
+//		ldapConfig.setLoginAttribute("sAMAccountName");
+//		ldapConfig.setInactiveUserAttribute("userAccountControl");
+//		ldapConfig.setMiddleNameAttribute("middleName");
+//		dataManager.commit(ldapConfig);
+//
+//		dataManager.load(UserSynchronizationLog.class)
+//				.list().forEach(this::deleteRecord);
+//
+//		dataManager.load(SimpleRuleCondition.class)
+//				.list().forEach(this::deleteRecord);
+//
+//		dataManager.load(AbstractDbStoredMatchingRule.class)
+//				.query("select mr from ldap$AbstractDbStoredMatchingRule mr where mr.createdBy <> :login")
+//				.parameter("login", "admin")
+//				.list()
+//				.forEach(this::deleteRecord);
+//
+//		dataManager.load(MatchingRuleStatus.class)
+//				.query("select mrs from ldap$MatchingRuleStatus mrs where mrs.createdBy <> :login")
+//				.parameter("login", "admin")
+//				.list()
+//				.forEach(this::deleteRecord);
+//
+//		dataManager.load(MatchingRuleOrder.class)
+//				.query("select mro from ldap$MatchingRuleOrder mro where mro.createdBy <> :login")
+//				.parameter("login", "admin")
+//				.list()
+//				.forEach(this::deleteRecord);
+//
+//		dataManager.load(Group.class)
+//				.query("select g from sec$Group g where g.name <> :name")
+//				.parameter("name", "Company")
+//				.list()
+//				.forEach(this::deleteRecord);
+//	}
 
 	public static final class Common extends LdapTestContainer {
 

@@ -56,7 +56,8 @@ public class UserSubstitutionChecker {
         if (userArg.isPresent()) {
             User cubaUser = userArg.get();
             String userLogin = cubaUser.getLogin();
-            LdapUser ldapUser = ldapUserDao.getLdapUser(userLogin);
+            // TODO: 24.03.2022 check when is it called
+            LdapUser ldapUser = ldapUserDao.getLdapUser(userLogin, null);
 
             if (ldapUser != null && ldapUser.getDisabled()) {
                 log.warn(String.format("Unable to switch to user '%s': the user is disabled", userLogin));

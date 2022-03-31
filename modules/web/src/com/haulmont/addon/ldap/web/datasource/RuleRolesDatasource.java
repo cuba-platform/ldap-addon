@@ -24,6 +24,7 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.UUID;
 
+@Deprecated
 public class RuleRolesDatasource extends CustomCollectionDatasource<Role, UUID> {
 
     private AbstractDbStoredMatchingRule rule;
@@ -43,7 +44,7 @@ public class RuleRolesDatasource extends CustomCollectionDatasource<Role, UUID> 
         if (rule.getRoles().stream().map(Role::getName).noneMatch(r -> r.equals(item.getName()))) {
             super.addItem(item);
             rule.getRoles().add(item);
-            rule.updateRolesList();
+            rule.updateRolesList(rule.getRoles());
         }
     }
 
@@ -51,6 +52,6 @@ public class RuleRolesDatasource extends CustomCollectionDatasource<Role, UUID> 
     public void removeItem(Role item) {
         super.removeItem(item);
         rule.getRoles().remove(item);
-        rule.updateRolesList();
+        rule.updateRolesList(rule.getRoles());
     }
 }

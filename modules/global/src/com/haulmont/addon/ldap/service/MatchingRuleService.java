@@ -21,24 +21,12 @@ import com.haulmont.addon.ldap.entity.AbstractDbStoredMatchingRule;
 import com.haulmont.cuba.security.entity.Group;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface MatchingRuleService {
     String NAME = "ldap_MatchingRuleService";
 
-    /**
-     * Returns the amount of existing matching rules.
-     */
-    int getMatchingRulesCount();
-
-    /**
-     * Returns the GUI representation of matching rules.
-     */
-    List<AbstractCommonMatchingRule> getMatchingRulesGui();
-
-    /**
-     * Persists the state of matching rules from LDAP Matching Rule Screen.
-     */
-    void saveMatchingRules(List<AbstractCommonMatchingRule> matchingRules, List<AbstractCommonMatchingRule> matchingRulesToDelete);
+    List<AbstractCommonMatchingRule> getMatchingRules(UUID ldapConfigId);
 
     /**
      * Returns an access group for the matching rule. The access group may be either database or predefined.

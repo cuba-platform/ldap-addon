@@ -73,6 +73,7 @@
                   view="_minimal"/>
         <property name="accessGroup"
                   view="_minimal"/>
+        <property name="ldapConfig" view="_local" fetch="JOIN"/>
 <!--        <property name="roles"-->
 <!--                  view="_minimal">-->
 <!--            <property name="description"/>-->
@@ -97,5 +98,6 @@
         <property fetch="JOIN"
                   name="order"
                   view="_local"/>
+        <property fetch="JOIN" name="ldapConfig" view="_local"/>
     </view>
 </views>

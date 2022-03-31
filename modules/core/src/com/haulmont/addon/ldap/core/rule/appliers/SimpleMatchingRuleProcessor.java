@@ -43,7 +43,8 @@ public class SimpleMatchingRuleProcessor extends DbStoredMatchingRuleProcessor {
     @Override
     public boolean checkMatchingRule(AbstractDbStoredMatchingRule matchingRule, LdapMatchingRuleContext ldapMatchingRuleContext) {
         SimpleMatchingRule simpleMatchingRule = (SimpleMatchingRule) matchingRule;
-        LdapUser ldapUser = ldapUserDao.findLdapUserByFilter(simpleMatchingRule.getConditions(), ldapMatchingRuleContext.getLdapUser().getLogin());
+        String tenantId = matchingRule.getLdapConfig().getSysTenantId();
+        LdapUser ldapUser = ldapUserDao.findLdapUserByFilter(simpleMatchingRule.getConditions(), ldapMatchingRuleContext.getLdapUser().getLogin(), tenantId);
         return ldapUser != null;
     }
 }

@@ -36,7 +36,6 @@ import java.util.List;
 public class SimpleMatchingRule extends AbstractDbStoredMatchingRule {
     private static final long serialVersionUID = -2383286286785487816L;
 
-
     @Composition
     @OnDelete(DeletePolicy.CASCADE)
     @OneToMany(mappedBy = "simpleMatchingRule", cascade = CascadeType.ALL, orphanRemoval = true)

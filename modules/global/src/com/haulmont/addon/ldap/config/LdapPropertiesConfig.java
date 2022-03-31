@@ -20,6 +20,7 @@ import com.haulmont.cuba.core.config.Config;
 import com.haulmont.cuba.core.config.Property;
 import com.haulmont.cuba.core.config.Source;
 import com.haulmont.cuba.core.config.SourceType;
+import com.haulmont.cuba.core.config.defaults.Default;
 import com.haulmont.cuba.core.config.defaults.DefaultString;
 import com.haulmont.cuba.core.config.type.CommaSeparatedStringListTypeFactory;
 import com.haulmont.cuba.core.config.type.Factory;
@@ -83,6 +84,94 @@ public interface LdapPropertiesConfig extends Config {
     @Property("ldap.synchronizeCommonInfoFromLdap")
     Boolean getSynchronizeCommonInfoFromLdap();
 
+    @Source(type = SourceType.APP)
+    @Property("ldap.schemaBase")
+    @Default("CN=Schema,CN=Configuration")
+    String getSchemaBase();
+
+    @Source(type = SourceType.APP)
+    @Property("ldap.defaultAccessGroupName")
+    @Default("Company")
+    String getDefaultAccessGroupName();
+
+    @Source(type = SourceType.APP)
+    @Property("ldap.ldapUserObjectClasses")
+    @Default("person;inetOrgPerson")
+    String getLdapUserObjectClasses();
+
+    @Source(type = SourceType.APP)
+    @Property("ldap.objectClassPropertyName")
+    @Default("CN")
+    String getObjectClassPropertyName();
+
+    @Source(type = SourceType.APP)
+    @Property("ldap.attributePropertyNames")
+    @Default("systemMustContain;systemMayContain;mayContain;MustContain")
+    String getAttributePropertyNames();
+
+    @Source(type = SourceType.APP)
+    @Property("ldap.loginAttribute")
+    @Default("sAMAccountName")
+    String getLoginAttribute();
+
+    @Source(type = SourceType.APP)
+    @Property("ldap.emailAttribute")
+    @Default("mail")
+    String getEmailAttribute();
+
+    @Source(type = SourceType.APP)
+    @Property("ldap.cnAttribute")
+    @Default("cn")
+    String getCnAttribute();
+
+    @Source(type = SourceType.APP)
+    @Property("ldap.snAttribute")
+    @Default("sn")
+    String getSnAttribute();
+
+    @Source(type = SourceType.APP)
+    @Property("ldap.givenNameAttribute")
+    @Default("sn")
+    String getGivenNameAttribute();
+
+    @Source(type = SourceType.APP)
+    @Property("ldap.middleNameAttribute")
+    @Default("middleName")
+    String getMiddleNameAttribute();
+
+    @Source(type = SourceType.APP)
+    @Property("ldap.memberOfAttribute")
+    @Default("memberOf")
+    String getMemberOfAttribute();
+
+    @Source(type = SourceType.APP)
+    @Property("ldap.accessGroupAttribute")
+    String getAccessGroupAttribute();
+
+    @Source(type = SourceType.APP)
+    @Property("ldap.positionAttribute")
+    @Default("employeeType")
+    String getPositionAttribute();
+
+    @Source(type = SourceType.APP)
+    @Property("ldap.ouAttribute")
+    @Default("ou")
+    String getOuAttribute();
+
+    @Source(type = SourceType.APP)
+    @Property("ldap.languageAttribute")
+    @Default("preferredLanguage")
+    String getLanguageAttribute();
+
+    @Source(type = SourceType.APP)
+    @Property("ldap.inactiveUserAttribute")
+    @Default("userAccountControl")
+    String getInactiveUserAttribute();
+
+    @Source(type = SourceType.APP)
+    @Property("ldap.userBase")
+    String getUserBase();
+
     void setContextSourceUrl(String contextSourceUrl);
 
     void setContextSourceBase(String contextSourceBase);
@@ -108,5 +197,41 @@ public interface LdapPropertiesConfig extends Config {
     void setCubaGroupForSynchronizationInverse(Boolean cubaGroupForSynchronizationInverse);
 
     void setSynchronizeCommonInfoFromLdap(Boolean synchronizeCommonInfoFromLdap);
+
+    void setSchemaBase();
+
+    void setDefaultAccessGroupName();
+
+    void setLdapUserObjectClasses();
+
+    void setObjectClassPropertyName();
+
+    void setAttributePropertyNames();
+
+    void setLoginAttribute();
+
+    void setEmailAttribute();
+
+    void setCnAttribute();
+
+    void setSnAttribute();
+
+    void setGivenNameAttribute();
+
+    void setMiddleNameAttribute();
+
+    void setMemberOfAttribute();
+
+    void setAccessGroupAttribute();
+
+    void setPositionAttribute();
+
+    void setOuAttribute();
+
+    void setLanguageAttribute();
+
+    void setInactiveUserAttribute();
+
+    void setUserBase();
 
 }

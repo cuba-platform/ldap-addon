@@ -15,35 +15,36 @@
   ~ limitations under the License.
   -->
 
-<window xmlns="http://schemas.haulmont.com/cuba/window.xsd"
+<window xmlns="http://schemas.haulmont.com/cuba/screen/window.xsd"
         caption="msg://editorCaption"
-        class="com.haulmont.addon.ldap.web.simplerulecondition.SimpleRuleConditionEdit"
-        datasource="simpleRuleConditionDs"
         focusComponent="fieldGroup"
         messagesPack="com.haulmont.addon.ldap.web.simplerulecondition">
-    <dsContext>
-        <datasource id="simpleRuleConditionDs"
-                    class="com.haulmont.addon.ldap.entity.SimpleRuleCondition"
-                    view="_local"/>
-    </dsContext>
+    <data>
+        <instance id="simpleRuleConditionDs"
+                  class="com.haulmont.addon.ldap.entity.SimpleRuleCondition"
+                  view="_local"/>
+    </data>
     <dialogMode height="600"
                 width="800"/>
     <layout expand="windowActions"
             spacing="true">
-        <fieldGroup id="fieldGroup"
-                    datasource="simpleRuleConditionDs">
+        <form id="fieldGroup"
+              dataContainer="simpleRuleConditionDs">
             <column width="250px">
-                <field custom="true"
-                       property="attribute"
-                       required="true"
-                       requiredMessage="msg://validationEmptyLdapAttribute"/>
-                <field property="attributeValue"
-                       required="true"
-                       requiredMessage="msg://validationEmptyLdapAttributeValue"
-                       rows="5"/>
+                <lookupField id="attributeNameField"
+                             property="attribute"
+                             required="true"
+                             requiredMessage="msg://validationEmptyLdapAttribute"/>
+                <textArea id="attributeValueField"
+                          property="attributeValue"
+                          required="true"
+                          requiredMessage="msg://validationEmptyLdapAttributeValue"
+                          rows="5"/>
             </column>
-        </fieldGroup>
-        <frame id="windowActions"
-               screen="editWindowActions"/>
+        </form>
+        <hbox spacing="true" stylename="c-extended-edit-window-actions" id="windowActions">
+            <button id="windowCommitAndClose" action="windowCommitAndClose" icon="EDITOR_OK"/>
+            <button id="windowClose" action="windowClose" icon="EDITOR_CANCEL"/>
+        </hbox>
     </layout>
 </window>

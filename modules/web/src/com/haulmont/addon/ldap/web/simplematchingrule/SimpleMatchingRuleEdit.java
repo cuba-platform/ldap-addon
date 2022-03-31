@@ -18,57 +18,60 @@ package com.haulmont.addon.ldap.web.simplematchingrule;
 
 import com.haulmont.addon.ldap.entity.SimpleMatchingRule;
 import com.haulmont.addon.ldap.entity.SimpleRuleCondition;
-import com.haulmont.addon.ldap.service.MatchingRuleService;
-import com.haulmont.addon.ldap.web.datasource.RuleRolesDatasource;
-import com.haulmont.cuba.core.global.EntityStates;
-import com.haulmont.cuba.gui.components.AbstractEditor;
-import com.haulmont.cuba.gui.components.PickerField;
-import com.haulmont.cuba.gui.components.Table;
-import com.haulmont.cuba.gui.components.ValidationErrors;
-import com.haulmont.cuba.gui.screen.Subscribe;
-import com.haulmont.cuba.security.entity.Group;
+import com.haulmont.cuba.core.entity.Entity;
+import com.haulmont.cuba.gui.model.CollectionContainer;
+import com.haulmont.cuba.gui.model.CollectionPropertyContainer;
+import com.haulmont.cuba.gui.model.DataContext;
+import com.haulmont.cuba.gui.screen.*;
 import com.haulmont.cuba.security.entity.Role;
 
 import javax.inject.Inject;
-import javax.inject.Named;
+import java.util.List;
+import java.util.stream.Collectors;
 
-public class SimpleMatchingRuleEdit extends AbstractEditor<SimpleMatchingRule> {
-
-    @Named("conditionsTable")
-    private Table<SimpleRuleCondition> simpleRuleConditionTable;
-
-    @Named("rolesTable")
-    private Table<Role> roleTable;
+@UiDescriptor("simple-matching-rule-edit.xml")
+@UiController("ldap$SimpleMatchingRule.edit")
+@EditedEntityContainer("simpleMatchingRuleDs")
+public class SimpleMatchingRuleEdit extends StandardEditor<SimpleMatchingRule> {
 
     @Inject
-    private RuleRolesDatasource rolesDs;
+    private MessageBundle messageBundle;
 
     @Inject
-    private MatchingRuleService matchingRuleService;
-
-    @Named("accessGroupFieldGroup.accessGroupField")
-    private PickerField<Group> accessGroupField;
-
+    private CollectionPropertyContainer<SimpleRuleCondition> conditionsDs;
     @Inject
-    private EntityStates entityStates;
+    private CollectionContainer<Role> rolesDs;
 
     @Subscribe
     public void onBeforeShow(BeforeShowEvent event) {
-        rolesDs.init(getItem());
-        rolesDs.refresh();
-        if (!entityStates.isNew(getEditedEntity())) {
-            accessGroupField.setValue(matchingRuleService.getAccessGroupForMatchingRule(getEditedEntity()));
+        getScreenData().loadAll();
+        rolesDs.setItems(getEditedEntity().getRoles());
+        setModifiedAfterOpen(false);
+    }
+
+    @Subscribe
+    public void onValidation(ValidationEvent event) {
+        if (conditionsDs.getItems().isEmpty()) {
+            event.getErrors().add(messageBundle.getMessage("validationEmptyConditions"));
+        }
+        if (rolesDs.getItems().isEmpty()) {
+            event.getErrors().add(messageBundle.getMessage("validationEmptyRoles"));
         }
     }
 
-    @Override
-    protected void postValidate(ValidationErrors errors) {
-        super.postValidate(errors);
-        if (simpleRuleConditionTable.getDatasource().getItems().isEmpty()) {
-            errors.add(simpleRuleConditionTable, getMessage("validationEmptyConditions"));
-        }
-        if (roleTable.getDatasource().getItems().isEmpty()) {
-            errors.add(roleTable, getMessage("validationEmptyRoles"));
+    @Subscribe
+    public void onBeforeCommitChanges(BeforeCommitChangesEvent event) {
+        String rolesList = rolesDs.getItems().stream()
+                .map(Role::getName)
+                .collect(Collectors.joining(";"));
+        getEditedEntity().setRolesList(rolesList);
+
+        // TODO: 30.03.2022 more smart way to except commiting roles
+        DataContext dataContext = getScreenData().getDataContext();
+        List<Entity> transientRoles = dataContext.getModified().stream().filter(entity -> entity instanceof Role).collect(Collectors.toList());
+        for (Entity transientRole : transientRoles) {
+            dataContext.setModified(transientRole, false);
         }
     }
+
 }

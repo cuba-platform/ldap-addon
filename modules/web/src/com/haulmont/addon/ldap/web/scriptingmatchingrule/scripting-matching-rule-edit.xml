@@ -15,44 +15,40 @@
   ~ limitations under the License.
   -->
 
-<window xmlns="http://schemas.haulmont.com/cuba/window.xsd"
+<window xmlns="http://schemas.haulmont.com/cuba/screen/window.xsd"
         caption="msg://editorCaption"
-        class="com.haulmont.addon.ldap.web.scriptingmatchingrule.ScriptingMatchingRuleEdit"
-        datasource="scriptingMatchingRuleDs"
         focusComponent="fieldGroup"
         messagesPack="com.haulmont.addon.ldap.web.scriptingmatchingrule">
-    <dsContext>
-        <datasource id="scriptingMatchingRuleDs"
-                    class="com.haulmont.addon.ldap.entity.ScriptingMatchingRule"
-                    view="scriptingMatchingRule-view-status-order-group-roles">
-        </datasource>
-        <collectionDatasource id="rolesDs"
-                              allowCommit="false"
-                              class="com.haulmont.cuba.security.entity.Role"
-                              datasourceClass="com.haulmont.addon.ldap.web.datasource.RuleRolesDatasource"/>
-    </dsContext>
+    <data>
+        <instance id="scriptingMatchingRuleDs"
+                  class="com.haulmont.addon.ldap.entity.ScriptingMatchingRule"
+                  view="scriptingMatchingRule-view-status-order-group-roles">
+            <loader/>
+        </instance>
+        <collection id="rolesDs" class="com.haulmont.cuba.security.entity.Role"/>
+    </data>
     <dialogMode height="600"
                 width="800"/>
-    <layout expand="windowActions"
+    <layout expand="editActions"
             spacing="true">
-        <fieldGroup id="fieldGroup"
-                    datasource="scriptingMatchingRuleDs"
-                    width="100%">
+        <form id="fieldGroup"
+              dataContainer="scriptingMatchingRuleDs"
+              width="100%">
             <column width="100%">
-                <field caption="msg://descriptionFieldCaption"
-                       property="description"
-                       required="true"
-                       requiredMessage="msg://validationEmptyDescription"/>
-                <field caption="msg://isTerminalRuleFieldCaption"
-                       property="isTerminalRule"/>
-                <field caption="msg://groovyConditionCaption"
-                       generator="generateScriptingConditionField"
-                       property="scriptingCondition"
-                       required="true"
-                       requiredMessage="msg://validationEmptyScript"
-                       rows="5"/>
+                <textField caption="msg://descriptionFieldCaption"
+                           property="description"
+                           required="true"
+                           requiredMessage="msg://validationEmptyDescription"/>
+                <checkBox caption="msg://isTerminalRuleFieldCaption"
+                          property="isTerminalRule"/>
+                <sourceCodeEditor caption="msg://groovyConditionCaption"
+                                  mode="Groovy"
+                                  property="scriptingCondition"
+                                  required="true"
+                                  requiredMessage="msg://validationEmptyScript"
+                />
             </column>
-        </fieldGroup>
+        </form>
         <flowBox spacing="true">
             <hbox align="MIDDLE_CENTER"
                   spacing="true">
@@ -66,46 +62,48 @@
                            align="MIDDLE_CENTER"/>
             </hbox>
         </flowBox>
-        <fieldGroup id="accessGroupFieldGroup" datasource="scriptingMatchingRuleDs">
+        <form id="accessGroupFieldGroup" dataContainer="scriptingMatchingRuleDs">
             <column width="250px">
-                <field id="accessGroupField"
-                       caption="msg://accessGroupFieldCaption"
-                       property="accessGroup"
-                       required="true"
-                       requiredMessage="msg://validationEmptyGroup"/>
-                <field caption="msg://isOverrideExistingAccessGroupFieldCaption"
-                       property="isOverrideExistingAccessGroup"/>
+                <pickerField id="accessGroupField"
+                             caption="msg://accessGroupFieldCaption"
+                             property="accessGroup"
+                             required="true"
+                             requiredMessage="msg://validationEmptyGroup"/>
+                <checkBox caption="msg://isOverrideExistingAccessGroupFieldCaption"
+                          property="isOverrideExistingAccessGroup"/>
             </column>
-        </fieldGroup>
+        </form>
         <groupBox id="rolesBox"
                   caption="msg://rolesTableCaption">
             <table id="rolesTable"
                    height="200px"
-                   width="100%">
+                   width="100%"
+                   dataContainer="rolesDs">
                 <actions>
-                    <action id="add"/>
-                    <action id="remove"/>
+                    <action id="add" type="add"/>
+                    <action id="remove" type="remove"/>
                 </actions>
                 <columns>
                     <column id="locName"/>
                     <column id="name"/>
                     <column id="description"/>
                 </columns>
-                <rows datasource="rolesDs"/>
+                <rows/>
                 <buttonsPanel>
                     <button action="rolesTable.add"/>
                     <button action="rolesTable.remove"/>
-                    <fieldGroup align="MIDDLE_LEFT"
-                                datasource="scriptingMatchingRuleDs">
+                    <form align="MIDDLE_LEFT" dataContainer="scriptingMatchingRuleDs">
                         <column width="250px">
-                            <field caption="msg://isOverrideExistingRolesFieldCaption"
-                                   property="isOverrideExistingRoles"/>
+                            <checkBox caption="msg://isOverrideExistingRolesFieldCaption"
+                                      property="isOverrideExistingRoles"/>
                         </column>
-                    </fieldGroup>
+                    </form>
                 </buttonsPanel>
             </table>
         </groupBox>
-        <frame id="windowActions"
-               screen="editWindowActions"/>
+        <hbox id="editActions" spacing="true">
+            <button action="windowCommitAndClose"/>
+            <button action="windowClose"/>
+        </hbox>
     </layout>
 </window>

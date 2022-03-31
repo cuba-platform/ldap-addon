@@ -18,10 +18,10 @@ package com.haulmont.addon.ldap.entity;
 
 import com.haulmont.cuba.core.entity.BaseUuidEntity;
 import com.haulmont.cuba.core.entity.Creatable;
+import com.haulmont.cuba.core.entity.annotation.OnDeleteInverse;
+import com.haulmont.cuba.core.global.DeletePolicy;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.Date;
 
 /**
@@ -40,6 +40,19 @@ public class LdapUserAttribute extends BaseUuidEntity implements Creatable {
 
     @Column(name = "CREATED_BY", length = 50)
     private String createdBy;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "LDAP_CONFIG_ID")
+    @OnDeleteInverse(DeletePolicy.CASCADE)
+    protected LdapConfig ldapConfig;
+
+    public LdapConfig getLdapConfig() {
+        return ldapConfig;
+    }
+
+    public void setLdapConfig(LdapConfig ldapConfig) {
+        this.ldapConfig = ldapConfig;
+    }
 
     public void setCreateTs(Date createTs) {
         this.createTs = createTs;
@@ -65,6 +78,5 @@ public class LdapUserAttribute extends BaseUuidEntity implements Creatable {
     public String getAttributeName() {
         return attributeName;
     }
-
 
 }

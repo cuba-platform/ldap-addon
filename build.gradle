@@ -86,6 +86,7 @@ limitations under the License.'''
 
 dependencies {
     appComponent("com.haulmont.cuba:cuba-global:$cubaVersion")
+    appComponent('com.haulmont.addon.sdbmt:sdbmt-global:2.0.2')
 
 }
 

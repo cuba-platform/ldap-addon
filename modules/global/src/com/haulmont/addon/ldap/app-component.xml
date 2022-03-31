@@ -16,7 +16,7 @@
   -->
 
 <app-component xmlns="http://schemas.haulmont.com/cuba/app-component.xsd"
-               dependsOn="com.haulmont.cuba">
+               dependsOn="com.haulmont.addon.sdbmt">
     <module blocks="*"
             name="global">
         <artifact appJar="true"

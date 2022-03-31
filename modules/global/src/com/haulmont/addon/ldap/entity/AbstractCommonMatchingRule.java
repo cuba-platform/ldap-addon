@@ -36,7 +36,7 @@ public abstract class AbstractCommonMatchingRule extends StandardEntity implemen
     private String ruleType;
 
     @OneToOne(fetch = FetchType.LAZY, optional = false, cascade = CascadeType.ALL)
-    @JoinColumn(name = "MATCHING_RULE_STATUS_ID", nullable = false)
+    @JoinColumn(name = "MATCHING_RULE_STATUS_ID")
     @Composition
     @OnDelete(DeletePolicy.CASCADE)
     @NotNull
@@ -52,7 +52,6 @@ public abstract class AbstractCommonMatchingRule extends StandardEntity implemen
     @Column(name = "DESCRIPTION", length = 1500)
     private String description;
 
-
     public void setStatus(MatchingRuleStatus status) {
         this.status = status;
     }
@@ -61,7 +60,6 @@ public abstract class AbstractCommonMatchingRule extends StandardEntity implemen
         return status;
     }
 
-
     public void setOrder(MatchingRuleOrder order) {
         this.order = order;
     }
@@ -69,7 +67,6 @@ public abstract class AbstractCommonMatchingRule extends StandardEntity implemen
     public MatchingRuleOrder getOrder() {
         return order;
     }
-
 
     @Override
     public MatchingRuleType getRuleType() {
@@ -80,7 +77,6 @@ public abstract class AbstractCommonMatchingRule extends StandardEntity implemen
         this.ruleType = ruleType == null ? null : ruleType.getId();
     }
 
-
     @Override
     public String getDescription() {
         return description;
@@ -89,7 +85,6 @@ public abstract class AbstractCommonMatchingRule extends StandardEntity implemen
     public void setDescription(String description) {
         this.description = description;
     }
-
 
     @Override
     public String getMatchingRuleId() {

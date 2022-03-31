@@ -17,7 +17,14 @@
 package com.haulmont.addon.ldap.web.ldapuserattribute;
 
 import com.haulmont.addon.ldap.entity.LdapUserAttribute;
-import com.haulmont.cuba.gui.components.AbstractEditor;
+import com.haulmont.cuba.gui.screen.EditedEntityContainer;
+import com.haulmont.cuba.gui.screen.StandardEditor;
+import com.haulmont.cuba.gui.screen.UiController;
+import com.haulmont.cuba.gui.screen.UiDescriptor;
 
-public class LdapUserAttributeEdit extends AbstractEditor<LdapUserAttribute> {
+@UiDescriptor("ldap-user-attribute-edit.xml")
+@UiController("ldap$LdapUserAttribute.edit")
+@EditedEntityContainer("ldapUserAttributeDs")
+public class LdapUserAttributeEdit extends StandardEditor<LdapUserAttribute> {
+
 }

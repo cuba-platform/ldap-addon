@@ -34,12 +34,13 @@ public interface UserSynchronizationService {
      * Synchronizes the state of a CUBA user in accordance with LDAP using persisted matching rules.
      *
      * @param login                     user login
+     * @param tenantId                  todo
      * @param saveSynchronizationResult persists the user state after synchronization
      * @param cachedLdapUser            cached LdapUser, if null it will be loaded from LDAP
      * @param cachedCubaUser            cached User, if null it will be loaded from database
      * @param cachedMatchingRules       cached matching rules list, if null it will be loaded from database
      */
-    UserSynchronizationResultDto synchronizeUser(String login, boolean saveSynchronizationResult, LdapUser cachedLdapUser,
+    UserSynchronizationResultDto synchronizeUser(String login, String tenantId, boolean saveSynchronizationResult, LdapUser cachedLdapUser,
                                                  User cachedCubaUser, List<CommonMatchingRule> cachedMatchingRules);
 
     /**
@@ -47,9 +48,10 @@ public interface UserSynchronizationService {
      * After synchronization, the user state is not persisted.
      *
      * @param login        user login
+     * @param tenantId todo
      * @param rulesToApply matching rules provided on LDAP Matching Rule Screen.
      */
-    TestUserSynchronizationDto testUserSynchronization(String login, List<AbstractCommonMatchingRule> rulesToApply);
+    TestUserSynchronizationDto testUserSynchronization(String login, String tenantId, List<AbstractCommonMatchingRule> rulesToApply);
 
     /**
      * Returns expired user sessions<br>
@@ -64,7 +66,6 @@ public interface UserSynchronizationService {
      * @param cubaUsers     pre loaded CUBA users
      * @param ldapUsers     pre loaded LDAP users
      * @param matchingRules pre loaded matching rules
-     *
      */
     void synchronizeUsersFromLdap(List<User> cubaUsers, List<LdapUser> ldapUsers, List<CommonMatchingRule> matchingRules);
 

@@ -65,8 +65,8 @@ public class LdapAdminRole extends AnnotatedRoleDefinition {
     }
 
     @ScreenAccess(screenIds = {"application-ldap"})
+    @ScreenAccess(screenIds = {"ldap$LdapPropertiesConfig.browse"})
     @ScreenAccess(screenIds = {"ldap$LdapPropertiesConfig.edit"})
-    @ScreenAccess(screenIds = {"ldap$matchingRuleScreen"})
     @ScreenAccess(screenIds = {"ldap$UserSynchronizationLog.browse"})
     @ScreenAccess(screenIds = {"ldap$DefaultMatchingRule.edit"})
     @ScreenAccess(screenIds = {"ldap$SimpleMatchingRule.edit"})

@@ -15,28 +15,24 @@
   ~ limitations under the License.
   -->
 
-<window xmlns="http://schemas.haulmont.com/cuba/window.xsd"
+<window xmlns="http://schemas.haulmont.com/cuba/screen/window.xsd"
         caption="msg://editorCaption"
-        class="com.haulmont.addon.ldap.web.ldapuserattribute.LdapUserAttributeEdit"
-        datasource="ldapUserAttributeDs"
         focusComponent="fieldGroup"
         messagesPack="com.haulmont.addon.ldap.web.ldapuserattribute">
-    <dsContext>
-        <datasource id="ldapUserAttributeDs"
-                    class="com.haulmont.addon.ldap.entity.LdapUserAttribute"
-                    view="_local"/>
-    </dsContext>
+    <data>
+        <instance id="ldapUserAttributeDs" class="com.haulmont.addon.ldap.entity.LdapUserAttribute" view="_local"/>
+    </data>
     <dialogMode height="600"
                 width="800"/>
-    <layout expand="windowActions"
-            spacing="true">
-        <fieldGroup id="fieldGroup"
-                    datasource="ldapUserAttributeDs">
+    <layout expand="editActions" spacing="true">
+        <form id="fieldGroup" dataContainer="ldapUserAttributeDs">
             <column width="250px">
                 <field property="attributeName"/>
             </column>
-        </fieldGroup>
-        <frame id="windowActions"
-               screen="editWindowActions"/>
+        </form>
+        <hbox id="editActions" spacing="true">
+            <button action="windowCommitAndClose"/>
+            <button action="windowClose"/>
+        </hbox>
     </layout>
 </window>

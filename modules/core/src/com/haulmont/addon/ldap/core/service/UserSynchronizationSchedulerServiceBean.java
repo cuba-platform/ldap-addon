@@ -24,6 +24,7 @@ import com.haulmont.addon.ldap.dto.ExpiredSession;
 import com.haulmont.addon.ldap.dto.LdapUser;
 import com.haulmont.addon.ldap.dto.UserSynchronizationResultDto;
 import com.haulmont.addon.ldap.entity.CommonMatchingRule;
+import com.haulmont.addon.ldap.service.TenantProviderService;
 import com.haulmont.addon.ldap.service.UserSynchronizationService;
 import com.haulmont.cuba.core.global.TimeSource;
 import com.haulmont.cuba.security.app.UserSessionService;
@@ -66,16 +67,20 @@ public class UserSynchronizationSchedulerServiceBean implements UserSynchronizat
     @Inject
     private MatchingRuleDao matchingRuleDao;
 
+    @Inject
+    private TenantProviderService tenantProviderService;
+
     public void checkExpiredSessions() {
-        List<String> standardAuthenticationUsers = ldapPropertiesConfig.getStandardAuthenticationUsers() ==
-                null ? new ArrayList<>() : ldapPropertiesConfig.getStandardAuthenticationUsers();
+        List<String> standardAuthenticationUsers = ldapPropertiesConfig.getStandardAuthenticationUsers() == null
+                ? new ArrayList<>()
+                : ldapPropertiesConfig.getStandardAuthenticationUsers();
         List<UserSessionEntity> activeSessions = userSessionService.loadUserSessionEntities(UserSessionService.Filter.ALL).stream()
                 .filter(userSession -> !userSession.getSystem())
                 .filter(userSession -> !standardAuthenticationUsers.contains(userSession.getLogin()))
                 .collect(Collectors.toList());
         for (UserSessionEntity use : activeSessions) {
-            UserSynchronizationResultDto userSynchronizationResult = userSynchronizationService.synchronizeUser(
-                    use.getLogin(), false, null, null, null);
+            UserSynchronizationResultDto userSynchronizationResult = userSynchronizationService
+                    .synchronizeUser(use.getLogin(), use.getSysTenantId(), false, null, null, null);
             if (userSynchronizationResult.isUserPrivilegesChanged()) {
                 expiredSessions.add(new ExpiredSession(use.getUuid(), use.getLogin(), timeSource.currentTimeMillis()));
             }
@@ -84,9 +89,7 @@ public class UserSynchronizationSchedulerServiceBean implements UserSynchronizat
 
     public void killExpiredSessions() {
         for (ExpiredSession es : expiredSessions) {
-            boolean killSession = (timeSource.currentTimeMillis() - es.getCreateTsMillis())
-                    >= ldapPropertiesConfig.getSessionExpiringPeriodSec() * 1000;
-            if (killSession) {
+            if ((timeSource.currentTimeMillis() - es.getCreateTsMillis()) >= ldapPropertiesConfig.getSessionExpiringPeriodSec() * 1000) {
                 expiredSessions.remove(es);
                 userSessionService.killSession(es.getUuid());
             }
@@ -103,11 +106,14 @@ public class UserSynchronizationSchedulerServiceBean implements UserSynchronizat
         List<String> standardAuthenticationUsers = ldapPropertiesConfig.getStandardAuthenticationUsers();
         activeUsers.removeAll(standardAuthenticationUsers);
         List<List<String>> subLists = ListUtils.partition(activeUsers, ldapPropertiesConfig.getUserSynchronizationBatchSize());
-        List<CommonMatchingRule> matchingRules = matchingRuleDao.getMatchingRules();
-        for (List<String> list : subLists) {
-            List<User> users = cubaUserDao.getCubaUsersByLogin(list);
-            List<LdapUser> ldapUsers = ldapUserDao.getLdapUsers(list);
-            userSynchronizationService.synchronizeUsersFromLdap(users, ldapUsers, matchingRules);
+
+        for (String tenantId : tenantProviderService.getTenantIds()) {
+            List<CommonMatchingRule> matchingRules = matchingRuleDao.getMatchingRules(tenantId);
+            for (List<String> list : subLists) {
+                List<User> users = cubaUserDao.getCubaUsersByLogin(list);
+                List<LdapUser> ldapUsers = ldapUserDao.getLdapUsers(list, tenantId);
+                userSynchronizationService.synchronizeUsersFromLdap(users, ldapUsers, matchingRules);
+            }
         }
     }
 }

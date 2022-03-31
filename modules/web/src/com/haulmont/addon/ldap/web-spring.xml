@@ -36,6 +36,7 @@
                 <entry key="ldap_LdapConnectionTesterService" value="com.haulmont.addon.ldap.service.LdapService"/>
                 <entry key="ldap_MatchingRuleService" value="com.haulmont.addon.ldap.service.MatchingRuleService"/>
                 <entry key="ldap_AuthUserService" value="com.haulmont.addon.ldap.service.AuthUserService"/>
+                <entry key="ldap_TenantProviderService" value="com.haulmont.addon.ldap.service.TenantProviderService"/>
             </map>
         </property>
     </bean>

@@ -66,6 +66,11 @@ public abstract class AbstractDbStoredMatchingRule extends AbstractCommonMatchin
 
     @Column(name = "ACCESS_GROUP_NAME")
     private String accessGroupName;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "LDAP_CONFIG_ID")
+    protected LdapConfig ldapConfig;
+
     @Transient
     private List<Role> roles = new ArrayList<>();
 
@@ -96,6 +101,31 @@ public abstract class AbstractDbStoredMatchingRule extends AbstractCommonMatchin
 
     @Override
     public List<Role> getRoles() {
+        List<Role> roles = new ArrayList<>();
+        if (getRolesList() != null) {
+            roles = Arrays.stream(getRolesList().split(";"))
+                    .filter(Objects::nonNull)
+                    .map(String::trim)
+                    .distinct()
+                    .filter(s -> !s.isEmpty())
+                    .map(s -> {
+                                Role role = AppBeans.get(RolesService.class).getRoleDefinitionAndTransformToRole(s);
+                                if (role == null) {
+                                    LoadContext<Role> roleLoadContext = new LoadContext<>(Role.class);
+                                    roleLoadContext
+                                            .setView(View.LOCAL)
+                                            .setQueryString("select r from sec$Role r where r.name=:name")
+                                            .setParameter("name", s)
+                                            .setMaxResults(1);
+                                    role = AppBeans.get(DataManager.class).load(roleLoadContext);
+                                }
+                                return role;
+                            }
+                    )
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.toList());
+        }
+
         return roles;
     }
 
@@ -130,33 +160,48 @@ public abstract class AbstractDbStoredMatchingRule extends AbstractCommonMatchin
         isOverrideExistingAccessGroup = overrideExistingAccessGroup;
     }
 
-    public void updateRolesList() {
-        setRolesList(getRoles().stream().map(Role::getName).collect(Collectors.joining(";")));
+    public void updateRolesList(List<Role> roles) {
+        String rolesList = roles.stream()
+                .map(Role::getName)
+                .collect(Collectors.joining(";"));
+        setRolesList(rolesList);
     }
 
+
     public void postLoad() {
-        setRoles(getRolesList() != null ? Arrays.stream(getRolesList().split(";"))
-                .filter(Objects::nonNull)
-                .map(String::trim)
-                .distinct()
-                .filter(s -> !s.isEmpty())
-                .map(s -> {
-                            Role role = AppBeans.get(RolesService.class).getRoleDefinitionAndTransformToRole(s);
-                            if (role == null) {
-                                LoadContext<Role> roleLoadContext = new LoadContext<>(Role.class);
-                                roleLoadContext
-                                        .setView(View.LOCAL)
-                                        .setQueryString("select r from sec$Role r where r.name=:name")
-                                        .setParameter("name", s)
-                                        .setMaxResults(1);
-                                role = AppBeans.get(DataManager.class).load(roleLoadContext);
+        List<Role> roles = new ArrayList<>();
+        if (getRolesList() != null) {
+            roles = Arrays.stream(getRolesList().split(";"))
+                    .filter(Objects::nonNull)
+                    .map(String::trim)
+                    .distinct()
+                    .filter(s -> !s.isEmpty())
+                    .map(s -> {
+                                Role role = AppBeans.get(RolesService.class).getRoleDefinitionAndTransformToRole(s);
+                                if (role == null) {
+                                    LoadContext<Role> roleLoadContext = new LoadContext<>(Role.class);
+                                    roleLoadContext
+                                            .setView(View.LOCAL)
+                                            .setQueryString("select r from sec$Role r where r.name=:name")
+                                            .setParameter("name", s)
+                                            .setMaxResults(1);
+                                    role = AppBeans.get(DataManager.class).load(roleLoadContext);
+                                }
+                                return role;
                             }
-                            return role;
-                        }
-                )
-                .filter(Objects::nonNull)
-                .collect(Collectors.toList())
-                : new ArrayList<>()
-        );
+                    )
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.toList());
+        }
+
+        setRoles(roles);
+    }
+
+    public LdapConfig getLdapConfig() {
+        return ldapConfig;
+    }
+
+    public void setLdapConfig(LdapConfig ldapConfig) {
+        this.ldapConfig = ldapConfig;
     }
 }

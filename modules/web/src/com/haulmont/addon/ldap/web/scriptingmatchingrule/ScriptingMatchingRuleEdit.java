@@ -20,109 +20,105 @@ import com.google.common.base.Strings;
 import com.haulmont.addon.ldap.dto.GroovyScriptTestResultDto;
 import com.haulmont.addon.ldap.entity.ScriptingMatchingRule;
 import com.haulmont.addon.ldap.service.LdapService;
-import com.haulmont.addon.ldap.service.MatchingRuleService;
-import com.haulmont.addon.ldap.web.datasource.RuleRolesDatasource;
-import com.haulmont.cuba.core.global.EntityStates;
-import com.haulmont.cuba.gui.UiComponents;
-import com.haulmont.cuba.gui.components.*;
-import com.haulmont.cuba.gui.data.Datasource;
-import com.haulmont.cuba.gui.screen.Subscribe;
-import com.haulmont.cuba.security.entity.Group;
+import com.haulmont.cuba.core.entity.Entity;
+import com.haulmont.cuba.gui.Notifications;
+import com.haulmont.cuba.gui.components.Table;
+import com.haulmont.cuba.gui.components.TextField;
+import com.haulmont.cuba.gui.model.CollectionContainer;
+import com.haulmont.cuba.gui.model.DataContext;
+import com.haulmont.cuba.gui.screen.*;
 import com.haulmont.cuba.security.entity.Role;
 
 import javax.inject.Inject;
-import javax.inject.Named;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.haulmont.addon.ldap.dto.GroovyScriptTestResult.*;
-import static com.haulmont.cuba.gui.components.Frame.NotificationType.WARNING;
-import static com.haulmont.cuba.gui.components.Frame.NotificationType.WARNING_HTML;
 
-public class ScriptingMatchingRuleEdit extends AbstractEditor<ScriptingMatchingRule> {
-
-    @Named("userLoginTextField")
-    private TextField<String> userLoginTextField;
-
+@UiDescriptor("scripting-matching-rule-edit.xml")
+@UiController("ldap$ScriptingMatchingRule.edit")
+@EditedEntityContainer("scriptingMatchingRuleDs")
+public class ScriptingMatchingRuleEdit extends StandardEditor<ScriptingMatchingRule> {
+    @Inject
+    private Notifications notifications;
+    @Inject
+    private MessageBundle messageBundle;
     @Inject
     private LdapService ldapService;
 
     @Inject
-    private UiComponents componentsFactory;
-
+    private CollectionContainer<Role> rolesDs;
     @Inject
     private Table<Role> rolesTable;
-
     @Inject
-    private RuleRolesDatasource rolesDs;
-
-    @Named("accessGroupFieldGroup.accessGroupField")
-    private PickerField<Group> accessGroupField;
-
-    @Inject
-    private MatchingRuleService matchingRuleService;
-
-    @Inject
-    private EntityStates entityStates;
+    private TextField<String> userLoginTextField;
 
     @Subscribe
     public void onBeforeShow(BeforeShowEvent event) {
-        rolesDs.init(getItem());
-        rolesDs.refresh();
-        if (!entityStates.isNew(getEditedEntity())) {
-            accessGroupField.setValue(matchingRuleService.getAccessGroupForMatchingRule(getEditedEntity()));
-        }
+        getScreenData().loadAll();
+        rolesDs.setItems(getEditedEntity().getRoles());
+        setModifiedAfterOpen(false);
     }
 
-    @Override
-    protected void postValidate(ValidationErrors errors) {
-        super.postValidate(errors);
-        if (rolesTable.getDatasource().getItems().isEmpty()) {
-            errors.add(rolesTable, getMessage("validationEmptyRoles"));
+    @Subscribe
+    public void onValidation(ValidationEvent event) {
+        if (rolesTable.getItems() != null && rolesTable.getItems().getItems().isEmpty()) {
+            event.getErrors().add(rolesTable, messageBundle.getMessage("validationEmptyRoles"));
         }
     }
 
     public void onTestConstraintButtonClick() {
         String login = userLoginTextField.getValue();
-        String groovyScript = getItem().getScriptingCondition();
+        String groovyScript = getEditedEntity().getScriptingCondition();
         if (!Strings.isNullOrEmpty(login) && !Strings.isNullOrEmpty(groovyScript)) {
-            GroovyScriptTestResultDto result = ldapService.testGroovyScript(groovyScript, login);
+            String tenantId = getEditedEntity().getLdapConfig().getSysTenantId();
+            GroovyScriptTestResultDto result = ldapService.testGroovyScript(groovyScript, login, tenantId);
             if (NO_USER.equals(result.getResult())) {
-                showNotification(getMessage("notificationError"), formatMessage("testGroovyScriptResultNoUser", login), WARNING);
+                notifications.create(Notifications.NotificationType.WARNING)
+                        .withCaption(messageBundle.getMessage("notificationError"))
+                        .withDescription(messageBundle.formatMessage("testGroovyScriptResultNoUser", login))
+                        .show();
             } else if (COMPILATION_ERROR.equals(result.getResult())) {
-                showNotification(getMessage("notificationError"), formatMessage("testGroovyScriptResultCompilationError",
-                        result.getErrorText()), WARNING_HTML);
+                notifications.create(Notifications.NotificationType.WARNING)
+                        .withCaption(messageBundle.getMessage("notificationError"))
+                        .withDescription(messageBundle.formatMessage("testGroovyScriptResultCompilationError", result.getErrorText()))
+                        .show();
             } else if (OTHER_ERROR.equals(result.getResult())) {
-                showNotification(getMessage("notificationError"), formatMessage("testGroovyScriptResultOtherError",
-                        result.getErrorText()), WARNING_HTML);
+                notifications.create(Notifications.NotificationType.WARNING)
+                        .withCaption(messageBundle.getMessage("notificationError"))
+                        .withDescription(messageBundle.formatMessage("testGroovyScriptResultOtherError", result.getErrorText()))
+                        .show();
             } else if (NON_BOOLEAN_RESULT.equals(result.getResult())) {
-                showNotification(getMessage("notificationError"), formatMessage("testGroovyScriptResultNonBoolean"), WARNING);
+                notifications.create(Notifications.NotificationType.WARNING)
+                        .withCaption(messageBundle.getMessage("notificationError"))
+                        .withDescription(messageBundle.formatMessage("testGroovyScriptResultNonBoolean"))
+                        .show();
             } else if (FALSE.equals(result.getResult())) {
-                showNotification(getMessage("notificationSuccess"), formatMessage("testGroovyScriptResultFalse"), WARNING);
+                notifications.create(Notifications.NotificationType.WARNING)
+                        .withCaption(messageBundle.getMessage("notificationSuccess"))
+                        .withDescription(messageBundle.formatMessage("testGroovyScriptResultFalse"))
+                        .show();
             } else if (TRUE.equals(result.getResult())) {
-                showNotification(getMessage("notificationSuccess"), formatMessage("testGroovyScriptResultTrue"), WARNING);
+                notifications.create(Notifications.NotificationType.WARNING)
+                        .withCaption(messageBundle.getMessage("notificationSuccess"))
+                        .withDescription(messageBundle.formatMessage("testGroovyScriptResultTrue"))
+                        .show();
             }
         }
     }
 
-    public Component generateScriptingConditionField(Datasource datasource, String fieldId) {
-        FlowBoxLayout fb = componentsFactory.create(FlowBoxLayout.class);
-        LinkButton lb = componentsFactory.create(LinkButton.class);
-        Action action = new EmptyGroovyScriptHelpAction("") {
-            @Override
-            public void actionPerform(Component component) {
-                showMessageDialog(getMessage("groovyScriptConditionTitle"), getMessage("groovyScriptCondition"),
-                        MessageType.CONFIRMATION_HTML
-                                .modal(false)
-                                .width("600px"));
-            }
-        };
-        lb.setAction(action);
-        SourceCodeEditor sourceCodeEditor = componentsFactory.create(SourceCodeEditor.class);
-        sourceCodeEditor.setDatasource(datasource, fieldId);
-        sourceCodeEditor.setRequired(true);
-        sourceCodeEditor.setMode(SourceCodeEditor.Mode.Groovy);
-        sourceCodeEditor.setWidth("97%");
-        fb.add(sourceCodeEditor);
-        fb.add(lb);
-        return fb;
+    @Subscribe
+    public void onBeforeCommitChanges(BeforeCommitChangesEvent event) {
+        String rolesList = rolesDs.getItems().stream()
+                .map(Role::getName)
+                .collect(Collectors.joining(";"));
+        getEditedEntity().setRolesList(rolesList);
+
+        // TODO: 30.03.2022 more smart way to except commiting roles
+        DataContext dataContext = getScreenData().getDataContext();
+        List<Entity> transientRoles = dataContext.getModified().stream().filter(entity -> entity instanceof Role).collect(Collectors.toList());
+        for (Entity transientRole : transientRoles) {
+            dataContext.setModified(transientRole, false);
+        }
     }
 }

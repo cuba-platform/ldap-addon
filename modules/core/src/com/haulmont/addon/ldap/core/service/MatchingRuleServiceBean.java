@@ -27,6 +27,7 @@ import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 import java.util.List;
+import java.util.UUID;
 
 @Service(MatchingRuleService.NAME)
 public class MatchingRuleServiceBean implements MatchingRuleService {
@@ -38,18 +39,8 @@ public class MatchingRuleServiceBean implements MatchingRuleService {
     private AccessGroupsService accessGroupsService;
 
     @Override
-    public int getMatchingRulesCount() {
-        return matchingRuleDao.getMatchingRulesCount();
-    }
-
-    @Override
-    public List<AbstractCommonMatchingRule> getMatchingRulesGui() {
-        return matchingRuleDao.getMatchingRulesGui();
-    }
-
-    @Override
-    public void saveMatchingRules(List<AbstractCommonMatchingRule> matchingRules, List<AbstractCommonMatchingRule> matchingRulesToDelete) {
-        matchingRuleDao.saveMatchingRules(matchingRules, matchingRulesToDelete);
+    public List<AbstractCommonMatchingRule> getMatchingRules(UUID ldapConfigId) {
+        return matchingRuleDao.getMatchingRulesByLdapConfig(ldapConfigId);
     }
 
     @Override
