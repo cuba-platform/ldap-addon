@@ -89,7 +89,7 @@ dependencies {
 
 }
 
-def hsql = 'org.hsqldb:hsqldb:2.7.4'
+def hsql = 'org.hsqldb:hsqldb:2.5.2'
 
 def dbNameParam = 'ldap'
 
@@ -133,7 +133,7 @@ configure(globalModule) {
     }
 
     dependencies {
-        compile group: 'org.springframework.ldap', name: 'spring-ldap-core', version: '2.3.2.RELEASE'
+        compile group: 'org.springframework.ldap', name: 'spring-ldap-core', version: '2.3.8.RELEASE'
     }
 
 
