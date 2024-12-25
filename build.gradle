@@ -89,7 +89,7 @@ dependencies {
 
 }
 
-def hsql = 'org.hsqldb:hsqldb:2.4.1'
+def hsql = 'org.hsqldb:hsqldb:2.7.4'
 
 def dbNameParam = 'ldap'
 
@@ -100,8 +100,8 @@ configure([globalModule, coreModule, guiModule, webModule]) {
     apply(plugin: 'addon-gradle-plugin')
 
     dependencies {
-        testCompile('junit:junit:4.12')
-        testCompile('org.springframework.ldap:spring-ldap-test:2.3.2.RELEASE')
+        testCompile('junit:junit:4.13.2')
+        testCompile('org.springframework.ldap:spring-ldap-test:2.3.8.RELEASE')
         testCompile "org.apache.directory.server:apacheds-core:1.5.5",
                 "org.apache.directory.server:apacheds-core-entry:1.5.5",
                 "org.apache.directory.server:apacheds-protocol-shared:1.5.5",
